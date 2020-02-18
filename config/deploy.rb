@@ -6,3 +6,5 @@ set :repo_url, "git@github.com:simaob/simaobelchior.git"
 
 set :rvm_ruby_version, '2.6.3'
 set :user, 'simaob'
+
+set :linked_files, %w{config/master.key}
