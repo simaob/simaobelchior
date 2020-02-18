@@ -27,10 +27,10 @@ group :development, :test do
 end
 
 group :development do
-  gem 'capistrano',  '~> 3.1'
+  gem 'capistrano',  '~> 3.12', require: false
   gem 'capistrano-rvm'
-  gem 'capistrano-bundler', '>= 1.1.0'
-  gem 'capistrano-rails', '~> 1.1'
+  gem 'capistrano-bundler', '~> 1.6'
+  gem 'capistrano-rails', '~> 1.4', require: false
   gem 'capistrano-passenger'
   gem 'capistrano3-unicorn'
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
