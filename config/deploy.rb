@@ -8,3 +8,4 @@ set :rvm_ruby_version, '2.6.3'
 set :user, 'simaob'
 
 set :linked_files, %w{config/master.key}
+set :passenger_restart_with_touch, true
