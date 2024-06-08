@@ -1,0 +1,16 @@
+<header>
+  <nav class="">
+    <div class="">
+      <a href="/" class="">
+        <span class="">Simão Belchior</span>
+      </a>
+      <div class="">
+				<% if user_signed_in? %>
+          <%= link_to('logout', destroy_user_session_path, data: { "turbo-method": :delete }) %>
+			  <% else %>
+  			  <%= link_to('login', new_user_session_path) %>
+			  <% end %>
+      </div>
+    </div>
+  </nav>
+</header>
