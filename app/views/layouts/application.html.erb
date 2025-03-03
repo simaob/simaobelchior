@@ -1,14 +1,41 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Simaobelchior" %></title>
+    <title>Simão Belchior - Software Engineer</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="author" content="Simão Belchior">
+    <meta name="description" content="A short summary of his professional endeavours.">
+
+    <!-- Facebook / Open Graph -->
+    <meta property="og:title" content="Simão Belchior - Software Engineer">
+    <meta property="og:description" content="A short summary of his professional endeavours.">
+    <meta property="og:image" content="https://simaobelchior.com/images/porto_sunset.jpg">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://simaobelchior.com">
+
+    <!-- Twitter -->
+    <meta name="twitter:title" content="Simão Belchior - Software Engineer">
+    <meta name="twitter:description" content="A short summary of his professional endeavours.">
+    <meta name="twitter:image" content="https://simaobelchior.com/images/porto_sunset.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image:alt" content="Sunset in Porto">
+    <meta name="twitter:site" content="@belchior">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
+
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-6EDTJ04NWD"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+			gtag('config', 'G-6EDTJ04NWD');
+		</script>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
@@ -23,6 +50,10 @@
   </head>
 
   <body>
-    <%= yield %>
+    <div class="container">
+			<main role="main">
+				<%= yield %>
+			</main>
+		</div>
   </body>
 </html>
