@@ -55,7 +55,7 @@ group :development do
   gem "web-console"
   gem "capistrano",  "~> 3.12", require: false
   gem "capistrano-rvm"
-  gem "capistrano-bundler", "~> 1.6"
+  gem "capistrano-bundler", "~> 2.1"
   gem "capistrano-rails", "~> 1.4", require: false
   gem "capistrano-passenger"
   gem "capistrano3-unicorn"
