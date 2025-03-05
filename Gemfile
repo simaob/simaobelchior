@@ -35,6 +35,7 @@ gem "bootsnap", require: false
 
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
+gem "kamal"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
@@ -53,12 +54,6 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
-  gem "capistrano", "~> 3.6"
-  gem "capistrano-rvm"
-  gem "capistrano-bundler", "~> 2.1"
-  gem "capistrano-rails", "~> 1.4", require: false
-  gem "capistrano-passenger"
-  gem "capistrano3-unicorn"
 end
 
 group :test do
