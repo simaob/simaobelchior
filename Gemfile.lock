@@ -414,6 +414,7 @@ DEPENDENCIES
   capybara
   dartsass-rails
   debug
+  dotenv
   importmap-rails
   jbuilder
   kamal
