@@ -1,1 +1,28 @@
 @import "bootstrap";
+
+body {
+  background-color: #E8F6EF; /* Soft green-gray */
+  color: #22577A;
+}
+header {
+  background: linear-gradient(135deg, #1B998B, #38A3A5); /* Emerald to teal gradient */
+  color: white;
+}
+.card {
+  border-color: #A7C957;
+}
+.list-group-item {
+  background-color: white;
+}
+.btn-primary {
+  background-color: #A7C957;
+  border-color: #A7C957;
+}
+.btn-primary:hover {
+  background-color: #8BAF50;
+  border-color: #8BAF50;
+}
+footer {
+  background-color: #22577A;
+  color: white;
+}
