@@ -1,28 +1,105 @@
 @import "bootstrap";
 
 body {
-  background-color: #E8F6EF; /* Soft green-gray */
-  color: #22577A;
+  background-color: #FAFAFA;
+  color: #1a1a1a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
-header {
-  background: linear-gradient(135deg, #1B998B, #38A3A5); /* Emerald to teal gradient */
-  color: white;
+
+.hero-section {
+  background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+  border-bottom: 1px solid #e9ecef;
 }
-.card {
-  border-color: #A7C957;
+
+.hero-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
 }
-.list-group-item {
-  background-color: white;
+
+.hero-subtitle {
+  color: #6c757d;
+  font-weight: 400;
 }
-.btn-primary {
-  background-color: #A7C957;
-  border-color: #A7C957;
+
+.info-card {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #dee2e6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+  }
+
+  .card-title {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 1.1rem;
+  }
+
+  .card-text {
+    color: #495057;
+    line-height: 1.6;
+  }
 }
-.btn-primary:hover {
-  background-color: #8BAF50;
-  border-color: #8BAF50;
+
+.connect-section {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
 }
+
+.btn-custom {
+  padding: 0.6rem 1.5rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  border: 1px solid #dee2e6;
+
+  &.btn-github {
+    background: #1a1a1a;
+    color: white;
+    border-color: #1a1a1a;
+
+    &:hover {
+      background: #000000;
+      border-color: #000000;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  &.btn-linkedin {
+    background: #0077b5;
+    color: white;
+    border-color: #0077b5;
+
+    &:hover {
+      background: #006399;
+      border-color: #006399;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 119, 181, 0.25);
+    }
+  }
+
+  &.btn-kronflow {
+    background: #10b981;
+    color: white;
+    border-color: #10b981;
+
+    &:hover {
+      background: #059669;
+      border-color: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+    }
+  }
+}
+
 footer {
-  background-color: #22577A;
-  color: white;
+  background-color: #ffffff;
+  border-top: 1px solid #e9ecef;
+  color: #6c757d;
 }
