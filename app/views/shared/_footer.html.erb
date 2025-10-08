@@ -1,3 +1,10 @@
 <footer class="text-center py-4">
+  <p class="mb-2 small">
+    <% if controller_name == "articles" %>
+      <%= link_to "Home", root_path, class: "text-muted text-decoration-none" %>
+    <% else %>
+      <%= link_to "Blog", blog_path, class: "text-muted text-decoration-none" %>
+    <% end %>
+  </p>
   <p class="mb-0 small">&copy; <%= Date.today.year %> Simão Belchior. All Rights Reserved.</p>
 </footer>
