@@ -1,0 +1,98 @@
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-semibold">Articles</h1>
+    <%= link_to "New Article", new_admin_article_path, class: "btn btn-primary" %>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <%= form_with url: admin_articles_path, method: :get, class: "row g-3" do |f| %>
+        <div class="col-md-3">
+          <%= f.select :status,
+              options_for_select([["All", ""], ["Published", "published"], ["Drafts", "drafts"]], params[:status]),
+              {},
+              class: "form-select" %>
+        </div>
+        <div class="col-md-3">
+          <%= f.select :sort,
+              options_for_select([["Published Date", ""], ["Title", "title"], ["Created Date", "created_at"]], params[:sort]),
+              {},
+              class: "form-select" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.text_field :tag, placeholder: "Filter by tag", value: params[:tag], class: "form-control" %>
+        </div>
+        <div class="col-md-2">
+          <%= f.submit "Filter", class: "btn btn-outline-secondary w-100" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @articles.any? %>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Published</th>
+            <th>Tags</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @articles.each do |article| %>
+            <tr>
+              <td>
+                <strong><%= link_to article.title, edit_admin_article_path(article), class: "text-decoration-none" %></strong>
+              </td>
+              <td>
+                <% if article.published? %>
+                  <span class="badge bg-success">Published</span>
+                <% else %>
+                  <span class="badge bg-secondary">Draft</span>
+                <% end %>
+              </td>
+              <td>
+                <% if article.published_at %>
+                  <small class="text-muted"><%= article.published_at.strftime("%B %-d, %Y") %></small>
+                <% else %>
+                  <small class="text-muted">—</small>
+                <% end %>
+              </td>
+              <td>
+                <% if article.tags.any? %>
+                  <% article.tags.each do |tag| %>
+                    <%= link_to tag.name, admin_articles_path(tag: tag.name), class: "badge bg-light text-dark text-decoration-none border" %>
+                  <% end %>
+                <% end %>
+              </td>
+              <td class="text-end">
+                <div class="btn-group" role="group">
+                  <%= link_to "Edit", edit_admin_article_path(article), class: "btn btn-sm btn-outline-primary" %>
+                  <% if article.published? %>
+                    <%= button_to "Unpublish", toggle_publish_admin_article_path(article), method: :post, class: "btn btn-sm btn-outline-warning" %>
+                  <% else %>
+                    <%= button_to "Publish", toggle_publish_admin_article_path(article), method: :post, class: "btn btn-sm btn-outline-success" %>
+                  <% end %>
+                  <%= button_to "Delete", admin_article_path(article), method: :delete,
+                      data: { turbo_confirm: "Are you sure you want to delete this article?" },
+                      class: "btn btn-sm btn-outline-danger" %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-4">
+      <%= paginate @articles %>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      No articles found. <%= link_to "Create your first article", new_admin_article_path, class: "alert-link" %>.
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,9 @@
+<div class="container my-4">
+  <div class="mb-4">
+    <%= link_to "← Back to articles", admin_articles_path, class: "text-decoration-none text-muted" %>
+  </div>
+
+  <h1 class="fw-semibold mb-4">New Article</h1>
+
+  <%= render "form", article: @article %>
+</div>

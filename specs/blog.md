@@ -16,7 +16,7 @@ Layout and presentation inspired by [Simon Willison's blog](https://simonwilliso
 - [x] **Article Model** - COMPLETED
 - [x] **Tag System** - COMPLETED
 - [x] **Article-Tag Association** - COMPLETED
-- [ ] **Admin Interface**
+- [x] **Admin Interface** - COMPLETED
 - [x] **Public Blog Pages** - COMPLETED
 - [ ] **RSS Feed**
 - [ ] **Search Functionality**
@@ -163,44 +163,60 @@ Layout and presentation inspired by [Simon Willison's blog](https://simonwilliso
 - 6 comprehensive controller tests
 - All 40 tests passing
 
-### 5. Admin Interface
+### 5. Admin Interface ✅ COMPLETED
 
-All admin routes should be under `/admin` namespace and require authentication.
+All admin routes are under `/admin` namespace and require authentication.
 
-#### Admin Dashboard (`/admin`)
-- List all articles (published and drafts)
-- Quick stats: total articles, published count, draft count
-- Links to create new article
+#### Admin Dashboard (`/admin`) ✅
+- ✅ Stats cards showing total articles, published count, draft count
+- ✅ Recent articles list (10 most recent) with status badges
+- ✅ Quick action buttons (New Article, Manage Articles)
+- ✅ Links to article management
 
-#### Articles List (`/admin/articles`)
+#### Articles List (`/admin/articles`) ✅
 **Display:**
-- Table/list view of all articles
-- Show: title, status (published/draft), published date, actions
-- Sort by: created_at, published_at, title
-- Filter by: status (all/published/drafts), tag
+- ✅ Responsive table view of all articles with pagination (25 per page)
+- ✅ Shows: title (linked to edit), status badge, published date, tags, actions
+- ✅ Sort by: published_at (default), title, created_at
+- ✅ Filter by: status (all/published/drafts), tag
 
 **Actions per article:**
-- Edit
-- Delete (with confirmation)
-- Toggle publish/unpublish
+- ✅ Edit button
+- ✅ Delete button (with Turbo confirmation)
+- ✅ Toggle publish/unpublish button (context-aware label)
 
-#### Create Article (`/admin/articles/new`)
+#### Create Article (`/admin/articles/new`) ✅
 **Form fields:**
-- Title (text input)
-- Slug (text input, auto-filled from title with JS)
-- Body (Action Text rich editor)
-- Tags (text input with comma separation, hint text)
-- Published at (datetime picker, or checkbox for "Save as draft")
+- ✅ Title (text input with validation)
+- ✅ Slug (text input, auto-generated from title if blank)
+- ✅ Body (Action Text rich editor with Trix)
+- ✅ Tags (text input with comma separation and hint text)
+- ✅ Published at (datetime field, leave blank for draft)
 
 **Buttons:**
-- Save as draft
-- Publish
-- Cancel
+- ✅ Save as Draft (clears published_at field via JavaScript)
+- ✅ Create/Update Article (primary action)
+- ✅ Cancel (returns to articles list)
 
-#### Edit Article (`/admin/articles/:id/edit`)
-- Same form as create
-- Additional "Delete" button
-- Show creation and last updated timestamps
+#### Edit Article (`/admin/articles/:id/edit`) ✅
+- ✅ Same form as create with pre-filled data
+- ✅ Delete button in header (with confirmation)
+- ✅ Shows creation and last updated timestamps
+- ✅ Update button instead of Create
+
+**Implementation details:**
+- Admin::ArticlesController with full CRUD + toggle_publish action
+- Admin navigation bar shown on all admin pages (Dashboard, Articles, New Article, Logout, View Site)
+- Filter and sort options via form with GET parameters
+- Kaminari pagination for article lists
+- Status filtering: all (default), published, drafts
+- Tag filtering via URL parameter
+- Conditional rendering based on article state (published vs draft)
+- Action Text integration for rich content editing
+- Tag assignment via comma-separated string (tag_list attribute)
+- All admin routes protected with `require_authentication` before_action
+- 11 comprehensive controller tests covering CRUD, authentication, filtering, and toggle publish
+- All 51 tests passing (114 assertions total)
 
 ### 6. Action Text Setup
 

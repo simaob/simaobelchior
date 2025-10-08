@@ -53,6 +53,7 @@
 
   <body class="d-flex flex-column min-vh-100">
     <%= render "shared/nav" %>
+    <%= render "shared/admin_nav" if logged_in? && controller_path.start_with?("admin") %>
     <main class="flex-grow-1">
       <% if flash[:notice] %>
         <div class="container mt-3">
