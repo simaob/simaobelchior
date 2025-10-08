@@ -1,5 +1,7 @@
 class Article < ApplicationRecord
   has_rich_text :body
+  has_many :article_tags, dependent: :destroy
+  has_many :tags, through: :article_tags
 
   validates :title, presence: true, uniqueness: true
   validates :slug, presence: true, uniqueness: true
@@ -17,6 +19,17 @@ class Article < ApplicationRecord
   def excerpt(length: 500)
     return "" unless body.present?
     body.to_plain_text.truncate(length, separator: " ")
+  end
+
+  # Get tag names as comma-separated string
+  def tag_list
+    tags.pluck(:name).join(", ")
+  end
+
+  # Set tags from comma-separated string
+  def tag_list=(tag_string)
+    new_tags = Tag.from_list(tag_string)
+    self.tags = new_tags
   end
 
   private

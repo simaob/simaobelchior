@@ -112,4 +112,59 @@ class ArticleTest < ActiveSupport::TestCase
     article.save!
     assert_equal original_slug, article.slug
   end
+
+  # Tag tests
+  test "should assign tags to article" do
+    article = Article.create!(title: "Tagged Article", body: "Content")
+    tag1 = Tag.create!(name: "ruby")
+    tag2 = Tag.create!(name: "rails")
+
+    article.tags << [ tag1, tag2 ]
+    assert_equal 2, article.tags.count
+    assert_includes article.tags, tag1
+    assert_includes article.tags, tag2
+  end
+
+  test "should set tags from comma-separated string" do
+    article = Article.create!(title: "Tagged Article", body: "Content")
+    article.tag_list = "ruby, rails, programming"
+    article.save!
+
+    assert_equal 3, article.tags.count
+    assert_equal [ "programming", "rails", "ruby" ], article.tags.pluck(:name).sort
+  end
+
+  test "should get tags as comma-separated string" do
+    article = Article.create!(title: "Tagged Article", body: "Content")
+    article.tags.create!(name: "ruby")
+    article.tags.create!(name: "rails")
+
+    assert_equal "ruby, rails", article.tag_list
+  end
+
+  test "should replace tags when setting new tag_list" do
+    article = Article.create!(title: "Tagged Article", body: "Content")
+    article.tag_list = "ruby, rails"
+    article.save!
+
+    assert_equal 2, article.tags.count
+
+    article.tag_list = "python, django"
+    article.save!
+
+    assert_equal 2, article.tags.count
+    assert_equal [ "django", "python" ], article.tags.pluck(:name).sort
+  end
+
+  test "should destroy article_tags when article is destroyed" do
+    article = Article.create!(title: "Tagged Article", body: "Content")
+    article.tag_list = "ruby, rails"
+    article.save!
+
+    article_tag_count = ArticleTag.count
+    assert article_tag_count > 0
+
+    article.destroy
+    assert_equal article_tag_count - 2, ArticleTag.count
+  end
 end

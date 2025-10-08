@@ -14,8 +14,8 @@ Layout and presentation inspired by [Simon Willison's blog](https://simonwilliso
 
 - [x] **Authentication (Single User)** - COMPLETED
 - [x] **Article Model** - COMPLETED
-- [ ] **Tag System**
-- [ ] **Article-Tag Association**
+- [x] **Tag System** - COMPLETED
+- [x] **Article-Tag Association** - COMPLETED
 - [ ] **Admin Interface**
 - [ ] **Public Blog Pages**
 - [ ] **RSS Feed**
@@ -82,21 +82,36 @@ Layout and presentation inspired by [Simon Willison's blog](https://simonwilliso
 - 13 comprehensive tests covering validations, scopes, methods, and edge cases
 - All tests passing
 
-### 3. Tag System
+### 3. Tag System ✅ COMPLETED
 
 **Tag Model:**
-- `name` (string, required, unique)
-- Timestamps
+- ✅ `name` (string, required, unique)
+- ✅ Timestamps
+- ✅ Name normalization (lowercase, trimmed whitespace)
 
 **Article-Tag Association:**
-- Many-to-many relationship via `ArticleTag` join table
-- Articles can have multiple tags
-- Tags can belong to multiple articles
+- ✅ Many-to-many relationship via `ArticleTag` join table
+- ✅ Articles can have multiple tags
+- ✅ Tags can belong to multiple articles
+- ✅ Unique constraint on article_id + tag_id combination
+- ✅ Cascading delete (article_tags destroyed when article is destroyed)
 
 **Features:**
-- Display tags on article listings and show pages
-- Auto-create tags if they don't exist when assigning to articles
-- Tag input should be comma-separated in the admin form
+- ✅ Display tags on article listings and show pages
+- ✅ Auto-create tags if they don't exist when assigning to articles
+- ✅ Tag input via comma-separated string in admin form
+- ✅ `Tag.from_list(string)` - Parse comma-separated tags
+- ✅ `article.tag_list` - Get tags as comma-separated string
+- ✅ `article.tag_list=(string)` - Set tags from comma-separated string
+
+**Implementation details:**
+- Tag names are normalized to lowercase and whitespace is stripped
+- `Tag.from_list` handles duplicates, empty entries, and whitespace
+- Uses `find_or_create_by` to avoid creating duplicate tags
+- ArticleTag join table has unique index on [article_id, tag_id]
+- 12 comprehensive tests for Tag model and associations
+- 5 comprehensive tests for Article-Tag integration
+- All 31 tests passing
 
 ### 4. Public Blog Pages
 
