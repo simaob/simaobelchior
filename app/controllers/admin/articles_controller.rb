@@ -24,8 +24,8 @@ class Admin::ArticlesController < ApplicationController
       @articles = @articles.order(:title)
     when "created_at"
       @articles = @articles.order(created_at: :desc)
-    else # Default to published_at
-      @articles = @articles.order(Arel.sql("CASE WHEN published_at IS NULL THEN 1 ELSE 0 END, published_at DESC"))
+    else # Default to published_at (nulls last)
+      @articles = @articles.order(Arel.sql("published_at IS NULL ASC, published_at DESC"))
     end
 
     @articles = @articles.page(params[:page]).per(25)
