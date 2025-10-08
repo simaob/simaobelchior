@@ -142,8 +142,8 @@ Layout and presentation inspired by [Simon Willison's blog](https://simonwilliso
 - ✅ "Back to blog" link
 
 **SEO:**
-- ⏭️ Page title should be article title (deferred)
-- ⏭️ Meta description from excerpt (deferred)
+- ✅ Page title should be article title
+- ✅ Meta description from excerpt (160 characters)
 
 **Implementation details:**
 - ArticlesController with index and show actions
@@ -155,6 +155,11 @@ Layout and presentation inspired by [Simon Willison's blog](https://simonwilliso
 - Kaminari pagination with Bootstrap 4 theme
 - `EXCERPT_LENGTH` constant (2000 chars) in Article model
 - `truncated?` method checks if article exceeds excerpt length
+- SEO implementation with `content_for` blocks for title and description
+- Dynamic page titles: "Article Title - Simão Belchior"
+- Meta descriptions use 160-character excerpts for optimal display
+- Open Graph and Twitter Card meta tags update dynamically per article
+- OG type changes to "article" for blog posts
 - 6 comprehensive controller tests
 - All 40 tests passing
 
