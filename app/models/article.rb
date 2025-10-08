@@ -12,16 +12,18 @@ class Article < ApplicationRecord
   scope :drafts, -> { where(published_at: nil).order(created_at: :desc) }
   scope :recent, -> { order(published_at: :desc) }
 
+  EXCERPT_LENGTH = 2_000
+
   def published?
     published_at.present? && published_at <= Time.current
   end
 
-  def excerpt(length: 2000)
+  def excerpt(length: EXCERPT_LENGTH)
     return "" unless body.present?
     body.to_plain_text.truncate(length, separator: " ")
   end
 
-  def truncated?(length: 2000)
+  def truncated?(length: EXCERPT_LENGTH)
     return false unless body.present?
     body.to_plain_text.length > length
   end
