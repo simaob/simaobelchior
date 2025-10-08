@@ -56,4 +56,54 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".badge", text: "ruby"
     assert_select ".badge", text: "rails"
   end
+
+  test "should generate RSS feed" do
+    get blog_feed_path(format: :rss)
+    assert_response :success
+    assert_equal "application/rss+xml", @response.media_type
+  end
+
+  test "RSS feed should include published articles" do
+    published = Article.create!(title: "Published Article", body: "Content for RSS", published_at: 1.day.ago)
+    draft = Article.create!(title: "Draft Article", body: "Content", published_at: nil)
+
+    get blog_feed_path(format: :rss)
+    assert_response :success
+
+    assert_match "Published Article", @response.body
+    assert_no_match "Draft Article", @response.body
+  end
+
+  test "RSS feed should limit to 20 articles" do
+    25.times do |i|
+      Article.create!(title: "Article #{i}", body: "Content #{i}", published_at: i.days.ago)
+    end
+
+    get blog_feed_path(format: :rss)
+    assert_response :success
+
+    # RSS feed should only include 20 articles
+    Article.published.limit(20).each do |article|
+      assert_match article.title, @response.body
+    end
+  end
+
+  test "RSS feed should include article metadata" do
+    tag = Tag.create!(name: "testing")
+    article = Article.create!(
+      title: "Test RSS Article",
+      body: "This is RSS test content",
+      published_at: 1.day.ago
+    )
+    article.tags << tag
+
+    get blog_feed_path(format: :rss)
+    assert_response :success
+
+    # Check for RSS structure
+    assert_match "<title>Test RSS Article</title>", @response.body
+    assert_match "<category>testing</category>", @response.body
+    assert_match "<author>Simão Belchior</author>", @response.body
+    assert_match article_url(article.slug), @response.body
+  end
 end

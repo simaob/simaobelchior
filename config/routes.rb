@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   # Blog routes
   get "blog" => "articles#index", as: :blog
+  get "blog/feed" => "articles#feed", as: :blog_feed, defaults: { format: :rss }
   get "blog/:slug" => "articles#show", as: :article
 
   # Admin namespace (to be used for blog management)

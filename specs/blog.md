@@ -18,7 +18,7 @@ Layout and presentation inspired by [Simon Willison's blog](https://simonwilliso
 - [x] **Article-Tag Association** - COMPLETED
 - [x] **Admin Interface** - COMPLETED
 - [x] **Public Blog Pages** - COMPLETED
-- [ ] **RSS Feed**
+- [x] **RSS Feed** - COMPLETED
 - [ ] **Search Functionality**
 
 ## Features
@@ -259,31 +259,44 @@ post '/login', to: 'sessions#create'
 delete '/logout', to: 'sessions#destroy'
 ```
 
-### 8. RSS Feed
+### 8. RSS Feed ✅ COMPLETED
 
 **Requirements:**
-- RSS feed at `/blog/feed.xml` or `/blog.rss`
-- Include last 20 published articles
-- Standard RSS 2.0 format
+- ✅ RSS feed at `/blog/feed`
+- ✅ Include last 20 published articles
+- ✅ Standard RSS 2.0 format
 
 **Feed content per article:**
-- Title
-- Link to article (full URL)
-- Publication date
-- Description (article excerpt or full body)
-- Author name
-- Categories (from tags)
-- GUID (unique identifier)
+- ✅ Title
+- ✅ Link to article (full URL)
+- ✅ Publication date
+- ✅ Description (full article body as HTML in CDATA section)
+- ✅ Author name
+- ✅ Categories (from tags)
+- ✅ GUID (unique identifier using article URL)
 
 **Technical details:**
-- Use Rails builder template (`.rss.builder`)
-- Proper content-type header (`application/rss+xml`)
-- Escape HTML properly in descriptions
-- Include site metadata (title, description, link)
+- ✅ Rails builder template (`feed.rss.builder`)
+- ✅ Proper content-type header (`application/rss+xml`)
+- ✅ HTML properly escaped in descriptions
+- ✅ Site metadata included (title, description, link)
+- ✅ Atom self-link for feed URL
 
 **Discovery:**
-- Add RSS feed link tag in HTML `<head>` for auto-discovery
-- Add visible "Subscribe via RSS" link on blog index page
+- ✅ RSS feed auto-discovery link tag in HTML `<head>`
+- ✅ Visible "RSS" link with icon on blog index page (top right)
+
+**Implementation details:**
+- ArticlesController#feed action at `/blog/feed`
+- RSS builder template at `app/views/articles/feed.rss.builder`
+- Feed includes channel metadata: title, description, link, language, lastBuildDate
+- Each item includes: title, description (full HTML body), pubDate, link, guid, author, categories
+- Full article content wrapped in CDATA section for proper HTML rendering in RSS readers
+- Auto-discovery link tag added to application layout
+- RSS link visible on blog index page with Bootstrap icon
+- Feed limited to 20 most recent published articles
+- 4 comprehensive tests covering feed generation, content, metadata, and article limit
+- All 55 tests passing (171 assertions total)
 
 ### 9. Search Functionality
 
