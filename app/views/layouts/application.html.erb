@@ -44,6 +44,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon_16x16.png">
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="apple-touch-icon" href="/icon.png">
+    <%= auto_discovery_link_tag(:rss, blog_feed_path(format: :rss), title: "Simão Belchior - Blog RSS Feed") %>
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">

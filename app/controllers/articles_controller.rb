@@ -15,4 +15,11 @@ class ArticlesController < ApplicationController
   def show
     @article = Article.published.find_by!(slug: params[:slug])
   end
+
+  def feed
+    @articles = Article.published.includes(:tags).limit(20)
+    respond_to do |format|
+      format.rss { render layout: false }
+    end
+  end
 end
