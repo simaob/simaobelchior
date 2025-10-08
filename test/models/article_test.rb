@@ -59,6 +59,22 @@ class ArticleTest < ActiveSupport::TestCase
     assert excerpt.ends_with?("...")
   end
 
+  test "excerpt should default to 2000 characters" do
+    article = Article.new(title: "Test", body: "A" * 3000)
+    excerpt = article.excerpt
+    assert excerpt.length <= 2003 # 2000 + "..."
+  end
+
+  test "truncated? should return true for long articles" do
+    article = Article.new(title: "Test", body: "A" * 3000)
+    assert article.truncated?
+  end
+
+  test "truncated? should return false for short articles" do
+    article = Article.new(title: "Test", body: "A" * 100)
+    assert_not article.truncated?
+  end
+
   test "published scope should only return published articles" do
     published = Article.create!(title: "Published 1", body: "Content", published_at: 1.day.ago)
     draft = Article.create!(title: "Draft 1", body: "Content")

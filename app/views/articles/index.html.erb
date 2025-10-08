@@ -1,0 +1,59 @@
+<section class="container my-5">
+  <div class="row">
+    <div class="col-12">
+      <% if @tag %>
+        <h1 class="fw-semibold mb-1">Articles tagged with "<%= @tag.name %>"</h1>
+        <p class="text-muted mb-4">
+          <%= link_to "← View all articles", blog_path, class: "text-decoration-none" %>
+        </p>
+      <% else %>
+        <h1 class="fw-semibold mb-4">Blog</h1>
+      <% end %>
+
+      <% if @articles.any? %>
+        <% @articles.each do |article| %>
+          <article class="mb-5 pb-4 border-bottom">
+            <div class="mb-2">
+              <time class="text-muted small" datetime="<%= article.published_at.iso8601 %>">
+                <%= article.published_at.strftime("%B %-d, %Y at %-I:%M %p") %>
+              </time>
+            </div>
+
+            <h2 class="h3 mb-3">
+              <%= link_to article.title, article_path(article.slug), class: "text-decoration-none text-dark fw-semibold" %>
+            </h2>
+
+            <div class="mb-3 text-muted">
+              <%= article.excerpt %>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+              <% if article.truncated? %>
+                <%= link_to "Continue reading →", article_path(article.slug), class: "text-decoration-none fw-medium" %>
+              <% end %>
+
+              <% if article.tags.any? %>
+                <div class="d-flex gap-2 flex-wrap">
+                  <% article.tags.each do |tag| %>
+                    <%= link_to tag.name, blog_path(tag: tag.name), class: "badge bg-light text-dark text-decoration-none border" %>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </article>
+        <% end %>
+
+        <div class="mt-4">
+          <%= paginate @articles %>
+        </div>
+      <% else %>
+        <div class="text-center py-5">
+          <p class="text-muted">No articles found.</p>
+          <% if @tag %>
+            <%= link_to "← View all articles", blog_path, class: "btn btn-custom btn-github" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

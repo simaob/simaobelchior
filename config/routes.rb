@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   post "login" => "sessions#create"
   delete "logout" => "sessions#destroy", as: :logout
 
+  # Blog routes
+  get "blog" => "articles#index", as: :blog
+  get "blog/:slug" => "articles#show", as: :article
+
   # Admin namespace (to be used for blog management)
   namespace :admin do
     root to: "dashboard#index"
