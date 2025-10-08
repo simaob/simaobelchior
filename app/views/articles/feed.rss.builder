@@ -5,7 +5,7 @@ xml.rss version: "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom" do
     xml.description "Personal blog by Simão Belchior - Ruby on Rails developer, entrepreneur, and builder"
     xml.link blog_url
     xml.tag! "atom:link", href: blog_feed_url(format: :rss), rel: "self", type: "application/rss+xml"
-    xml.language "en-us"
+    xml.language "en-gb"
     xml.lastBuildDate @articles.first&.published_at&.rfc822 || Time.current.rfc822
 
     @articles.each do |article|
