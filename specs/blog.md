@@ -17,7 +17,7 @@ Layout and presentation inspired by [Simon Willison's blog](https://simonwilliso
 - [x] **Tag System** - COMPLETED
 - [x] **Article-Tag Association** - COMPLETED
 - [ ] **Admin Interface**
-- [ ] **Public Blog Pages**
+- [x] **Public Blog Pages** - COMPLETED
 - [ ] **RSS Feed**
 - [ ] **Search Functionality**
 
@@ -113,35 +113,55 @@ Layout and presentation inspired by [Simon Willison's blog](https://simonwilliso
 - 5 comprehensive tests for Article-Tag integration
 - All 31 tests passing
 
-### 4. Public Blog Pages
+### 4. Public Blog Pages ✅ COMPLETED
 
 #### Blog Index (`/blog`)
 **Layout:**
-- List all published articles in reverse chronological order
-- Pagination (10-15 articles per page)
+- ✅ List all published articles in reverse chronological order
+- ✅ Pagination (15 articles per page using Kaminari)
 
 **Each article entry shows:**
-- Publication date (formatted as "Month Day, Year")
-- Article title (linked to show page)
-- Excerpt (first ~500 characters of plain text content)
-- "Continue reading →" link to full article
-- Tags (as clickable badges/links)
+- ✅ Publication date and time (formatted as "Month Day, Year at H:MM AM/PM")
+- ✅ Article title (linked to show page)
+- ✅ Excerpt (first 2000 characters of plain text content)
+- ✅ "Continue reading →" link (only shown if article is truncated)
+- ✅ Tags (as clickable badges/links)
 
 **Additional features:**
-- Filter by tag (e.g., `/blog?tag=rails`)
-- Responsive design matching the homepage aesthetic
+- ✅ Filter by tag (e.g., `/blog?tag=rails`)
+- ✅ Tag filter indicator with "View all articles" link
+- ✅ Responsive design matching the homepage aesthetic
+- ✅ Empty state handling (no articles found)
 
 #### Article Show Page (`/blog/:slug`)
 **Content:**
-- Full article title
-- Publication date
-- Full article body (rendered with Action Text formatting)
-- Tags displayed at the bottom
-- Link back to blog index
+- ✅ Full article title
+- ✅ Publication date and time
+- ✅ Full article body (rendered with Action Text formatting)
+- ✅ Tags displayed at the bottom
+- ✅ "Back to blog" link
 
 **SEO:**
-- Page title should be article title
-- Meta description from excerpt
+- ✅ Page title should be article title
+- ✅ Meta description from excerpt (160 characters)
+
+**Implementation details:**
+- ArticlesController with index and show actions
+- Routes: `/blog` (index), `/blog/:slug` (show), `/blog?tag=name` (filtered)
+- Only published articles visible (published_at <= now)
+- Draft articles return 404 on show page
+- Article content styled with typography, code blocks, images, lists, blockquotes
+- Centered 8-column layout on show page for readability
+- Kaminari pagination with Bootstrap 4 theme
+- `EXCERPT_LENGTH` constant (2000 chars) in Article model
+- `truncated?` method checks if article exceeds excerpt length
+- SEO implementation with `content_for` blocks for title and description
+- Dynamic page titles: "Article Title - Simão Belchior"
+- Meta descriptions use 160-character excerpts for optimal display
+- Open Graph and Twitter Card meta tags update dynamically per article
+- OG type changes to "article" for blog posts
+- 6 comprehensive controller tests
+- All 40 tests passing
 
 ### 5. Admin Interface
 
