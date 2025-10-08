@@ -77,7 +77,9 @@ Layout and presentation inspired by [Simon Willison's blog](https://simonwilliso
 - Active Storage tables created for image uploads
 - Migration created with proper indexes (slug unique, published_at)
 - Slug generation handles duplicates by appending counter (e.g., "title-1", "title-2")
-- 11 comprehensive tests covering validations, scopes, and methods
+- Optimized slug generation uses single database query with LIKE pattern for performance
+- Excludes self when updating to avoid false conflicts
+- 13 comprehensive tests covering validations, scopes, methods, and edge cases
 - All tests passing
 
 ### 3. Tag System
