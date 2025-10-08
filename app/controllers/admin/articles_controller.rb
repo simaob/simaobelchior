@@ -1,6 +1,6 @@
 class Admin::ArticlesController < ApplicationController
   before_action :require_authentication
-  before_action :set_article, only: [:edit, :update, :destroy, :toggle_publish]
+  before_action :set_article, only: [ :edit, :update, :destroy, :toggle_publish ]
 
   def index
     @articles = Article.all.includes(:tags)
