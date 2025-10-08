@@ -1,0 +1,46 @@
+<%= form_with(model: [:admin, article], class: "needs-validation", local: true, data: { controller: "article-form" }) do |f| %>
+  <% if article.errors.any? %>
+    <div class="alert alert-danger">
+      <h4 class="alert-heading">Please fix the following errors:</h4>
+      <ul class="mb-0">
+        <% article.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :title, class: "form-label" %>
+    <%= f.text_field :title, class: "form-control", placeholder: "Enter article title", required: true, autofocus: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :slug, class: "form-label" %>
+    <%= f.text_field :slug, class: "form-control", placeholder: "URL-friendly slug (auto-generated if blank)" %>
+    <div class="form-text">Leave blank to auto-generate from title</div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :body, class: "form-label" %>
+    <%= f.rich_text_area :body, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :tag_list, "Tags", class: "form-label" %>
+    <%= f.text_field :tag_list, class: "form-control", placeholder: "ruby, rails, programming" %>
+    <div class="form-text">Separate tags with commas</div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :published_at, class: "form-label" %>
+    <%= f.datetime_field :published_at, class: "form-control", data: { article_form_target: "publishedAt" } %>
+    <div class="form-text">Leave blank to save as draft</div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <%= f.submit "Save as Draft", name: "draft", class: "btn btn-secondary", data: { action: "click->article-form#saveAsDraft" } %>
+    <%= f.submit article.persisted? ? "Update Article" : "Create Article", class: "btn btn-primary" %>
+    <%= link_to "Cancel", admin_articles_path, class: "btn btn-outline-secondary" %>
+  </div>
+<% end %>

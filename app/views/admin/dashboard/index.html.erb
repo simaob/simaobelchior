@@ -1,16 +1,77 @@
 <section class="container my-5">
   <div class="row">
     <div class="col-12">
-      <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="mb-4">
         <h1 class="fw-semibold">Admin Dashboard</h1>
-        <%= button_to "Logout", logout_path, method: :delete, class: "btn btn-custom btn-github" %>
+      </div>
+
+      <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <h6 class="text-muted text-uppercase small">Total Articles</h6>
+              <h2 class="mb-0"><%= @total_articles %></h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <h6 class="text-muted text-uppercase small">Published</h6>
+              <h2 class="mb-0 text-success"><%= @published_count %></h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <h6 class="text-muted text-uppercase small">Drafts</h6>
+              <h2 class="mb-0 text-secondary"><%= @draft_count %></h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title mb-0">Recent Articles</h5>
+            <%= link_to "View All", admin_articles_path, class: "btn btn-sm btn-outline-primary" %>
+          </div>
+
+          <% if @recent_articles.any? %>
+            <div class="list-group list-group-flush">
+              <% @recent_articles.each do |article| %>
+                <div class="list-group-item px-0">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                      <%= link_to article.title, edit_admin_article_path(article), class: "fw-semibold text-decoration-none" %>
+                      <div class="small text-muted">
+                        Created <%= article.created_at.strftime("%B %-d, %Y") %>
+                      </div>
+                    </div>
+                    <% if article.published? %>
+                      <span class="badge bg-success">Published</span>
+                    <% else %>
+                      <span class="badge bg-secondary">Draft</span>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="text-muted mb-0">No articles yet. <%= link_to "Create your first article", new_admin_article_path, class: "text-decoration-none" %>.</p>
+          <% end %>
+        </div>
       </div>
 
       <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-          <h5 class="card-title mb-3">Welcome, <%= current_user.email %>!</h5>
-          <p class="text-muted mb-0">You are successfully logged in to the admin panel.</p>
-          <p class="text-muted mt-3">Blog management features coming soon...</p>
+        <div class="card-body">
+          <h5 class="card-title mb-3">Quick Actions</h5>
+          <div class="d-flex gap-2">
+            <%= link_to "New Article", new_admin_article_path, class: "btn btn-primary" %>
+            <%= link_to "Manage Articles", admin_articles_path, class: "btn btn-outline-primary" %>
+          </div>
         </div>
       </div>
     </div>

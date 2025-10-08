@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   # Admin namespace (to be used for blog management)
   namespace :admin do
     root to: "dashboard#index"
+    resources :articles do
+      post :toggle_publish, on: :member
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
