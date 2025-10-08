@@ -24,11 +24,13 @@
             </h2>
 
             <div class="mb-3 text-muted">
-              <%= article.excerpt(length: 500) %>
+              <%= article.excerpt %>
             </div>
 
             <div class="d-flex align-items-center gap-3">
-              <%= link_to "Continue reading →", article_path(article.slug), class: "text-decoration-none fw-medium" %>
+              <% if article.truncated? %>
+                <%= link_to "Continue reading →", article_path(article.slug), class: "text-decoration-none fw-medium" %>
+              <% end %>
 
               <% if article.tags.any? %>
                 <div class="d-flex gap-2 flex-wrap">

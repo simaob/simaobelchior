@@ -16,9 +16,14 @@ class Article < ApplicationRecord
     published_at.present? && published_at <= Time.current
   end
 
-  def excerpt(length: 500)
+  def excerpt(length: 2000)
     return "" unless body.present?
     body.to_plain_text.truncate(length, separator: " ")
+  end
+
+  def truncated?(length: 2000)
+    return false unless body.present?
+    body.to_plain_text.length > length
   end
 
   # Get tag names as comma-separated string
