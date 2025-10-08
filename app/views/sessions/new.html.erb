@@ -1,0 +1,25 @@
+<section class="container my-5 py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="text-center mb-4 fw-semibold">Admin Login</h2>
+
+          <%= form_with url: login_path, method: :post, local: true do |f| %>
+            <div class="mb-3">
+              <%= f.label :email, class: "form-label" %>
+              <%= f.email_field :email, class: "form-control", placeholder: "admin@example.com", autofocus: true, required: true %>
+            </div>
+
+            <div class="mb-4">
+              <%= f.label :password, class: "form-label" %>
+              <%= f.password_field :password, class: "form-control", required: true %>
+            </div>
+
+            <%= f.submit "Log In", class: "btn btn-custom btn-github w-100" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
