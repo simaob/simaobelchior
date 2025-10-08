@@ -215,6 +215,9 @@ All admin routes are under `/admin` namespace and require authentication.
 - Action Text integration for rich content editing
 - Tag assignment via comma-separated string (tag_list attribute)
 - All admin routes protected with `require_authentication` before_action
+- Sorting logic uses database-agnostic approach with `Arel.sql("published_at IS NULL ASC, published_at DESC")` for nulls-last ordering
+- "Save as Draft" button uses Stimulus controller (`article-form`) instead of inline onclick handler
+- Stimulus controller clears published_at field when saving as draft
 - 11 comprehensive controller tests covering CRUD, authentication, filtering, and toggle publish
 - All 51 tests passing (114 assertions total)
 

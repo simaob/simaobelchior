@@ -1,4 +1,4 @@
-<%= form_with(model: [:admin, article], class: "needs-validation", local: true) do |f| %>
+<%= form_with(model: [:admin, article], class: "needs-validation", local: true, data: { controller: "article-form" }) do |f| %>
   <% if article.errors.any? %>
     <div class="alert alert-danger">
       <h4 class="alert-heading">Please fix the following errors:</h4>
@@ -34,12 +34,12 @@
 
   <div class="mb-3">
     <%= f.label :published_at, class: "form-label" %>
-    <%= f.datetime_field :published_at, class: "form-control" %>
+    <%= f.datetime_field :published_at, class: "form-control", data: { article_form_target: "publishedAt" } %>
     <div class="form-text">Leave blank to save as draft</div>
   </div>
 
   <div class="d-flex gap-2">
-    <%= f.submit "Save as Draft", name: "draft", class: "btn btn-secondary", onclick: "document.getElementById('article_published_at').value = ''" %>
+    <%= f.submit "Save as Draft", name: "draft", class: "btn btn-secondary", data: { action: "click->article-form#saveAsDraft" } %>
     <%= f.submit article.persisted? ? "Update Article" : "Create Article", class: "btn btn-primary" %>
     <%= link_to "Cancel", admin_articles_path, class: "btn btn-outline-secondary" %>
   </div>
