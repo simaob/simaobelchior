@@ -119,7 +119,7 @@ class ArticleTest < ActiveSupport::TestCase
     tag1 = Tag.create!(name: "ruby")
     tag2 = Tag.create!(name: "rails")
 
-    article.tags << [tag1, tag2]
+    article.tags << [ tag1, tag2 ]
     assert_equal 2, article.tags.count
     assert_includes article.tags, tag1
     assert_includes article.tags, tag2
@@ -131,7 +131,7 @@ class ArticleTest < ActiveSupport::TestCase
     article.save!
 
     assert_equal 3, article.tags.count
-    assert_equal ["programming", "rails", "ruby"], article.tags.pluck(:name).sort
+    assert_equal [ "programming", "rails", "ruby" ], article.tags.pluck(:name).sort
   end
 
   test "should get tags as comma-separated string" do
@@ -153,7 +153,7 @@ class ArticleTest < ActiveSupport::TestCase
     article.save!
 
     assert_equal 2, article.tags.count
-    assert_equal ["django", "python"], article.tags.pluck(:name).sort
+    assert_equal [ "django", "python" ], article.tags.pluck(:name).sort
   end
 
   test "should destroy article_tags when article is destroyed" do

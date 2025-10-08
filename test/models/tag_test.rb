@@ -22,7 +22,7 @@ class TagTest < ActiveSupport::TestCase
   test "should create tags from comma-separated list" do
     tags = Tag.from_list("ruby, rails, programming")
     assert_equal 3, tags.length
-    assert_equal ["programming", "rails", "ruby"], tags.map(&:name).sort
+    assert_equal [ "programming", "rails", "ruby" ], tags.map(&:name).sort
   end
 
   test "should handle duplicate tags in list" do
@@ -35,7 +35,7 @@ class TagTest < ActiveSupport::TestCase
   test "should handle empty and whitespace entries in list" do
     tags = Tag.from_list("ruby, , rails,  , javascript")
     assert_equal 3, tags.length
-    assert_equal ["javascript", "rails", "ruby"], tags.map(&:name).sort
+    assert_equal [ "javascript", "rails", "ruby" ], tags.map(&:name).sort
   end
 
   test "should return empty array for blank string" do
