@@ -13,7 +13,7 @@ Layout and presentation inspired by [Simon Willison's blog](https://simonwilliso
 ## Implementation Status
 
 - [x] **Authentication (Single User)** - COMPLETED
-- [ ] **Article Model**
+- [x] **Article Model** - COMPLETED
 - [ ] **Tag System**
 - [ ] **Article-Tag Association**
 - [ ] **Admin Interface**
@@ -47,30 +47,40 @@ Layout and presentation inspired by [Simon Willison's blog](https://simonwilliso
 - Seed data: admin@simaobelchior.com / password123
 - bcrypt gem added for password encryption
 
-### 2. Article Model
+### 2. Article Model ✅ COMPLETED
 
 **Attributes:**
-- `title` (string, required) - Article title
-- `body` (action_text, required) - Rich text content using Action Text
-- `published_at` (datetime, optional) - Publication timestamp (nil = draft)
-- `slug` (string, required, unique) - URL-friendly identifier
-- Timestamps (`created_at`, `updated_at`)
+- ✅ `title` (string, required) - Article title
+- ✅ `body` (action_text, required) - Rich text content using Action Text
+- ✅ `published_at` (datetime, optional) - Publication timestamp (nil = draft)
+- ✅ `slug` (string, required, unique) - URL-friendly identifier
+- ✅ Timestamps (`created_at`, `updated_at`)
 
 **Validations:**
-- Title must be present
-- Title should be unique
-- Slug must be present and unique
-- Slug should be auto-generated from title if not provided
+- ✅ Title must be present
+- ✅ Title should be unique
+- ✅ Slug must be present and unique
+- ✅ Slug should be auto-generated from title if not provided
 
 **Scopes:**
-- `published` - Only articles with `published_at <= now`
-- `drafts` - Articles with `published_at` as nil
-- `recent` - Ordered by `published_at` descending
+- ✅ `published` - Only articles with `published_at <= now`
+- ✅ `drafts` - Articles with `published_at` as nil
+- ✅ `recent` - Ordered by `published_at` descending
 
 **Methods:**
-- `published?` - Returns true if article is published
-- `excerpt(length: 500)` - Returns truncated plain text version of body for listings
-- Auto-generate slug from title before validation (if slug is blank)
+- ✅ `published?` - Returns true if article is published
+- ✅ `excerpt(length: 500)` - Returns truncated plain text version of body for listings
+- ✅ Auto-generate slug from title before validation (if slug is blank)
+
+**Implementation details:**
+- Action Text installed and configured for rich text editing
+- Active Storage tables created for image uploads
+- Migration created with proper indexes (slug unique, published_at)
+- Slug generation handles duplicates by appending counter (e.g., "title-1", "title-2")
+- Optimized slug generation uses single database query with LIKE pattern for performance
+- Excludes self when updating to avoid false conflicts
+- 13 comprehensive tests covering validations, scopes, methods, and edge cases
+- All tests passing
 
 ### 3. Tag System
 
