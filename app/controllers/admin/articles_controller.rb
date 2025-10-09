@@ -80,6 +80,16 @@ class Admin::ArticlesController < ApplicationController
   end
 
   def article_params
-    params.require(:article).permit(:title, :slug, :body, :published_at, :tag_list)
+    permitted = params.require(:article).permit(:title, :slug, :body, :published_at, :tag_list)
+
+    # Fix timezone handling for datetime_local_field
+    # The HTML5 datetime-local input doesn't include timezone info, and Rails
+    # incorrectly interprets it as UTC. We need to treat it as the app's timezone.
+    if permitted[:published_at].is_a?(String) && permitted[:published_at].present?
+      # Parse the datetime string as if it's in the application's timezone
+      permitted[:published_at] = Time.zone.parse(permitted[:published_at])
+    end
+
+    permitted
   end
 end
