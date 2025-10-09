@@ -23,6 +23,22 @@ class Article < ApplicationRecord
     body.to_plain_text.truncate(length, separator: " ")
   end
 
+  def summary_html(length: EXCERPT_LENGTH)
+    return "".html_safe unless body.present?
+
+    plain_text = body.to_plain_text
+    if plain_text.length <= length
+      body.to_s.html_safe
+    else
+      # Truncate and add continue reading indicator
+      truncated_text = plain_text.truncate(length, separator: " ", omission: "...")
+
+      # Convert back to trix content (simplified version)
+      # This will lose some formatting but maintain basic structure
+      ActionText::Content.new(truncated_text).to_s.html_safe
+    end
+  end
+
   def truncated?(length: EXCERPT_LENGTH)
     return false unless body.present?
     body.to_plain_text.length > length
