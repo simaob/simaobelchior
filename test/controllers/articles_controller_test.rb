@@ -4,7 +4,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
   test "should get blog index" do
     get blog_path
     assert_response :success
-    assert_select "h1", "Blog"
+    assert_select "h1", "Weblog"
   end
 
   test "should display published articles on index" do
