@@ -46,6 +46,10 @@
                   <% end %>
                 </div>
               <% end %>
+
+              <% if logged_in? %>
+                <%= link_to "Edit", edit_admin_article_path(article), class: "text-decoration-none text-muted small" %>
+              <% end %>
             </div>
           </article>
         <% end %>

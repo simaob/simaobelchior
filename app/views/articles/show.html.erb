@@ -10,10 +10,15 @@
 
       <header class="mb-4">
         <h1 class="fw-bold mb-3"><%= @article.title %></h1>
-        <div class="text-muted">
-          <time datetime="<%= @article.published_at.iso8601 %>">
-            <%= @article.published_at.strftime("%B %-d, %Y at %-I:%M %p") %>
-          </time>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="text-muted">
+            <time datetime="<%= @article.published_at.iso8601 %>">
+              <%= @article.published_at.strftime("%B %-d, %Y at %-I:%M %p") %>
+            </time>
+          </div>
+          <% if logged_in? %>
+            <%= link_to "Edit", edit_admin_article_path(@article), class: "btn btn-sm btn-outline-secondary" %>
+          <% end %>
         </div>
       </header>
 
