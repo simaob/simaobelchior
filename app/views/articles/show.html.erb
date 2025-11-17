@@ -13,7 +13,7 @@
         <div class="d-flex justify-content-between align-items-center">
           <div class="text-muted">
             <time datetime="<%= @article.published_at.iso8601 %>">
-              <%= @article.published_at.strftime("%B %-d, %Y at %-I:%M %p") %>
+              <%= @article.published_at.strftime("%B %-d, %Y at %H:%M") %>
             </time>
           </div>
           <% if logged_in? %>
