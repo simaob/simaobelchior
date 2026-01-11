@@ -96,6 +96,19 @@ body {
       box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
     }
   }
+
+  &.btn-twitter {
+    background: #1da1f2;
+    color: white;
+    border-color: #1da1f2;
+
+    &:hover {
+      background: #1991db;
+      border-color: #1991db;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(29, 161, 242, 0.25);
+    }
+  }
 }
 
 footer {
