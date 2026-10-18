@@ -494,7 +494,7 @@ a {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
   gap: 20px 40px;
   margin: 24px 0 16px;
   padding: 28px 0;
@@ -504,6 +504,27 @@ a {
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--site-logos);
+
+  a {
+    color: inherit;
+    text-decoration-color: var(--site-rule);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+
+    &:hover {
+      color: var(--site-accent);
+      text-decoration-color: currentColor;
+    }
+  }
+}
+
+.org-list__note {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--site-muted);
 }
 
 .feature-block {
