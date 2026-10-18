@@ -9,6 +9,14 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "img.home-hero__photo[alt]"
   end
 
+  test "home should link to past companies, with Switch pointing at Teya" do
+    get root_path
+    assert_select ".org-list a[href=?]", "https://mindera.com", text: "Mindera"
+    assert_select ".org-list li", text: /Switch\s*now part of Teya/ do
+      assert_select "a[href=?]", "https://www.teya.com", text: "Switch"
+    end
+  end
+
   test "home should use the plain footer" do
     get root_path
     assert_select ".site-footer--cta", count: 0
