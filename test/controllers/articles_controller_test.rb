@@ -107,6 +107,26 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".post-pagination a[rel=next]", text: "Older posts →"
   end
 
+  test "should render articles with attachments for models that no longer exist" do
+    gid = URI::GID.build(app: GlobalID.app, model_name: "Embed", model_id: "1")
+    sgid = SignedGlobalID.new(gid, for: ActionText::Attachable::LOCATOR_NAME).to_s
+    article = Article.create!(
+      title: "Old Embed",
+      body: %(<div><action-text-attachment sgid="#{sgid}" content="YouTube Video"></action-text-attachment>Content</div>),
+      published_at: 1.day.ago
+    )
+
+    get blog_path
+    assert_response :success
+    assert_select ".post-row__excerpt", text: "Content"
+
+    get article_path(article.slug)
+    assert_response :success
+
+    get blog_feed_path(format: :rss)
+    assert_response :success
+  end
+
   test "should generate RSS feed" do
     get blog_feed_path(format: :rss)
     assert_response :success
