@@ -11,8 +11,10 @@ class Article < ApplicationRecord
   scope :published, -> { where("published_at <= ?", Time.current).order(published_at: :desc) }
   scope :drafts, -> { where(published_at: nil).order(created_at: :desc) }
   scope :recent, -> { order(published_at: :desc) }
+  scope :featured, -> { where(featured: true) }
 
   EXCERPT_LENGTH = 2_000
+  WORDS_PER_MINUTE = 200
 
   def published?
     published_at.present? && published_at <= Time.current
@@ -42,6 +44,20 @@ class Article < ApplicationRecord
   def truncated?(length: EXCERPT_LENGTH)
     return false unless body.present?
     body.to_plain_text.length > length
+  end
+
+  def reading_minutes
+    words = body.present? ? body.to_plain_text.split.size : 0
+    [ (words / WORDS_PER_MINUTE.to_f).ceil, 1 ].max
+  end
+
+  # Neighbouring published articles, for older/newer links
+  def older
+    Article.published.where(published_at: ...published_at).first
+  end
+
+  def newer
+    Article.published.where("published_at > ?", published_at).reorder(published_at: :asc).first
   end
 
   # Get tag names as comma-separated string

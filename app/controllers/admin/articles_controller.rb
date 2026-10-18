@@ -80,7 +80,7 @@ class Admin::ArticlesController < ApplicationController
   end
 
   def article_params
-    permitted = params.require(:article).permit(:title, :slug, :body, :published_at, :tag_list)
+    permitted = params.require(:article).permit(:title, :slug, :body, :published_at, :tag_list, :featured)
 
     # Fix timezone handling for datetime_local_field
     # The HTML5 datetime-local input doesn't include timezone info, and Rails

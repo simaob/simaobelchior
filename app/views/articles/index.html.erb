@@ -1,70 +1,102 @@
-<section class="container my-5">
-  <div class="row">
-    <div class="col-lg-8 mx-auto">
-      <div class="d-flex justify-content-between align-items-start mb-4">
-        <div>
-          <% if @tag %>
-            <h1 class="fw-semibold mb-1">Articles tagged with "<%= @tag.name %>"</h1>
-            <p class="text-muted mb-0">
-              <%= link_to "← View all articles", blog_path, class: "text-decoration-none" %>
-            </p>
-          <% else %>
-            <h1 class="fw-semibold mb-0">Weblog</h1>
-          <% end %>
-        </div>
-        <%= link_to blog_feed_path(format: :rss), class: "text-decoration-none", title: "Subscribe via RSS" do %>
-          <i class="bi bi-rss-fill"></i> RSS
-        <% end %>
-      </div>
+<% content_for :title, @tag ? "Writing tagged #{@tag.name}" : "Writing" %>
 
-      <% if @articles.any? %>
-        <% @articles.each do |article| %>
-          <article class="mb-5 pb-4 border-bottom">
-            <div class="mb-2">
-              <time class="text-muted small" datetime="<%= article.published_at.iso8601 %>">
-                <%= article.published_at.strftime("%B %-d, %Y at %H:%M") %>
-              </time>
-            </div>
-
-            <h2 class="h3 mb-3">
-              <%= link_to article.title, article_path(article.slug), class: "text-decoration-none text-dark fw-semibold" %>
-            </h2>
-
-            <div class="mb-3 article-content">
-              <%= article.summary_html %>
-            </div>
-
-            <div class="d-flex align-items-center gap-3">
-              <% if article.truncated? %>
-                <%= link_to "Continue reading →", article_path(article.slug), class: "text-decoration-none fw-medium" %>
-              <% end %>
-
-              <% if article.tags.any? %>
-                <div class="d-flex gap-2 flex-wrap">
-                  <% article.tags.each do |tag| %>
-                    <%= link_to tag.name, blog_path(tag: tag.name), class: "badge bg-light text-dark text-decoration-none border" %>
-                  <% end %>
-                </div>
-              <% end %>
-
-              <% if logged_in? %>
-                <%= link_to "Edit", edit_admin_article_path(article), class: "text-decoration-none text-muted small" %>
-              <% end %>
-            </div>
-          </article>
-        <% end %>
-
-        <div class="mt-4">
-          <%= paginate @articles %>
-        </div>
+<section class="page-hero">
+  <div class="site-wrap page-hero__split">
+    <div class="page-hero__text">
+      <p class="eyebrow">Writing</p>
+      <% if @tag %>
+        <h1 class="page-title">Articles tagged with "<%= @tag.name %>"</h1>
+        <p class="lede"><%= link_to "← All writing", blog_path %></p>
       <% else %>
-        <div class="text-center py-5">
-          <p class="text-muted">No articles found.</p>
-          <% if @tag %>
-            <%= link_to "← View all articles", blog_path, class: "btn btn-custom btn-github" %>
-          <% end %>
-        </div>
+        <%# TODO(copy): headline and intro are a first draft %>
+        <h1 class="page-title">Notes on AI, engineering and life in Porto.</h1>
+        <p class="lede">Short posts, longer thinking, a monthly reading list and the odd photo. Às vezes em português.</p>
       <% end %>
     </div>
+    <%= link_to blog_feed_path(format: :rss), class: "btn-site btn-site--primary" do %>
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.2"/></svg>
+      Subscribe via RSS
+    <% end %>
   </div>
 </section>
+
+<% if @topic_tags.any? %>
+  <nav class="site-wrap tag-filter" aria-label="Filter by topic">
+    <ul class="chip-list">
+      <li><%= link_to "All", blog_path, class: "chip", aria: { current: ("page" unless @tag) } %></li>
+      <% (@topic_tags.to_a | [ @tag ].compact).each do |topic| %>
+        <li><%= link_to topic.name, blog_path(tag: topic.name), class: "chip", aria: { current: ("page" if topic == @tag) } %></li>
+      <% end %>
+    </ul>
+  </nav>
+<% end %>
+
+<div class="site-wrap blog-layout">
+  <div class="blog-layout__main">
+    <% if @articles.any? %>
+      <ol class="post-list">
+        <% @articles.each do |article| %>
+          <li class="post-list__item">
+            <article class="post-row">
+              <time class="post-row__date" datetime="<%= article.published_at.iso8601 %>"><%= article.published_at.strftime("%d %b %Y") %></time>
+              <div class="post-row__body">
+                <h2 class="post-row__title"><%= link_to article.title, article_path(article.slug) %></h2>
+                <% excerpt = article.excerpt(length: 180) %>
+                <% if excerpt.present? %>
+                  <p class="post-row__excerpt"><%= excerpt %></p>
+                <% end %>
+                <% if article.tags.any? || logged_in? %>
+                  <ul class="post-row__tags">
+                    <% article.tags.each do |tag| %>
+                      <li><%= link_to "##{tag.name}", blog_path(tag: tag.name) %></li>
+                    <% end %>
+                    <% if logged_in? %>
+                      <li><%= link_to "Edit", edit_admin_article_path(article), class: "post-row__edit" %></li>
+                    <% end %>
+                  </ul>
+                <% end %>
+              </div>
+            </article>
+          </li>
+        <% end %>
+      </ol>
+
+      <% if @articles.total_pages > 1 %>
+        <nav class="post-pagination" aria-label="Pagination">
+          <span>Page <%= @articles.current_page %> of <%= @articles.total_pages %></span>
+          <div class="btn-row">
+            <%= link_to_prev_page @articles, "← Newer posts", class: "btn-site btn-site--outline" %>
+            <%= link_to_next_page @articles, "Older posts →", class: "btn-site btn-site--outline" %>
+          </div>
+        </nav>
+      <% end %>
+    <% else %>
+      <div class="empty-state">
+        <p>No articles found.</p>
+        <% if @tag %>
+          <%= link_to "← All writing", blog_path, class: "btn-site btn-site--outline" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @latest_reading_list || @featured %>
+    <aside class="blog-layout__aside">
+      <% if @latest_reading_list %>
+        <section class="side-card side-card--tinted">
+          <p class="side-card__eyebrow">Monthly series</p>
+          <h2 class="side-card__title">Stars</h2>
+          <p class="side-card__text">Every month, the best of what I read. Latest: <%= link_to @latest_reading_list.title, article_path(@latest_reading_list.slug) %>.</p>
+          <%= link_to "All reading lists →", blog_path(tag: ArticlesController::READING_LIST_TAG), class: "text-link" %>
+        </section>
+      <% end %>
+      <% if @featured %>
+        <section class="side-card">
+          <p class="side-card__eyebrow side-card__eyebrow--muted">Start here</p>
+          <h2 class="side-card__title side-card__title--sm"><%= link_to @featured.title, article_path(@featured.slug) %></h2>
+          <p class="side-card__text"><%= @featured.excerpt(length: 140) %></p>
+        </section>
+      <% end %>
+    </aside>
+  <% end %>
+</div>

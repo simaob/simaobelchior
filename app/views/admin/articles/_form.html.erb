@@ -32,6 +32,11 @@
     <div class="form-text">Separate tags with commas</div>
   </div>
 
+  <div class="mb-3 form-check">
+    <%= f.check_box :featured, class: "form-check-input" %>
+    <%= f.label :featured, "Feature under \"Start here\" on the blog", class: "form-check-label" %>
+  </div>
+
   <div class="mb-3">
     <%= f.label :published_at, class: "form-label" %>
     <%= f.datetime_local_field :published_at, class: "form-control", data: { article_form_target: "publishedAt" } %>

@@ -129,6 +129,35 @@ class ArticleTest < ActiveSupport::TestCase
     assert_equal original_slug, article.slug
   end
 
+  test "reading_minutes should round up at 200 words per minute" do
+    assert_equal 1, Article.new(title: "Short", body: "word " * 10).reading_minutes
+    assert_equal 2, Article.new(title: "Medium", body: "word " * 201).reading_minutes
+  end
+
+  test "reading_minutes should be at least one for empty articles" do
+    assert_equal 1, Article.new(title: "Empty").reading_minutes
+  end
+
+  test "older and newer should skip drafts and future articles" do
+    oldest = Article.create!(title: "Oldest", body: "Content", published_at: 3.days.ago)
+    Article.create!(title: "Draft Between", body: "Content")
+    middle = Article.create!(title: "Middle", body: "Content", published_at: 2.days.ago)
+    Article.create!(title: "Scheduled", body: "Content", published_at: 1.day.from_now)
+
+    assert_equal oldest, middle.older
+    assert_nil middle.newer
+    assert_equal middle, oldest.newer
+    assert_nil oldest.older
+  end
+
+  test "featured scope should only return featured articles" do
+    featured = Article.create!(title: "Featured", body: "Content", featured: true)
+    regular = Article.create!(title: "Regular", body: "Content")
+
+    assert_includes Article.featured, featured
+    assert_not_includes Article.featured, regular
+  end
+
   # Tag tests
   test "should assign tags to article" do
     article = Article.create!(title: "Tagged Article", body: "Content")

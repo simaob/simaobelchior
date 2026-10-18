@@ -1,51 +1,100 @@
-<section class="hero-section text-center py-5">
-  <div class="container py-5">
-    <h1 class="hero-title display-2 mb-3">Simão Belchior</h1>
-    <p class="hero-subtitle lead mb-0">Software Engineer | Tech Leader</p>
+<%# TODO(copy): all text on this page is a first draft to review together before deploying %>
+<section class="home-hero">
+  <div class="site-wrap home-hero__inner">
+    <div class="home-hero__text">
+      <p class="eyebrow">AI Lead · Engineering leader · Porto</p>
+      <h1 class="home-hero__title">I help engineering teams adopt AI without losing the craft.</h1>
+      <p class="lede">AI Lead at <a href="https://mindera.com">Mindera</a>, where I lead our AI horizontal: best practices for generative AI across the product development lifecycle, and exploring applied AI. Previously CTO at PlatformE and Head of Engineering at Switch.</p>
+      <div class="btn-row">
+        <%= link_to "Get in touch", "#contact", class: "btn-site btn-site--primary" %>
+        <%= link_to "Read the blog", blog_path, class: "btn-site btn-site--outline" %>
+      </div>
+    </div>
+    <figure class="home-hero__figure">
+      <%= image_tag "/images/porto_daylight_tall_800.jpg",
+            srcset: { "/images/porto_daylight_tall_800.jpg" => "800w", "/images/porto_daylight_tall_1100.jpg" => "1100w", "/images/porto_daylight_tall_1600.jpg" => "1600w" },
+            sizes: "(min-width: 1100px) 460px, calc(100vw - 32px)", width: 1600, height: 1867, fetchpriority: "high",
+            alt: "Daytime view across the city to the Atlantic, under a blue sky with scattered clouds",
+            class: "home-hero__photo" %>
+    </figure>
   </div>
 </section>
 
-<section class="container my-5 py-4">
-  <div class="row g-4">
-    <div class="col-lg-4">
-      <div class="info-card card h-100">
-        <div class="card-body p-4">
-          <h5 class="card-title mb-3">Current Role</h5>
-          <p class="card-text mb-0">AI Lead at <a href="https://mindera.com" title="Mindera Software Craft" class="text-decoration-none fw-medium">Mindera</a></p>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4">
-      <div class="info-card card h-100">
-        <div class="card-body p-4">
-          <h5 class="card-title mb-3">Key Skills</h5>
-          <p class="card-text mb-0">Software architecture, product development, hands on experience, engineering leadership.</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4">
-      <div class="info-card card h-100">
-        <div class="card-body p-4">
-          <h5 class="card-title mb-3">Kronflow</h5>
-          <p class="card-text mb-3">Time tracking for SMBs in Portugal. Simple and effective.</p>
-          <a href="https://kronflow.com" class="btn btn-custom btn-kronflow">Learn More</a>
-        </div>
-      </div>
-    </div>
+<section class="site-wrap home-section" aria-labelledby="topics-heading">
+  <h2 id="topics-heading" class="section-title">Ask me about</h2>
+  <div class="topic-grid">
+    <article class="topic-card">
+      <p class="topic-card__num">01</p>
+      <h3 class="topic-card__title">Gen AI across the PDLC</h3>
+      <p class="topic-card__text">The practices I'm putting in place at Mindera for using generative AI across the whole product development lifecycle.</p>
+    </article>
+    <article class="topic-card">
+      <p class="topic-card__num">02</p>
+      <h3 class="topic-card__title">AI agents in real codebases</h3>
+      <p class="topic-card__text">Where agents help, where they stall, and why the developer role is drifting toward architect.</p>
+    </article>
+    <article class="topic-card">
+      <p class="topic-card__num">03</p>
+      <h3 class="topic-card__title">Shape Up in practice</h3>
+      <p class="topic-card__text">I introduced it at PlatformE to speed up delivery. Happy to share what stuck and what didn't.</p>
+    </article>
+    <article class="topic-card">
+      <p class="topic-card__num">04</p>
+      <h3 class="topic-card__title">Engineering through an acquisition</h3>
+      <p class="topic-card__text">Ran engineering at Switch as it became part of SaltPay, now Teya.</p>
+    </article>
   </div>
 </section>
 
-<section class="connect-section py-5">
-  <div class="container text-center py-3">
-    <h3 class="mb-4 fw-semibold">Connect with Me</h3>
-    <a href="https://github.com/simaob" class="btn btn-custom btn-github me-2 mb-2" rel="me">
-      <i class="bi bi-github me-2"></i>GitHub
-    </a>
-    <a href="https://x.com/belchior" class="btn btn-custom btn-twitter me-2 mb-2" rel="me">
-      <i class="bi bi-twitter me-2"></i>Twitter
-    </a>
-    <a href="https://linkedin.com/in/simaobelchior" class="btn btn-custom btn-linkedin mb-2" rel="me">
-      <i class="bi bi-linkedin me-2"></i>LinkedIn
-    </a>
+<section class="site-wrap home-section" aria-labelledby="how-heading">
+  <h2 id="how-heading" class="section-title">How I work</h2>
+  <ol class="principles">
+    <li class="principle">
+      <p class="principle__num" aria-hidden="true">1</p>
+      <h3 class="principle__title">Fixed time, flexible scope.</h3>
+      <p class="principle__text">Set the appetite first, then shape the work to fit. Teams ship more when the deadline holds and the scope bends.</p>
+    </li>
+    <li class="principle">
+      <p class="principle__num" aria-hidden="true">2</p>
+      <h3 class="principle__title">Leads stay hands-on.</h3>
+      <p class="principle__text">I still write code. It keeps my judgement honest and my estimates grounded.</p>
+    </li>
+    <li class="principle">
+      <p class="principle__num" aria-hidden="true">3</p>
+      <h3 class="principle__title">Agents assist, humans architect.</h3>
+      <p class="principle__text">AI speeds up the well-trodden paths. Unfamiliar problems still need someone who understands the whole system.</p>
+    </li>
+  </ol>
+</section>
+
+<section class="site-wrap home-section" aria-labelledby="where-heading">
+  <h2 id="where-heading" class="label-title">Where I've done it</h2>
+  <ul class="org-list">
+    <li>Mindera</li>
+    <li>PlatformE</li>
+    <li>Switch</li>
+    <li>SaltPay</li>
+    <li>Vizzuality</li>
+    <li>UNEP-WCMC</li>
+  </ul>
+  <%= link_to "The longer story →", about_path, class: "text-link" %>
+</section>
+
+<section class="site-wrap home-section">
+  <div class="feature-block">
+    <div class="feature-block__text">
+      <p class="eyebrow eyebrow--on-dark">Side project</p>
+      <h2 class="feature-block__title">Kronflow</h2>
+      <p class="feature-block__sub">Time tracking for SMBs in Portugal. Simple and effective.</p>
+    </div>
+    <a href="https://kronflow.com" class="btn-site btn-site--light">Visit kronflow.com ↗</a>
   </div>
+</section>
+
+<section id="contact" class="site-wrap home-contact" aria-labelledby="contact-heading">
+  <h2 id="contact-heading" class="home-contact__title">Have a team problem worth talking about?</h2>
+  <p class="home-contact__text">Happy to talk Gen AI adoption, applied AI, engineering leadership or Shape Up. [Say what you're open to: mentoring, advisory, talks]</p>
+  <%# TODO(copy): real contact address %>
+  <%= mail_to "hello@example.com", "[your contact email]", class: "btn-site btn-site--primary btn-site--lg" %>
+  <%= render "shared/social_links", class_name: "home-contact__links" %>
 </section>

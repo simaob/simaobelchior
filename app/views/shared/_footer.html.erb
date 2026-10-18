@@ -1,10 +1,19 @@
-<footer class="text-center py-4">
-  <p class="mb-2 small">
-    <% if controller_name == "articles" %>
-      <%= link_to "Home", root_path, class: "text-muted text-decoration-none" %>
-    <% else %>
-      <%= link_to "Blog", blog_path, class: "text-muted text-decoration-none" %>
-    <% end %>
-  </p>
-  <p class="mb-0 small">&copy; <%= Date.today.year %> Simão Belchior. All Rights Reserved.</p>
-</footer>
+<% if footer_cta? %>
+  <footer class="site-footer site-footer--cta">
+    <div class="site-wrap site-footer__cta">
+      <div class="site-footer__cta-text">
+        <p class="site-footer__title">Have a team problem worth talking about?</p>
+        <p class="site-footer__sub">Gen AI adoption, applied AI, engineering leadership, Shape Up.</p>
+      </div>
+      <%= link_to "Get in touch", root_path(anchor: "contact"), class: "btn-site btn-site--light" %>
+    </div>
+    <div class="site-wrap site-footer__bottom">
+      <span>&copy; <%= Date.current.year %> Simão Belchior · Porto</span>
+      <%= render "shared/social_links", class_name: "site-footer__links" %>
+    </div>
+  </footer>
+<% else %>
+  <footer class="site-footer">
+    <div class="site-wrap site-footer__plain">&copy; <%= Date.current.year %> Simão Belchior · Porto</div>
+  </footer>
+<% end %>
