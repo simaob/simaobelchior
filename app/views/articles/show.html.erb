@@ -1,41 +1,59 @@
 <% content_for :title, @article.title %>
 <% content_for :description, @article.excerpt(length: 160) %>
 
-<article class="container my-5">
-  <div class="row">
-    <div class="col-lg-8 mx-auto">
-      <div class="mb-4">
-        <%= link_to "← Back to blog", blog_path, class: "text-decoration-none text-muted" %>
-      </div>
+<div class="article-wrap">
+  <%= link_to "← All writing", blog_path, class: "text-link text-link--plain" %>
 
-      <header class="mb-4">
-        <h1 class="fw-bold mb-3"><%= @article.title %></h1>
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="text-muted">
-            <time datetime="<%= @article.published_at.iso8601 %>">
-              <%= @article.published_at.strftime("%B %-d, %Y at %H:%M") %>
-            </time>
-          </div>
-          <% if logged_in? %>
-            <%= link_to "Edit", edit_admin_article_path(@article), class: "btn btn-sm btn-outline-secondary" %>
-          <% end %>
-        </div>
-      </header>
-
-      <div class="article-content mb-4">
-        <%= @article.body %>
-      </div>
-
+  <article>
+    <header class="article-header">
       <% if @article.tags.any? %>
-        <footer class="border-top pt-4">
-          <div class="d-flex align-items-center gap-2 flex-wrap">
-            <span class="text-muted">Tagged:</span>
-            <% @article.tags.each do |tag| %>
-              <%= link_to tag.name, blog_path(tag: tag.name), class: "badge bg-light text-dark text-decoration-none border" %>
-            <% end %>
-          </div>
-        </footer>
+        <ul class="chip-list chip-list--sm" aria-label="Tags">
+          <% @article.tags.each do |tag| %>
+            <li><%= link_to tag.name, blog_path(tag: tag.name), class: "chip chip--sm" %></li>
+          <% end %>
+        </ul>
       <% end %>
+      <h1 class="article-title"><%= @article.title %></h1>
+      <p class="article-meta">
+        <%= article_meta(@article) %>
+        <% if logged_in? %>
+          · <%= link_to "Edit", edit_admin_article_path(@article) %>
+        <% end %>
+      </p>
+    </header>
+
+    <div class="article-content">
+      <%= @article.body %>
     </div>
-  </div>
-</article>
+  </article>
+
+  <%# TODO(copy): author bio is a first draft %>
+  <section class="author-card" aria-label="About the author">
+    <span class="author-card__avatar" aria-hidden="true">SB</span>
+    <div class="author-card__body">
+      <p class="author-card__name">Simão Belchior</p>
+      <p class="author-card__bio">AI Lead at Mindera. I write about AI in software delivery, engineering leadership and life in Porto.</p>
+      <div class="btn-row btn-row--sm">
+        <%= link_to "More about me", about_path, class: "btn-site btn-site--primary btn-site--sm" %>
+        <%= link_to "Subscribe via RSS", blog_feed_path(format: :rss), class: "btn-site btn-site--outline btn-site--sm" %>
+      </div>
+    </div>
+  </section>
+
+  <% if @older || @newer %>
+    <nav class="article-nav" aria-label="More writing">
+      <% if @older %>
+        <%= link_to article_path(@older.slug), class: "article-nav__link" do %>
+          <span class="article-nav__label">← Older</span>
+          <span class="article-nav__title"><%= @older.title %></span>
+        <% end %>
+      <% end %>
+      <% if @newer %>
+        <%= link_to article_path(@newer.slug), class: "article-nav__link article-nav__link--next" do %>
+          <span class="article-nav__label">Newer →</span>
+          <span class="article-nav__title"><%= @newer.title %></span>
+        <% end %>
+      <% end %>
+    </nav>
+  <% end %>
+</div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= content_for?(:title) ? "#{content_for(:title)} - Simão Belchior" : "Simão Belchior - Software Engineer" %></title>
+    <title><%= content_for?(:title) ? "#{content_for(:title)} - Simão Belchior" : "Simão Belchior - AI Lead at Mindera" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -9,18 +9,18 @@
     <meta name="description" content="<%= content_for?(:description) ? content_for(:description) : "A short summary of his professional endeavours." %>">
 
     <!-- Facebook / Open Graph -->
-    <meta property="og:title" content="<%= content_for?(:title) ? "#{content_for(:title)} - Simão Belchior" : "Simão Belchior - Software Engineer" %>">
+    <meta property="og:title" content="<%= content_for?(:title) ? "#{content_for(:title)} - Simão Belchior" : "Simão Belchior - AI Lead at Mindera" %>">
     <meta property="og:description" content="<%= content_for?(:description) ? content_for(:description) : "A short summary of his professional endeavours." %>">
-    <meta property="og:image" content="https://simaobelchior.com/images/porto_sunset.jpg">
-    <meta property="og:type" content="<%= content_for?(:title) ? "article" : "website" %>">
+    <meta property="og:image" content="https://simaobelchior.com/images/porto_daylight_og.jpg">
+    <meta property="og:type" content="<%= controller_path == "articles" && action_name == "show" ? "article" : "website" %>">
     <meta property="og:url" content="<%= request.original_url %>">
 
     <!-- Twitter -->
-    <meta name="twitter:title" content="<%= content_for?(:title) ? "#{content_for(:title)} - Simão Belchior" : "Simão Belchior - Software Engineer" %>">
+    <meta name="twitter:title" content="<%= content_for?(:title) ? "#{content_for(:title)} - Simão Belchior" : "Simão Belchior - AI Lead at Mindera" %>">
     <meta name="twitter:description" content="<%= content_for?(:description) ? content_for(:description) : "A short summary of his professional endeavours." %>">
-    <meta name="twitter:image" content="https://simaobelchior.com/images/porto_sunset.jpg">
+    <meta name="twitter:image" content="https://simaobelchior.com/images/porto_daylight_og.jpg">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image:alt" content="Sunset in Porto">
+    <meta name="twitter:image:alt" content="Daytime view across the city to the Atlantic, under a blue sky with scattered clouds">
     <meta name="twitter:site" content="@belchior">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -47,7 +47,9 @@
     <%= auto_discovery_link_tag(:rss, blog_feed_path(format: :rss), title: "Simão Belchior - Blog RSS Feed") %>
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap">
     <%= stylesheet_link_tag :all, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>

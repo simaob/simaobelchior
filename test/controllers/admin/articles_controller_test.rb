@@ -68,6 +68,14 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Updated Title", @article.title
   end
 
+  test "should mark article as featured" do
+    patch admin_article_path(@article), params: {
+      article: { featured: "1" }
+    }
+    assert_redirected_to admin_articles_path
+    assert @article.reload.featured?
+  end
+
   test "should not update article with invalid data" do
     patch admin_article_path(@article), params: {
       article: { title: "" }

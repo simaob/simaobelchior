@@ -1,4 +1,6 @@
 class ArticlesController < ApplicationController
+  READING_LIST_TAG = "reading-list"
+
   def index
     @articles = Article.published.includes(:tags)
 
@@ -10,10 +12,20 @@ class ArticlesController < ApplicationController
 
     # Paginate (15 articles per page)
     @articles = @articles.page(params[:page]).per(15)
+
+    @topic_tags = Tag.joins(:articles)
+                     .where(articles: { published_at: ..Time.current })
+                     .group(:id)
+                     .order(Arel.sql("COUNT(articles.id) DESC"), :name)
+                     .limit(8)
+    @featured = Article.published.featured.first
+    @latest_reading_list = Article.published.joins(:tags).find_by(tags: { name: READING_LIST_TAG })
   end
 
   def show
     @article = Article.published.find_by!(slug: params[:slug])
+    @older = @article.older
+    @newer = @article.newer
   end
 
   def feed

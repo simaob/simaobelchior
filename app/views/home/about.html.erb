@@ -1,48 +1,101 @@
-<header class="bg-primary text-white text-center py-5">
-  <div class="container">
-    <h1 class="display-4">About Me</h1>
-    <p class="lead">My journey in software engineering and leadership</p>
-  </div>
-</header>
+<%# TODO(copy): all text on this page is a first draft to review together before deploying %>
+<% content_for :title, "About" %>
+<%
+  chapters = [
+    {
+      title: "Where it started",
+      lede: "Porto, a degree, and the first paying clients.",
+      stops: [
+        { years: "2004–08", org: "FEUP", url: "https://www.fe.up.pt/", role: "Software Engineering student", what: "Degree in Software Engineering at the Faculty of Engineering, University of Porto." },
+        { years: "2008–10", org: "GT Portugal", url: "http://www.gtportugal.com/", role: "Freelancer", what: "Web development projects for clients across different industries." }
+      ]
+    },
+    {
+      title: "For the planet",
+      lede: "Data tools for the people trying to protect what's left.",
+      stops: [
+        { years: "2012–14", org: "UNEP-WCMC", url: "https://www.unep-wcmc.org/", role: "Analyst Developer", what: "Software for visualising biodiversity and conservation data." },
+        { years: "2014–16", org: "Vizzuality", url: "https://www.vizzuality.com", role: "Senior Project Manager", what: "Large-scale geospatial data projects with NGOs and governments." },
+        { years: "2023–25", org: "PlatformE", url: "https://platforme.com", role: "CTO", what: "Led engineering, product and infrastructure for a SaaS platform that cuts waste in fashion production. Introduced Shape Up to speed up delivery." }
+      ]
+    },
+    {
+      title: "For people",
+      lede: "Small tools and communities that make everyday life a little easier.",
+      stops: [
+        { years: "2010–11", org: "Alumni EI", url: "https://alumniei.pt/", role: "Vice President", what: "Networking and mentorship programmes for engineering alumni." },
+        { years: "2011–12", org: "Posso ir?", url: "https://www.posso-ir.com", role: "Co-founder & developer", what: "A mobile app with venue accessibility information across Portugal." },
+        { years: "—", org: "Amigos de Aldoar", role: "Volunteer", what: "Community volunteering in Aldoar, Porto." },
+        { years: "Now", org: "Kronflow", url: "https://kronflow.com", role: "Maker", what: "Time tracking for SMBs in Portugal. Simple and effective." }
+      ]
+    },
+    {
+      title: "At scale",
+      lede: "Teams, platforms, and money that has to move.",
+      stops: [
+        { years: "2020–22", org: "Switch", url: "https://switchpayments.com", role: "Head of Engineering", what: "Led engineering at a payment gateway." },
+        { years: "2022", org: "SaltPay (now Teya)", url: "https://www.teya.com", role: "Director of Engineering", what: "Stayed on after SaltPay acquired Switch." }
+      ]
+    },
+    {
+      title: "With AI",
+      lede: "Helping teams build with generative AI without losing the craft.",
+      stops: [
+        { years: "2025–", org: "Mindera", url: "https://mindera.com", role: "AI Lead", what: "Leading our AI horizontal: best practices for using Gen AI across the product development lifecycle, and exploring applied AI." },
+        { years: "2025", org: "Time in the Zone", role: "Side project", what: "A timezone planner for Mindera's AI Open Hours, vibe-coded with Copilot." },
+        { years: "2025–", org: "The blog", url: blog_path, role: "Writing", what: "Notes on AI agents, vibe-engineering and how the developer role is changing." }
+      ]
+    }
+  ]
+%>
 
-<section class="container my-5">
-  <h2 class="text-center mb-4">Professional Experience</h2>
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card shadow-sm mb-4">
-        <div class="card-body">
-          <h5 class="card-title">Current Role</h5>
-          <p class="card-text">Stay tuned...</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-12">
-      <div class="card shadow-sm mb-4">
-        <div class="card-body">
-          <h5 class="card-title">Past Roles</h5>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-              <strong>CTO</strong> @ <a href="https://platforme.com">PlatformE</a> (Jan 2023 - Mar 2025)<br>
-              Led the engineering, product and infrastructure teams to develop a SaaS platform for sustainable fashion, reducing waste in production.
-              Introduced the Shape Up methodology to speed delivery.
-            </li>
-            <li class="list-group-item">
-              <strong>Head of Engineering</strong> @ <a href="https://switchpayments.com">Switch</a> (Sep 2020 - Dec 2022)<br>
-              Managed the engineering team of a Payment Gateways company that ended up being acquired by <a href="https://www.teya.com">Teya</a>
-            </li>
-            <li class="list-group-item">
-              <strong>Senior Project Manager</strong> @ <a href="https://www.vizzuality.com">Vizzuality</a> (2014 - 2016)<br>Oversaw large-scale geospatial data projects, working with NGOs and governments.</li>
-            <li class="list-group-item">
-              <strong>Analyst Developer</strong> @ <a href="https://www.unep-wcmc.org/">UNEP-WCMC</a> (2012 - 2014)<br>Developed software for biodiversity and conservation data visualization.</li>
-            <li class="list-group-item">
-              <strong>Co-Founder & Developer</strong> @ <a href="https://www.posso-ir.com">Posso ir?</a> (2011 - 2012)<br>Created a mobile app for venue accessibility information in Portugal.</li>
-            <li class="list-group-item">
-              <strong>Vice President</strong> @ <a href="https://alumniei.pt/">Alumni EI</a> (2010 - 2011)<br>Coordinated networking and mentorship programs for engineering alumni.</li>
-            <li class="list-group-item"><strong>Freelancer</strong> @ <a href="http://www.gtportugal.com/">GT Portugal</a> (2008 - 2010)<br>Worked on web development projects for clients in various industries.</li>
-            <li class="list-group-item"><strong>Software Engineering Student</strong> @ <a href="https://www.fe.up.pt/">FEUP</a> (2004 - 2008)<br>Completed my degree in Software Engineering at the Faculty of Engineering, University of Porto.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+<section class="page-hero">
+  <div class="site-wrap">
+    <p class="eyebrow">About</p>
+    <h1 class="page-title">The longer story.</h1>
+    <p class="lede">Software for the planet, for people, at scale. And now, with AI. The full CV lives on <a href="https://linkedin.com/in/simaobelchior">LinkedIn</a>; this is the why behind it.</p>
   </div>
 </section>
+
+<section class="site-wrap about-intro">
+  <div class="about-intro__text">
+    <p>I'm Simão Belchior, a software engineer from Porto. I studied Software Engineering at FEUP, started freelancing in 2008, and have spent the years since moving between writing code and leading the people who write it.</p>
+    <p>Today I'm AI Lead at <a href="https://mindera.com">Mindera</a>, where I lead our AI horizontal: setting best practices for using generative AI across the product development lifecycle, and exploring its uses in applied AI.</p>
+    <p class="about-intro__muted">Outside work I build <a href="https://kronflow.com">Kronflow</a>, <%= link_to "write here", blog_path %>, and spend as much time as I can with my family.</p>
+  </div>
+  <figure class="about-intro__figure">
+    <%= image_tag "/images/porto_sunset_1600.jpg", alt: "Sunset over the Douro river in Porto, a gull flying over the water", width: 1600, height: 1200, loading: "lazy" %>
+    <figcaption>Home: Porto, on the Douro.</figcaption>
+  </figure>
+</section>
+
+<div class="site-wrap thread">
+  <h2 class="section-title">The thread</h2>
+  <p class="thread__intro">Five chapters, roughly in order.</p>
+  <% chapters.each_with_index do |chapter, index| %>
+    <section class="chapter" aria-labelledby="chapter-<%= index %>">
+      <div class="chapter__head">
+        <p class="chapter__num" aria-hidden="true"><%= format("%02d", index) %></p>
+        <h3 id="chapter-<%= index %>" class="chapter__title"><%= chapter[:title] %></h3>
+        <p class="chapter__lede"><%= chapter[:lede] %></p>
+      </div>
+      <div class="chapter__body">
+        <ol class="stops">
+          <% chapter[:stops].each do |stop| %>
+            <li class="stop">
+              <span class="stop__years"><%= stop[:years] %></span>
+              <div class="stop__body">
+                <p class="stop__org">
+                  <%= stop[:url] ? link_to(stop[:org], stop[:url]) : stop[:org] %>
+                  <span class="stop__role">· <%= stop[:role] %></span>
+                </p>
+                <p class="stop__what"><%= stop[:what] %></p>
+              </div>
+            </li>
+          <% end %>
+        </ol>
+        <p class="chapter__lesson"><strong>What it taught me:</strong> [one sentence, in your own words]</p>
+      </div>
+    </section>
+  <% end %>
+</div>

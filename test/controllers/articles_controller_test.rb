@@ -4,7 +4,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
   test "should get blog index" do
     get blog_path
     assert_response :success
-    assert_select "h1", "Weblog"
+    assert_select "h1", "Notes on AI, engineering and life in Porto."
   end
 
   test "should display published articles on index" do
@@ -53,8 +53,58 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
 
     get article_path(article.slug)
     assert_response :success
-    assert_select ".badge", text: "ruby"
-    assert_select ".badge", text: "rails"
+    assert_select ".chip", text: "ruby"
+    assert_select ".chip", text: "rails"
+  end
+
+  test "should show reading time on article" do
+    article = Article.create!(title: "Long Read", body: "word " * 450, published_at: 1.day.ago)
+
+    get article_path(article.slug)
+    assert_select ".article-meta", text: /3 min read/
+  end
+
+  test "should link to older and newer articles" do
+    older = Article.create!(title: "Older Post", body: "Content", published_at: 3.days.ago)
+    article = Article.create!(title: "Middle Post", body: "Content", published_at: 2.days.ago)
+    newer = Article.create!(title: "Newer Post", body: "Content", published_at: 1.day.ago)
+
+    get article_path(article.slug)
+    assert_select ".article-nav a[href=?]", article_path(older.slug), text: /Older Post/
+    assert_select ".article-nav a[href=?]", article_path(newer.slug), text: /Newer Post/
+  end
+
+  test "should show topic filters with the active tag marked" do
+    tag = Tag.create!(name: "ruby")
+    Article.create!(title: "Ruby Article", body: "Content", published_at: 1.day.ago).tags << tag
+
+    get blog_path(tag: "ruby")
+    assert_select ".tag-filter a[aria-current=page]", text: "ruby"
+  end
+
+  test "should show featured article under start here" do
+    Article.create!(title: "Read This First", body: "Content", published_at: 1.day.ago, featured: true)
+
+    get blog_path
+    assert_select ".side-card", text: /Start here/
+    assert_select ".side-card a", text: "Read This First"
+  end
+
+  test "should show latest reading list" do
+    tag = Tag.create!(name: "reading-list")
+    Article.create!(title: "September Stars", body: "Content", published_at: 2.days.ago).tags << tag
+    Article.create!(title: "October Stars", body: "Content", published_at: 1.day.ago).tags << tag
+
+    get blog_path
+    assert_select ".side-card a", text: "October Stars"
+  end
+
+  test "should paginate with older and newer links" do
+    16.times { |i| Article.create!(title: "Post #{i}", body: "Content", published_at: (i + 1).hours.ago) }
+
+    get blog_path
+    assert_select ".post-pagination", text: /Page 1 of 2/
+    assert_select ".post-pagination a[rel=next]", text: "Older posts →"
   end
 
   test "should generate RSS feed" do
