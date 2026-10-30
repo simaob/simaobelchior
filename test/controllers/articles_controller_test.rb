@@ -118,6 +118,17 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".post-entry__more[href=?]", article_path(article.slug), text: "Continue reading →"
   end
 
+  test "should show the sidebar on articles, but not point to the article itself" do
+    featured = Article.create!(title: "Start Here", body: "Content", published_at: 2.days.ago, featured: true)
+    other = Article.create!(title: "Other", body: "Content", published_at: 1.day.ago)
+
+    get article_path(other.slug)
+    assert_select ".blog-layout__aside .side-card a", text: "Start Here"
+
+    get article_path(featured.slug)
+    assert_select ".blog-layout__aside .side-card a", text: "Start Here", count: 0
+  end
+
   test "should paginate with older and newer links" do
     16.times { |i| Article.create!(title: "Post #{i}", body: "Content", published_at: (i + 1).hours.ago) }
 

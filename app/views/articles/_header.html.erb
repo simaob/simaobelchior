@@ -1,0 +1,21 @@
+<%# Shared by the article page and the blog index, so a post looks the same in both. On the index the title links to the article. %>
+<header class="article-header<%= " article-header--entry" if linked %>">
+  <% if article.tags.any? %>
+    <ul class="chip-list chip-list--sm" aria-label="Tags">
+      <% article.tags.each do |tag| %>
+        <li><%= link_to tag.name, blog_path(tag: tag.name), class: "chip chip--sm" %></li>
+      <% end %>
+    </ul>
+  <% end %>
+  <% if linked %>
+    <h2 class="article-title article-title--entry"><%= link_to article.title, article_path(article.slug) %></h2>
+  <% else %>
+    <h1 class="article-title"><%= article.title %></h1>
+  <% end %>
+  <p class="article-meta">
+    <%= article_meta(article) %>
+    <% if logged_in? %>
+      · <%= link_to "Edit", edit_admin_article_path(article) %>
+    <% end %>
+  </p>
+</header>

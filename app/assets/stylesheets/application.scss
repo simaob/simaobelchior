@@ -865,37 +865,9 @@ a {
   border-bottom: 1px solid var(--site-rule);
 }
 
-.post-entry__meta {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--site-muted);
-}
-
-.post-entry__title {
-  margin: 8px 0 0;
-  font-size: 30px;
-  line-height: 1.15;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-
-  a {
-    color: var(--site-text);
-    text-decoration: none;
-
-    &:hover {
-      color: var(--site-accent);
-      text-decoration: underline;
-      text-decoration-thickness: 2px;
-      text-underline-offset: 4px;
-    }
-  }
-}
-
 // Compound selector so it wins over .article-content further down
 .post-entry__body.article-content {
-  padding-top: 20px;
-  font-size: 18px;
+  padding-top: 24px;
 }
 
 // Long posts fade out after a screenful, with a link to the rest
@@ -916,29 +888,6 @@ a {
 
 .post-entry__more {
   margin-top: 12px;
-}
-
-.post-entry__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 14px;
-  margin: 20px 0 0;
-  padding: 0;
-  list-style: none;
-  font-size: 14px;
-  font-weight: 600;
-
-  a {
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-
-.post-entry__edit {
-  color: var(--site-muted);
 }
 
 .post-pagination {
@@ -1019,16 +968,26 @@ a {
 
 // Article
 
-.article-wrap {
-  max-width: 760px;
-  margin-inline: auto;
-  padding: 40px var(--site-gutter) 0;
+// The article page shares the blog grid, without the hero above it
+.blog-layout--article {
+  padding-top: 40px;
 }
 
 .article-header {
   margin-top: 40px;
   padding-bottom: 32px;
   border-bottom: 1px solid var(--site-rule);
+}
+
+// The same header on the blog index, without the rule under it
+.article-header--entry {
+  margin-top: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+
+  .article-meta {
+    margin-top: 12px;
+  }
 }
 
 .article-title {
@@ -1040,6 +999,25 @@ a {
 
   &:first-child {
     margin-top: 0;
+  }
+}
+
+.article-title--entry {
+  margin-top: 16px;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+
+  a {
+    color: var(--site-text);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--site-accent);
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+    }
   }
 }
 

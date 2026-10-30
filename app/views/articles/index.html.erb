@@ -36,25 +36,14 @@
       <ol class="post-list">
         <% @articles.each do |article| %>
           <li class="post-list__item">
-            <article class="post-entry">
-              <p class="post-entry__meta"><%= article_meta(article) %></p>
-              <h2 class="post-entry__title"><%= link_to article.title, article_path(article.slug) %></h2>
+            <article>
+              <%= render "header", article:, linked: true %>
               <% long = article.long? %>
               <div class="article-content post-entry__body<%= " post-entry__body--cut" if long %>">
                 <%= article_body(article) %>
               </div>
               <% if long %>
                 <%= link_to "Continue reading →", article_path(article.slug), class: "text-link post-entry__more", aria: { label: "Continue reading #{article.title}" } %>
-              <% end %>
-              <% if article.tags.any? || logged_in? %>
-                <ul class="post-entry__tags">
-                  <% article.tags.each do |tag| %>
-                    <li><%= link_to "##{tag.name}", blog_path(tag: tag.name) %></li>
-                  <% end %>
-                  <% if logged_in? %>
-                    <li><%= link_to "Edit", edit_admin_article_path(article), class: "post-entry__edit" %></li>
-                  <% end %>
-                </ul>
               <% end %>
             </article>
           </li>
@@ -80,23 +69,5 @@
     <% end %>
   </div>
 
-  <% if @latest_reading_list || @featured %>
-    <aside class="blog-layout__aside">
-      <% if @latest_reading_list %>
-        <section class="side-card side-card--tinted">
-          <p class="side-card__eyebrow">Reading list</p>
-          <h2 class="side-card__title">Stars</h2>
-          <p class="side-card__text">The best of what I've been reading. Latest: <%= link_to @latest_reading_list.title, article_path(@latest_reading_list.slug) %>.</p>
-          <%= link_to "All reading lists →", blog_path(tag: ArticlesController::READING_LIST_TAG), class: "text-link" %>
-        </section>
-      <% end %>
-      <% if @featured %>
-        <section class="side-card">
-          <p class="side-card__eyebrow side-card__eyebrow--muted">Start here</p>
-          <h2 class="side-card__title side-card__title--sm"><%= link_to @featured.title, article_path(@featured.slug) %></h2>
-          <p class="side-card__text"><%= @featured.excerpt(length: 140) %></p>
-        </section>
-      <% end %>
-    </aside>
-  <% end %>
+  <%= render "sidebar" %>
 </div>

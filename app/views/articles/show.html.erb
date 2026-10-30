@@ -1,58 +1,47 @@
 <% content_for :title, @article.title %>
 <% content_for :description, @article.excerpt(length: 160) %>
 
-<div class="article-wrap">
-  <%= link_to "← All writing", blog_path, class: "text-link text-link--plain" %>
+<div class="site-wrap blog-layout blog-layout--article">
+  <div class="blog-layout__main">
+    <%= link_to "← All writing", blog_path, class: "text-link text-link--plain" %>
 
-  <article>
-    <header class="article-header">
-      <% if @article.tags.any? %>
-        <ul class="chip-list chip-list--sm" aria-label="Tags">
-          <% @article.tags.each do |tag| %>
-            <li><%= link_to tag.name, blog_path(tag: tag.name), class: "chip chip--sm" %></li>
-          <% end %>
-        </ul>
-      <% end %>
-      <h1 class="article-title"><%= @article.title %></h1>
-      <p class="article-meta">
-        <%= article_meta(@article) %>
-        <% if logged_in? %>
-          · <%= link_to "Edit", edit_admin_article_path(@article) %>
-        <% end %>
-      </p>
-    </header>
+    <article>
+      <%= render "header", article: @article, linked: false %>
 
-    <div class="article-content">
-      <%= article_body(@article) %>
-    </div>
-  </article>
-
-  <section class="author-card" aria-label="About the author">
-    <%= image_tag "/images/simao_avatar.jpg", alt: "", width: 72, height: 72, loading: "lazy", class: "author-card__avatar" %>
-    <div class="author-card__body">
-      <p class="author-card__name">Simão Belchior</p>
-      <p class="author-card__bio">Software engineer from Porto, AI Lead at Mindera and founder of Kronflow.</p>
-      <div class="btn-row btn-row--sm">
-        <%= link_to "More about me", about_path, class: "btn-site btn-site--primary btn-site--sm" %>
-        <%= link_to "Subscribe via RSS", blog_feed_path(format: :rss), class: "btn-site btn-site--outline btn-site--sm" %>
+      <div class="article-content">
+        <%= article_body(@article) %>
       </div>
-    </div>
-  </section>
+    </article>
 
-  <% if @older || @newer %>
-    <nav class="article-nav" aria-label="More writing">
-      <% if @older %>
-        <%= link_to article_path(@older.slug), class: "article-nav__link" do %>
-          <span class="article-nav__label">← Older</span>
-          <span class="article-nav__title"><%= @older.title %></span>
+    <section class="author-card" aria-label="About the author">
+      <%= image_tag "/images/simao_avatar.jpg", alt: "", width: 72, height: 72, loading: "lazy", class: "author-card__avatar" %>
+      <div class="author-card__body">
+        <p class="author-card__name">Simão Belchior</p>
+        <p class="author-card__bio">Software engineer from Porto, AI Lead at Mindera and founder of Kronflow.</p>
+        <div class="btn-row btn-row--sm">
+          <%= link_to "More about me", about_path, class: "btn-site btn-site--primary btn-site--sm" %>
+          <%= link_to "Subscribe via RSS", blog_feed_path(format: :rss), class: "btn-site btn-site--outline btn-site--sm" %>
+        </div>
+      </div>
+    </section>
+
+    <% if @older || @newer %>
+      <nav class="article-nav" aria-label="More writing">
+        <% if @older %>
+          <%= link_to article_path(@older.slug), class: "article-nav__link" do %>
+            <span class="article-nav__label">← Older</span>
+            <span class="article-nav__title"><%= @older.title %></span>
+          <% end %>
         <% end %>
-      <% end %>
-      <% if @newer %>
-        <%= link_to article_path(@newer.slug), class: "article-nav__link article-nav__link--next" do %>
-          <span class="article-nav__label">Newer →</span>
-          <span class="article-nav__title"><%= @newer.title %></span>
+        <% if @newer %>
+          <%= link_to article_path(@newer.slug), class: "article-nav__link article-nav__link--next" do %>
+            <span class="article-nav__label">Newer →</span>
+            <span class="article-nav__title"><%= @newer.title %></span>
+          <% end %>
         <% end %>
-      <% end %>
-    </nav>
-  <% end %>
+      </nav>
+    <% end %>
+  </div>
+
+  <%= render "sidebar" %>
 </div>
