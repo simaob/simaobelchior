@@ -36,6 +36,12 @@
 !/app/assets/builds/.keep
 /public/assets
 
+# Ignore database dumps.
+*.dump
+
+# Ignore the test suite.
+/test/
+
 # Ignore CI service files.
 /.github
 
@@ -45,6 +51,13 @@
 
 # Ignore development files
 /.devcontainer
+/.claude
+/.ruby-lsp
+/.byebug_history
+/Procfile.dev
+
+# Ignore macOS metadata.
+.DS_Store
 
 # Ignore Docker-related files
 /.dockerignore

@@ -37,7 +37,6 @@ gem "bootsnap", require: false
 
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
-gem "kamal"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 2.0"
@@ -63,6 +62,8 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
   gem "dotenv"
+  # Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
+  gem "kamal", require: false
 end
 
 group :test do
