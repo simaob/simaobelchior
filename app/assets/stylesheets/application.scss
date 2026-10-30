@@ -455,16 +455,23 @@ a {
 }
 
 .principles {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 32px;
   margin: 32px 0 0;
   padding: 0;
   list-style: none;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .principle {
-  flex: 1 1 300px;
   padding-top: 24px;
   border-top: 3px solid var(--site-text);
 }

@@ -1,10 +1,9 @@
-<%# TODO(copy): all text on this page is a first draft to review together before deploying %>
 <section class="home-hero">
   <div class="site-wrap home-hero__inner">
     <div class="home-hero__text">
-      <p class="eyebrow">AI Lead · Engineering leader · Porto</p>
-      <h1 class="home-hero__title">I help engineering teams adopt AI without losing the craft.</h1>
-      <p class="lede">AI Lead at <a href="https://mindera.com">Mindera</a>, where I lead our AI horizontal: best practices for generative AI across the product development lifecycle, and exploring applied AI. Previously CTO at <a href="https://platforme.com">PlatformE</a> and Head of Engineering at <a href="https://www.teya.com">Switch</a> (now part of Teya).</p>
+      <p class="eyebrow">Software engineer · Porto</p>
+      <h1 class="home-hero__title">I build products that help people do their work.</h1>
+      <p class="lede">I've spent over 15 years writing code and leading the teams who write it, on everything from conservation tools to payments. Today I'm AI Lead at <a href="https://mindera.com">Mindera</a> and founder of <a href="https://kronflow.com">Kronflow</a>. Before that I was CTO at <a href="https://platforme.com">PlatformE</a> and Head of Engineering at <a href="https://www.teya.com">Switch</a>.</p>
       <div class="btn-row">
         <%= link_to "Get in touch", "#contact", class: "btn-site btn-site--primary" %>
         <%= link_to "Read the blog", blog_path, class: "btn-site btn-site--outline" %>
@@ -26,12 +25,12 @@
     <article class="topic-card">
       <p class="topic-card__num">01</p>
       <h3 class="topic-card__title">Gen AI across the PDLC</h3>
-      <p class="topic-card__text">The practices I'm putting in place at Mindera for using generative AI across the whole product development lifecycle.</p>
+      <p class="topic-card__text">How we're bringing generative AI into the whole product development lifecycle at Mindera, from best practices to training and coaching.</p>
     </article>
     <article class="topic-card">
       <p class="topic-card__num">02</p>
       <h3 class="topic-card__title">AI agents in real codebases</h3>
-      <p class="topic-card__text">Where agents help, where they stall, and why the developer role is drifting towards architect.</p>
+      <p class="topic-card__text">What I've learned using agents on real projects, and how they're changing the developer's job. I've <%= link_to "written about the hurdles", article_path("hurdles-of-building-with-ai-agents") %> too.</p>
     </article>
     <article class="topic-card">
       <p class="topic-card__num">03</p>
@@ -41,28 +40,33 @@
     <article class="topic-card">
       <p class="topic-card__num">04</p>
       <h3 class="topic-card__title">Engineering through an acquisition</h3>
-      <p class="topic-card__text">Ran engineering at Switch as it became part of SaltPay, now Teya.</p>
+      <p class="topic-card__text">I ran engineering at Switch through its acquisition by SaltPay, then helped bring our product and team into the larger company.</p>
     </article>
   </div>
 </section>
 
 <section class="site-wrap home-section" aria-labelledby="how-heading">
-  <h2 id="how-heading" class="section-title">How I work</h2>
+  <h2 id="how-heading" class="section-title">How I like to work</h2>
   <ol class="principles">
     <li class="principle">
       <p class="principle__num" aria-hidden="true">1</p>
-      <h3 class="principle__title">Fixed time, flexible scope.</h3>
-      <p class="principle__text">Set the appetite first, then shape the work to fit. Teams ship more when the deadline holds and the scope bends.</p>
+      <h3 class="principle__title">Think about the people who'll use it.</h3>
+      <p class="principle__text">You are not your user, and people don't always ask for what they need. That's why I care so much about UX.</p>
     </li>
     <li class="principle">
       <p class="principle__num" aria-hidden="true">2</p>
-      <h3 class="principle__title">Leads stay hands-on.</h3>
-      <p class="principle__text">I still write code. It keeps my judgement honest and my estimates grounded.</p>
+      <h3 class="principle__title">Fixed time, flexible scope.</h3>
+      <p class="principle__text">When I can, I use Shape Up: decide how much time something is worth, then shape the work to fit.</p>
     </li>
     <li class="principle">
       <p class="principle__num" aria-hidden="true">3</p>
-      <h3 class="principle__title">Agents assist, humans architect.</h3>
-      <p class="principle__text">AI speeds up the well-trodden paths. Unfamiliar problems still need someone who understands the whole system.</p>
+      <h3 class="principle__title">Stay hands-on.</h3>
+      <p class="principle__text">I still write code, at work and on Kronflow.</p>
+    </li>
+    <li class="principle">
+      <p class="principle__num" aria-hidden="true">4</p>
+      <h3 class="principle__title">Ruby on Rails by default.</h3>
+      <p class="principle__text">It's my first choice for building products, but I go with what suits the team. At PlatformE I learned Django instead.</p>
     </li>
   </ol>
 </section>
@@ -83,18 +87,17 @@
 <section class="site-wrap home-section">
   <div class="feature-block">
     <div class="feature-block__text">
-      <p class="eyebrow eyebrow--on-dark">Side project</p>
+      <p class="eyebrow eyebrow--on-dark">What I'm building</p>
       <h2 class="feature-block__title">Kronflow</h2>
-      <p class="feature-block__sub">Time tracking for SMBs in Portugal. Simple and effective.</p>
+      <p class="feature-block__sub">Track hours and budgets, and see which projects actually make money. Built for small teams, in English and Portuguese.</p>
     </div>
     <a href="https://kronflow.com" class="btn-site btn-site--light">Visit kronflow.com ↗</a>
   </div>
 </section>
 
 <section id="contact" class="site-wrap home-contact" aria-labelledby="contact-heading">
-  <h2 id="contact-heading" class="home-contact__title">Have a team problem worth talking about?</h2>
-  <p class="home-contact__text">Happy to talk Gen AI adoption, applied AI, engineering leadership or Shape Up. [Say what you're open to: mentoring, advisory, talks]</p>
-  <%# TODO(copy): real contact address %>
-  <%= mail_to "hello@example.com", "[your contact email]", class: "btn-site btn-site--primary btn-site--lg" %>
+  <h2 id="contact-heading" class="home-contact__title">Want to work together?</h2>
+  <p class="home-contact__text">I'm available for mentoring, advisory, consulting and talks, mostly on Gen AI adoption, engineering leadership and Shape Up.</p>
+  <%= mail_to "mailme@simaobelchior.com", class: "btn-site btn-site--primary btn-site--lg" %>
   <%= render "shared/social_links", class_name: "home-contact__links" %>
 </section>
