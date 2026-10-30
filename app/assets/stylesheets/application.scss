@@ -1023,16 +1023,12 @@ a {
 }
 
 .author-card__avatar {
-  display: inline-flex;
+  display: block;
   flex: 0 0 72px;
-  justify-content: center;
-  align-items: center;
+  width: 72px;
   height: 72px;
   border-radius: 999px;
-  background: var(--site-accent);
-  color: var(--site-on-accent);
-  font-size: 24px;
-  font-weight: 800;
+  object-fit: cover;
 }
 
 .author-card__body {

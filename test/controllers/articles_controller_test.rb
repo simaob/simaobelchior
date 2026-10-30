@@ -37,6 +37,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     get article_path(article.slug)
     assert_response :success
     assert_select "h1", "Test Article"
+    assert_select ".author-card img.author-card__avatar[src=?]", "/images/simao_avatar.jpg"
   end
 
   test "should not show unpublished article" do

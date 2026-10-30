@@ -18,6 +18,14 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "should link to favicons that exist" do
+    get root_path
+    %w[/favicon.ico /favicon.svg /apple-touch-icon.png].each do |path|
+      assert_select "link[href=?]", path
+      assert Rails.public_path.join(path.delete_prefix("/")).exist?, "#{path} is missing"
+    end
+  end
+
   test "home should use the plain footer" do
     get root_path
     assert_select ".site-footer--cta", count: 0
