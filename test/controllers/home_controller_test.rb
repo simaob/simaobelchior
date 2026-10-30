@@ -7,6 +7,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", "I build products that help people do their work."
     assert_select "#contact a[href=?]", "mailto:mailme@simaobelchior.com", text: "mailme@simaobelchior.com"
     assert_select "img.home-hero__photo[alt]"
+    assert_select "a[href*='x.com']", count: 0
     assert_select "meta[name=description][content=?]", "Software engineer from Porto who builds tools that help people do their work. Now AI Lead at Mindera and founder of Kronflow."
   end
 
