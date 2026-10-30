@@ -20,6 +20,11 @@ module ArticlesHelper
       video = youtube_video(link["href"])
       embed_youtube_video(link, *video) if video && standalone_link?(link)
     end
+    # A pasted address can also stay as plain text, alone in its paragraph
+    fragment.css("p, div:not([class])").each do |block|
+      video = youtube_video(block.text.strip) if block.element_children.empty?
+      block.replace(youtube_player(*video)) if video
+    end
     fragment.to_html.html_safe
   end
 
@@ -55,15 +60,17 @@ module ArticlesHelper
       adjacent_node(link, :next_sibling).then { |node| node.nil? || node.name == "br" }
   end
 
-  def embed_youtube_video(link, video_id, start)
-    title = link.text.strip
+  def youtube_player(video_id, start, title = "")
     title = "YouTube video" if title.empty? || title.start_with?("http")
     src = "https://www.youtube-nocookie.com/embed/#{video_id}#{"?start=#{start}" if start}"
-    player = tag.figure(class: "video-embed") do
+    tag.figure(class: "video-embed") do
       tag.iframe(src:, title:, loading: "lazy", allow: YOUTUBE_PLAYER_PERMISSIONS,
                  referrerpolicy: "strict-origin-when-cross-origin", allowfullscreen: true)
     end
+  end
 
+  def embed_youtube_video(link, video_id, start)
+    player = youtube_player(video_id, start, link.text.strip)
     block = link.parent
     if block["class"].nil? && block.children.all? { |node| node == link || node.name == "br" || blank_text?(node) }
       block.replace(player)

@@ -25,6 +25,13 @@ class ArticlesHelperTest < ActionView::TestCase
     assert_not_includes html, "<br>"
   end
 
+  test "embeds a YouTube address left as plain text in its own paragraph" do
+    html = article_body(Article.new(body: %(<p>Listen to this:</p><p>https://youtu.be/kNbgap22Jr8</p><p>Not this https://youtu.be/kNbgap22Jr8 one.</p>)))
+
+    assert_equal 1, html.scan("<iframe").size
+    assert_includes html, "Not this https://youtu.be/kNbgap22Jr8 one."
+  end
+
   test "leaves links that are part of a sentence alone" do
     html = article_body(Article.new(body: %(<div>I loved <a href="https://youtu.be/kNbgap22Jr8">this video</a> a lot.</div>)))
 

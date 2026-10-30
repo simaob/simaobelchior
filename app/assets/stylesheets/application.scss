@@ -27,6 +27,12 @@ $font-family-sans-serif: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto
     --site-gutter: 16px;
     --site-section: 64px;
   }
+
+  // Lexxy, the article editor, in the site's font and colours
+  --lexxy-font-base: "Archivo", system-ui, sans-serif;
+  --lexxy-color-accent-dark: var(--site-accent);
+  --lexxy-color-link: var(--site-accent);
+  --lexxy-color-code-bg: var(--site-panel);
 }
 
 body {
@@ -1096,7 +1102,7 @@ a {
 }
 
 // Scoped to .trix-content so these win over actiontext.css
-.article-content .trix-content {
+.article-content .lexxy-content {
   h1, h2, h3, h4, h5, h6 {
     margin: 2.5rem 0 1rem;
     font-weight: 800;
@@ -1208,6 +1214,11 @@ a {
   figure,
   .attachment {
     margin: 0 0 24px;
+  }
+
+  // Lexxy pads attachments; keep photos flush with the text column
+  .attachment--preview {
+    padding: 0;
   }
 
   figcaption,

@@ -30,6 +30,8 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
   test "should get new" do
     get new_admin_article_path
     assert_response :success
+    assert_select "lexxy-editor[name=?]", "article[body]"
+    assert_select "trix-editor", count: 0
   end
 
   test "should create article" do

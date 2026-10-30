@@ -1,3 +1,5 @@
+<% content_for :head, stylesheet_link_tag("lexxy-editor") %>
+
 <%= form_with(model: [:admin, article], class: "needs-validation", local: true, data: { controller: "article-form" }) do |f| %>
   <% if article.errors.any? %>
     <div class="alert alert-danger">
@@ -23,7 +25,7 @@
 
   <div class="mb-3">
     <%= f.label :body, class: "form-label" %>
-    <%= f.rich_text_area :body, class: "form-control" %>
+    <%= f.rich_text_area :body %>
   </div>
 
   <div class="mb-3">

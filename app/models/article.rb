@@ -35,7 +35,7 @@ class Article < ApplicationRecord
       # Truncate and add continue reading indicator
       truncated_text = plain_text.truncate(length, separator: " ", omission: "...")
 
-      # Convert back to trix content (simplified version)
+      # Convert back to rich text content (simplified version)
       # This will lose some formatting but maintain basic structure
       ActionText::Content.new(truncated_text).to_s.html_safe
     end
