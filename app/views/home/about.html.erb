@@ -1,40 +1,51 @@
 <%# TODO(copy): all text on this page is a first draft to review together before deploying %>
 <% content_for :title, "About" %>
+<% content_for :description, "Software engineer from Porto who builds tools that help people do their work. Now AI Lead at Mindera and founder of Kronflow." %>
 <%
   chapters = [
     {
       title: "Where it started",
-      lede: "Porto, a degree, and the first paying clients.",
+      lede: "Porto, a degree and the first paying clients.",
       stops: [
-        { years: "2004–08", org: "FEUP", url: "https://www.up.pt/feup/", role: "Software Engineering student", what: "Degree in Software Engineering at the Faculty of Engineering, University of Porto." },
-        { years: "2008–10", org: "GT Portugal", url: "https://gtportugal.com/", role: "Freelancer", what: "Web development projects for clients across different industries." }
+        { years: "2004–09", org: "FEUP", url: "https://www.up.pt/feup/", role: "Master's in Informatics and Computing Engineering", what: "Faculty of Engineering, University of Porto." },
+        { years: "2011–16", org: "GT Portugal", url: "https://gtportugal.com/", role: "Software Engineer (part-time)", what: "A textile agency that helps brands develop garments with factories. Built their product lifecycle system, mapping how they worked and connecting brands and factories through one centralised information system." }
       ]
     },
     {
       title: "For the planet",
       lede: "Data tools for the people trying to protect what's left.",
       stops: [
-        { years: "2012–14", org: "UNEP-WCMC", url: "https://www.unep-wcmc.org/", role: "Analyst Developer", what: "Software for visualising biodiversity and conservation data." },
-        { years: "2014–16", org: "Vizzuality", url: "https://www.vizzuality.com", role: "Senior Project Manager", what: "Large-scale geospatial data projects with NGOs and governments." },
-        { years: "2023–25", org: "PlatformE", url: "https://platforme.com", role: "CTO", what: "Led engineering, product and infrastructure for a SaaS platform that cuts waste in fashion production. Introduced Shape Up to speed up delivery." }
+        { years: "2009–14", org: "UNEP-WCMC", url: "https://www.unep-wcmc.org/", role: "Web Applications Developer, then Analyst Developer",
+          what: safe_join([ "Built conservation data tools, then led the team building them, always designing and defining them with the Centre's scientists. Among them: ",
+                            link_to("Species+", "https://speciesplus.net"), " and the ", link_to("CITES Checklist", "https://checklist.cites.org"),
+                            ", the reference sites for internationally protected species, and the first version of the Online Reporting System for multilateral environmental agreements." ]) },
+        { years: "2014–20", org: "Vizzuality", url: "https://www.vizzuality.com", role: "Product Developer, then Senior Project Manager", what: "Helped clients such as the World Resources Institute design and define their products, not just build them: Global Forest Watch, Climate Watch and Half-Earth among them. Set up the Porto office in 2017." },
+        { years: "2023–25", org: "PlatformE", url: "https://platforme.com", role: "CTO", what: "Led a team of up to 15 across engineering, product, design and infrastructure, building a SaaS platform that cuts waste in fashion production. Introduced Shape Up to speed up delivery." }
       ]
     },
     {
       title: "For people",
-      lede: "Small tools and communities that make everyday life a little easier.",
+      lede: "Small products and communities that make everyday life a little better.",
       stops: [
-        { years: "2010–11", org: "Alumni EI", url: "https://alumniei.pt/", role: "Vice President", what: "Networking and mentorship programmes for engineering alumni." },
-        { years: "2011–12", org: "Posso ir?", url: "https://www.posso-ir.com", role: "Co-founder & developer", what: "A mobile app with venue accessibility information across Portugal." },
-        { years: "—", org: "Amigos de Aldoar", role: "Volunteer", what: "Community volunteering in Aldoar, Porto." },
-        { years: "Now", org: "Kronflow", url: "https://kronflow.com", role: "Maker", what: "Time tracking for SMBs in Portugal. Simple and effective." }
+        { years: "2013–14", org: "FEUP", url: "https://www.up.pt/feup/", role: "Alumni Ambassador in the UK", what: "Organised events with fellow ambassadors to bring together FEUP alumni living in the UK." },
+        { years: "2014–21", org: "Talks & events", role: "Speaker & host",
+          what: safe_join([ "Spoke on working abroad at the ", link_to("celebration of 20 years of FEUP's Computer Engineering degree", "https://www.up.pt/arquivoweb/web.fe.up.pt/_eic20anos/index.html"),
+                            " in 2014. Later co-hosted ", link_to("Commit Porto in 2019", "https://web.archive.org/web/20191023080820/https://commitporto.com/"),
+                            " and hosted its ", link_to("at-home edition in 2020", "https://web.archive.org/web/20200909174801/https://commitporto.com/"),
+                            ", along with Informatics Week (2019) and Talk A Bit (2021)." ]) },
+        { years: "2017–", org: "Alumni EI", url: "https://alumniei.pt/", role: "Vice President, then Chair of the General Meeting", what: "An alumni association promoting FEUP's computer engineers in Portugal and abroad. On its Board of Advisors since 2023." },
+        { years: "2018–21", org: "Meyash", role: "Partner", what: "A sock subscription: one or two pairs a month, designed by us and made in Portugal. Ran project management and operations alongside three other partners." },
+        { years: "2018–21", org: "Amigos de Aldoar", role: "Volunteer", what: "Helped organise monthly visits to Bairro de Aldoar in Porto, bringing fun and learning activities to the children there." },
+        { years: "2020–21", org: "Posso ir?", role: "Co-founder & backend developer", what: "A COVID-era app showing how crowded shops were in real time. Built the back office and API with four other volunteers; it was Portugal's #1 free app in its first month, with over 100,000 users." },
+        { years: "2020–", org: "Kronflow", url: "https://kronflow.com", role: "Founder & product engineer", what: "Time tracking and project visibility for small businesses. Built for one client in 2020, then rebuilt as a multi-tenant SaaS in 2025." }
       ]
     },
     {
       title: "At scale",
-      lede: "Teams, platforms, and money that has to move.",
+      lede: "Teams, platforms and money that has to move.",
       stops: [
-        { years: "2020–22", org: "Switch", url: "https://www.teya.com", role: "Head of Engineering", what: "Led engineering at a payment gateway." },
-        { years: "2022", org: "SaltPay (now Teya)", url: "https://www.teya.com", role: "Director of Engineering", what: "Stayed on after SaltPay acquired Switch." }
+        { years: "2020–22", org: "Switch", url: "https://www.teya.com", role: "Head of Engineering", what: "Joined a payment gateway as its first Head of Engineering and grew the team from 15 to 25 engineers, with three engineering managers, up to the acquisition by SaltPay." },
+        { years: "2022–23", org: "SaltPay (now Teya)", url: "https://www.teya.com", role: "Director of Engineering", what: "Led the integration of Switch's product into SaltPay and ran the Payment Gateway team, scaling it from 600k to 8M requests a month for a key client." }
       ]
     },
     {
@@ -42,7 +53,7 @@
       lede: "Helping teams build with generative AI without losing the craft.",
       stops: [
         { years: "2025–", org: "Mindera", url: "https://mindera.com", role: "AI Lead", what: "Leading our AI horizontal: best practices for using Gen AI across the product development lifecycle, and exploring applied AI." },
-        { years: "2025", org: "Time in the Zone", role: "Side project", what: "A timezone planner for Mindera's AI Open Hours, vibe-coded with Copilot." },
+        { years: "2025", org: "Time in the Zone", url: "https://mindsimao.github.io/time_in_the_zone/", role: "Side project", what: "A timezone planner for Mindera's AI Open Hours, vibe-coded with Copilot." },
         { years: "2025–", org: "The blog", url: blog_path, role: "Writing", what: "Notes on AI agents, vibe-engineering and how the developer role is changing." }
       ]
     }
@@ -59,9 +70,10 @@
 
 <section class="site-wrap about-intro">
   <div class="about-intro__text">
-    <p>I'm Simão Belchior, a software engineer from Porto. I studied Software Engineering at <a href="https://www.up.pt/feup/">FEUP</a>, started freelancing in 2008, and have spent the years since moving between writing code and leading the people who write it.</p>
+    <p>I'm Simão Belchior, a software engineer from Porto. I studied Informatics and Computing Engineering at <a href="https://www.up.pt/feup/">FEUP</a>, then lived in Cambridge, UK, from 2009 until I came home in 2018. Along the way I've moved between writing code and leading the people who write it.</p>
+    <p>What I enjoy most is building products that help people do their work. Usually that's software: SaaS platforms, data tools, the systems a business runs on. Other times it's teams and knowledge, which is what I'm building at Mindera. I also like helping teams work well, which is why I'm drawn to Shape Up: it makes a lot of sense for product and software development.</p>
     <p>Today I'm AI Lead at <a href="https://mindera.com">Mindera</a>, where I lead our AI horizontal: setting best practices for using generative AI across the product development lifecycle, and exploring its uses in applied AI.</p>
-    <p class="about-intro__muted">Outside work I build <a href="https://kronflow.com">Kronflow</a>, <%= link_to "write here", blog_path %>, and spend as much time as I can with my family.</p>
+    <p class="about-intro__muted">Outside work I build <a href="https://kronflow.com">Kronflow</a>, <%= link_to "write here", blog_path %>, go running and spend as much time as I can with my family.</p>
   </div>
   <figure class="about-intro__figure">
     <%= image_tag "/images/porto_sunset_1600.jpg", alt: "Sunset over the Douro river in Porto, a gull flying over the water", width: 1600, height: 1200, loading: "lazy" %>
@@ -71,7 +83,7 @@
 
 <div class="site-wrap thread">
   <h2 class="section-title">The thread</h2>
-  <p class="thread__intro">Five chapters, roughly in order.</p>
+  <p class="thread__intro">Five chapters, grouped by what the work was for.</p>
   <% chapters.each_with_index do |chapter, index| %>
     <section class="chapter" aria-labelledby="chapter-<%= index %>">
       <div class="chapter__head">
