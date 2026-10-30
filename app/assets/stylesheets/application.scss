@@ -1138,7 +1138,7 @@ a {
   }
 
   h1, h2, h3, h4, h5, h6 {
-    margin: 2.5rem 0 1rem;
+    margin: 40px 0 16px;
     font-weight: 800;
     line-height: 1.2;
     letter-spacing: -0.02em;
@@ -1147,6 +1147,11 @@ a {
   h1 { font-size: 30px; }
   h2 { font-size: 26px; }
   h3 { font-size: 22px; }
+  h4 { font-size: 19px; }
+
+  h3, h4 {
+    margin-top: 32px;
+  }
 
   p,
   div:not([class]) {
@@ -1162,28 +1167,41 @@ a {
     }
   }
 
-  ul {
+  ul,
+  ol {
     margin: 0 0 24px;
     padding-left: 1.5em;
 
     li {
       margin: 0 0 10px;
     }
+
+    // Lexxy wraps a nested list in a list item of its own
+    .lexxy-nested-listitem {
+      list-style: none;
+    }
+
+    ul,
+    ol {
+      margin: 0;
+    }
   }
 
-  // Numbered lists get the accent-coloured circles from the design
-  ol {
-    margin: 0 0 24px;
-    padding: 0;
+  // Top-level numbered lists get the accent-coloured circles from the design
+  > ol {
+    padding-left: 0;
     list-style: none;
     counter-reset: article-ol;
 
     > li {
       position: relative;
-      margin: 0 0 20px;
-      padding-left: 60px;
+      padding-left: 44px;
+    }
+
+    > li:not(.lexxy-nested-listitem) {
       counter-increment: article-ol;
 
+      // Centred on the first line of text
       &::before {
         content: counter(article-ol);
         position: absolute;
@@ -1192,13 +1210,13 @@ a {
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        width: 40px;
-        height: 40px;
+        width: 28px;
+        height: 28px;
         border-radius: 999px;
         background: var(--site-accent);
         color: var(--site-on-accent);
-        font-size: 17px;
-        font-weight: 800;
+        font-size: 14px;
+        font-weight: 700;
         line-height: 1;
       }
     }
@@ -1227,6 +1245,7 @@ a {
     padding: 0.15em 0.4em;
     border-radius: 4px;
     background: var(--site-panel);
+    color: var(--site-text);
     font-family: ui-monospace, "SF Mono", Menlo, monospace;
     font-size: 0.85em;
   }
@@ -1237,11 +1256,42 @@ a {
     border-radius: 8px;
     background: var(--site-panel);
     font-size: 0.85em;
+    line-height: 1.5;
     overflow-x: auto;
 
     code {
       padding: 0;
       background: transparent;
+      font-size: inherit;
+    }
+  }
+
+  // Lexxy draws dividers as a short dark stub; use the site's full-width rule
+  hr {
+    width: auto;
+    margin: 32px 0;
+    border: 0;
+    border-top: 1px solid var(--site-rule);
+    opacity: 1;
+  }
+
+  .lexxy-content__table-wrapper {
+    margin: 0 0 24px;
+  }
+
+  table {
+    font-size: 16px;
+    line-height: 1.5;
+
+    th,
+    td {
+      padding: 10px 14px;
+      border-color: var(--site-rule);
+    }
+
+    th,
+    .lexxy-content__table-cell--header {
+      background: var(--site-panel);
     }
   }
 
