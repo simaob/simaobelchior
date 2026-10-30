@@ -26,6 +26,7 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get about_path
     assert_response :success
     assert_select "h1", "The longer story."
+    assert_select "meta[name=description][content=?]", "Software engineer from Porto who builds tools that help people do their work. Now AI Lead at Mindera and founder of Kronflow."
     assert_select ".chapter", 5
     assert_select ".site-nav a[aria-current=page]", text: "About"
   end
