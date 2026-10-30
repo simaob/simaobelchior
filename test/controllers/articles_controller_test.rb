@@ -107,6 +107,17 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".post-pagination a[rel=next]", text: "Older posts →"
   end
 
+  test "should show YouTube links on their own line as a player, but keep the link in RSS" do
+    article = Article.create!(title: "Music", body: %(<div><a href="https://youtu.be/kNbgap22Jr8">https://youtu.be/kNbgap22Jr8</a></div>), published_at: 1.day.ago)
+
+    get article_path(article.slug)
+    assert_select ".article-content figure.video-embed iframe[src=?]", "https://www.youtube-nocookie.com/embed/kNbgap22Jr8"
+
+    get blog_feed_path(format: :rss)
+    assert_match "https://youtu.be/kNbgap22Jr8", @response.body
+    assert_no_match "<iframe", @response.body
+  end
+
   test "should render articles with attachments for models that no longer exist" do
     gid = URI::GID.build(app: GlobalID.app, model_name: "Embed", model_id: "1")
     sgid = SignedGlobalID.new(gid, for: ActionText::Attachable::LOCATOR_NAME).to_s
