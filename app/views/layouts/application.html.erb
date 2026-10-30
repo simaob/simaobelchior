@@ -58,7 +58,7 @@
     <%= render "shared/admin_nav" if logged_in? && controller_path.start_with?("admin") %>
     <main class="flex-grow-1">
       <% if flash[:notice] %>
-        <div class="container mt-3">
+        <div class="site-wrap mt-3">
           <div class="alert alert-success alert-dismissible fade show" role="alert">
             <%= flash[:notice] %>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -66,7 +66,7 @@
         </div>
       <% end %>
       <% if flash[:alert] %>
-        <div class="container mt-3">
+        <div class="site-wrap mt-3">
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <%= flash[:alert] %>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
