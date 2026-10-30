@@ -8,9 +8,8 @@
         <h1 class="page-title">Articles tagged with "<%= @tag.name %>"</h1>
         <p class="lede"><%= link_to "← All writing", blog_path %></p>
       <% else %>
-        <%# TODO(copy): headline and intro are a first draft %>
-        <h1 class="page-title">Notes on AI, engineering and life in Porto.</h1>
-        <p class="lede">Short posts, longer thinking, a monthly reading list and the odd photo. Às vezes em português.</p>
+        <h1 class="page-title">Notes, now and then.</h1>
+        <p class="lede">About work, what I'm reading and whatever else catches my attention. Some posts are in Portuguese.</p>
       <% end %>
     </div>
     <%= link_to blog_feed_path(format: :rss), class: "btn-site btn-site--primary" do %>
@@ -84,9 +83,9 @@
     <aside class="blog-layout__aside">
       <% if @latest_reading_list %>
         <section class="side-card side-card--tinted">
-          <p class="side-card__eyebrow">Monthly series</p>
+          <p class="side-card__eyebrow">Reading list</p>
           <h2 class="side-card__title">Stars</h2>
-          <p class="side-card__text">Every month, the best of what I read. Latest: <%= link_to @latest_reading_list.title, article_path(@latest_reading_list.slug) %>.</p>
+          <p class="side-card__text">The best of what I've been reading. Latest: <%= link_to @latest_reading_list.title, article_path(@latest_reading_list.slug) %>.</p>
           <%= link_to "All reading lists →", blog_path(tag: ArticlesController::READING_LIST_TAG), class: "text-link" %>
         </section>
       <% end %>
