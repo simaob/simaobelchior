@@ -15,6 +15,7 @@ class Article < ApplicationRecord
 
   EXCERPT_LENGTH = 2_000
   WORDS_PER_MINUTE = 200
+  PREVIEW_WORDS = 200
 
   def published?
     published_at.present? && published_at <= Time.current
@@ -46,9 +47,17 @@ class Article < ApplicationRecord
     body.to_plain_text.length > length
   end
 
+  def word_count
+    body.present? ? body.to_plain_text.split.size : 0
+  end
+
   def reading_minutes
-    words = body.present? ? body.to_plain_text.split.size : 0
-    [ (words / WORDS_PER_MINUTE.to_f).ceil, 1 ].max
+    [ (word_count / WORDS_PER_MINUTE.to_f).ceil, 1 ].max
+  end
+
+  # Long articles are cut short on the blog index, with a link to the rest
+  def long?
+    word_count > PREVIEW_WORDS
   end
 
   # Neighbouring published articles, for older/newer links

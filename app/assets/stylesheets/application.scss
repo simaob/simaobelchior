@@ -861,36 +861,23 @@ a {
 }
 
 .post-list__item {
-  padding-block: 28px;
+  padding-block: 40px;
   border-bottom: 1px solid var(--site-rule);
 }
 
-.post-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 32px;
-}
-
-.post-row__date {
-  flex: 0 0 120px;
-  padding-top: 6px;
+.post-entry__meta {
+  margin: 0;
   font-size: 15px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
+  font-weight: 500;
   color: var(--site-muted);
 }
 
-.post-row__body {
-  flex: 1 1 400px;
-  min-width: 0;
-}
-
-.post-row__title {
-  margin: 0;
-  font-size: 26px;
-  line-height: 1.2;
-  font-weight: 700;
-  letter-spacing: -0.015em;
+.post-entry__title {
+  margin: 8px 0 0;
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 
   a {
     color: var(--site-text);
@@ -905,18 +892,37 @@ a {
   }
 }
 
-.post-row__excerpt {
-  margin: 8px 0 0;
-  font-size: 17px;
-  line-height: 1.55;
-  color: var(--site-muted);
+// Compound selector so it wins over .article-content further down
+.post-entry__body.article-content {
+  padding-top: 20px;
+  font-size: 18px;
 }
 
-.post-row__tags {
+// Long posts fade out after a screenful, with a link to the rest
+.post-entry__body--cut {
+  position: relative;
+  max-height: 440px;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 140px;
+    background: linear-gradient(transparent, var(--site-bg));
+    pointer-events: none;
+  }
+}
+
+.post-entry__more {
+  margin-top: 12px;
+}
+
+.post-entry__tags {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 14px;
-  margin: 12px 0 0;
+  margin: 20px 0 0;
   padding: 0;
   list-style: none;
   font-size: 14px;
@@ -931,7 +937,7 @@ a {
   }
 }
 
-.post-row__edit {
+.post-entry__edit {
   color: var(--site-muted);
 }
 
@@ -1137,6 +1143,10 @@ a {
     margin-top: 0;
   }
 
+  > :last-child {
+    margin-bottom: 0;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     margin: 40px 0 16px;
     font-weight: 800;
@@ -1320,6 +1330,14 @@ a {
 
   .video-embed {
     margin: 32px 0;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
 
     iframe {
       display: block;

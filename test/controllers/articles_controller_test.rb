@@ -100,6 +100,24 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".side-card a", text: "October Stars"
   end
 
+  test "should show articles in full on the index, with players for YouTube links" do
+    Article.create!(title: "Music", body: %(<div><a href="https://youtu.be/kNbgap22Jr8">https://youtu.be/kNbgap22Jr8</a></div>), published_at: 1.day.ago)
+    Article.create!(title: "Note", body: "<ol><li>First</li><li>Second</li></ol>", published_at: 2.days.ago)
+
+    get blog_path
+    assert_select ".post-entry__body figure.video-embed iframe[src=?]", "https://www.youtube-nocookie.com/embed/kNbgap22Jr8"
+    assert_select ".post-entry__body ol li", count: 2
+    assert_select ".post-entry__more", count: 0
+  end
+
+  test "should cut long articles short on the index with a link to the rest" do
+    article = Article.create!(title: "Long Read", body: "word " * 201, published_at: 1.day.ago)
+
+    get blog_path
+    assert_select ".post-entry__body--cut", count: 1
+    assert_select ".post-entry__more[href=?]", article_path(article.slug), text: "Continue reading →"
+  end
+
   test "should paginate with older and newer links" do
     16.times { |i| Article.create!(title: "Post #{i}", body: "Content", published_at: (i + 1).hours.ago) }
 
@@ -130,7 +148,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
 
     get blog_path
     assert_response :success
-    assert_select ".post-row__excerpt", text: "Content"
+    assert_select ".post-entry__body", text: /Content/
 
     get article_path(article.slug)
     assert_response :success

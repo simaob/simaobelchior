@@ -2,7 +2,7 @@ class ArticlesController < ApplicationController
   READING_LIST_TAG = "reading-list"
 
   def index
-    @articles = Article.published.includes(:tags)
+    @articles = Article.published.with_rich_text_body_and_embeds.includes(:tags)
 
     # Filter by tag if specified
     if params[:tag].present?
@@ -10,8 +10,8 @@ class ArticlesController < ApplicationController
       @articles = @articles.joins(:tags).where(tags: { id: @tag.id }) if @tag
     end
 
-    # Paginate (15 articles per page)
-    @articles = @articles.page(params[:page]).per(15)
+    # Paginate (10 articles per page, as the index shows them in full)
+    @articles = @articles.page(params[:page]).per(10)
 
     @topic_tags = Tag.joins(:articles)
                      .where(articles: { published_at: ..Time.current })

@@ -36,25 +36,26 @@
       <ol class="post-list">
         <% @articles.each do |article| %>
           <li class="post-list__item">
-            <article class="post-row">
-              <time class="post-row__date" datetime="<%= article.published_at.iso8601 %>"><%= article.published_at.strftime("%d %b %Y") %></time>
-              <div class="post-row__body">
-                <h2 class="post-row__title"><%= link_to article.title, article_path(article.slug) %></h2>
-                <% excerpt = article.excerpt(length: 180) %>
-                <% if excerpt.present? %>
-                  <p class="post-row__excerpt"><%= excerpt %></p>
-                <% end %>
-                <% if article.tags.any? || logged_in? %>
-                  <ul class="post-row__tags">
-                    <% article.tags.each do |tag| %>
-                      <li><%= link_to "##{tag.name}", blog_path(tag: tag.name) %></li>
-                    <% end %>
-                    <% if logged_in? %>
-                      <li><%= link_to "Edit", edit_admin_article_path(article), class: "post-row__edit" %></li>
-                    <% end %>
-                  </ul>
-                <% end %>
+            <article class="post-entry">
+              <p class="post-entry__meta"><%= article_meta(article) %></p>
+              <h2 class="post-entry__title"><%= link_to article.title, article_path(article.slug) %></h2>
+              <% long = article.long? %>
+              <div class="article-content post-entry__body<%= " post-entry__body--cut" if long %>">
+                <%= article_body(article) %>
               </div>
+              <% if long %>
+                <%= link_to "Continue reading →", article_path(article.slug), class: "text-link post-entry__more", aria: { label: "Continue reading #{article.title}" } %>
+              <% end %>
+              <% if article.tags.any? || logged_in? %>
+                <ul class="post-entry__tags">
+                  <% article.tags.each do |tag| %>
+                    <li><%= link_to "##{tag.name}", blog_path(tag: tag.name) %></li>
+                  <% end %>
+                  <% if logged_in? %>
+                    <li><%= link_to "Edit", edit_admin_article_path(article), class: "post-entry__edit" %></li>
+                  <% end %>
+                </ul>
+              <% end %>
             </article>
           </li>
         <% end %>
