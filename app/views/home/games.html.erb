@@ -1,0 +1,38 @@
+<% content_for :title, "Games" %>
+<% content_for :description, "Small browser games by Simão Belchior: a 3D platformer for young children, and a guide to behaving in public with a urinal etiquette test." %>
+<%
+  games = [
+    {
+      title: "Palminho e a Mochila Maluca",
+      text: "A 3D platformer for children aged 4 to 6. Your backpack has had a bad morning, so find your things in time for each of the week's classes. In Portuguese and English, with instructions spoken aloud.",
+      url: "https://games.simaobelchior.com/palminho/",
+      cta: "Play Palminho ↗"
+    },
+    {
+      title: "Behaving in Public",
+      text: "Short, practical tips for trains, lifts, queues, cinemas, gyms and public toilets, plus Buffer Zone, a urinal etiquette test in eleven rooms.",
+      url: "https://games.simaobelchior.com/behaving-in-public/",
+      cta: "Visit Behaving in Public ↗"
+    }
+  ]
+%>
+
+<section class="page-hero">
+  <div class="site-wrap">
+    <p class="eyebrow">Games</p>
+    <h1 class="page-title">Games I've made.</h1>
+    <p class="lede">Small games that run in your browser, free to play with no sign-up.</p>
+  </div>
+</section>
+
+<section class="site-wrap home-section" aria-label="Games">
+  <div class="topic-grid">
+    <% games.each do |game| %>
+      <article class="topic-card">
+        <h2 class="topic-card__title"><%= game[:title] %></h2>
+        <p class="topic-card__text"><%= game[:text] %></p>
+        <%= link_to game[:cta], game[:url], class: "text-link topic-card__link" %>
+      </article>
+    <% end %>
+  </div>
+</section>

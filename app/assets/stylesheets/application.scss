@@ -469,9 +469,14 @@ a {
   border-radius: 12px;
   background: var(--site-panel);
 
-  p, h3 {
+  p, h2, h3 {
     margin: 0;
   }
+}
+
+.topic-card__link {
+  align-self: flex-start;
+  margin-top: auto;
 }
 
 .topic-card__num {
