@@ -72,7 +72,7 @@ These use separate SQLite databases defined in `config/cache.yml`, `config/queue
 
 ### Deployment
 Uses Kamal for containerized deployment to DigitalOcean (165.227.145.143):
-- Docker image: `lethird/simaobelchior`
+- Docker image: `simaobelchior`, built locally and pushed via a Kamal local registry (`localhost:5555`, tunnelled over SSH). No remote registry.
 - Hosts: simaobelchior.com, www.simaobelchior.com
 - SSL via Let's Encrypt
 - Configuration in `config/deploy.yml`
