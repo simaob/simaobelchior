@@ -47,4 +47,20 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     get about_path
     assert_select ".site-footer--cta a[href=?]", root_path(anchor: "contact")
   end
+
+  test "should get games" do
+    get games_path
+    assert_response :success
+    assert_select "h1", "Games I've made."
+    assert_select "title", /Games/
+    assert_select ".topic-card", 2
+    assert_select ".topic-card a[href=?]", "https://games.simaobelchior.com/palminho/"
+    assert_select ".topic-card a[href=?]", "https://games.simaobelchior.com/behaving-in-public/"
+    assert_select ".site-nav a[aria-current=page]", text: "Games"
+  end
+
+  test "games should use the call-to-action footer" do
+    get games_path
+    assert_select ".site-footer--cta a[href=?]", root_path(anchor: "contact")
+  end
 end
