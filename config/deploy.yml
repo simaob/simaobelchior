@@ -18,7 +18,6 @@ servers:
 proxy:
   ssl: true
   hosts:
-    - new.simaobelchior.com
     - simaobelchior.com
     - www.simaobelchior.com
 
