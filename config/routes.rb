@@ -29,6 +29,8 @@ Rails.application.routes.draw do
 
   get "about" => "home#about"
   get "games" => "home#games"
+  # The games' static pages call this to count a visit, see GameVisitsController
+  post "games/opened" => "game_visits#create", as: :game_visits
 
   # Defines the root path route ("/")
   root "home#index"

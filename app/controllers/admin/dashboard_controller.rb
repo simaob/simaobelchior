@@ -2,9 +2,8 @@ class Admin::DashboardController < ApplicationController
   before_action :require_authentication
 
   def index
-    @days = PageView.by_day(days: 30)
-    @top_pages = PageView.top_pages(since: @days.first.day)
-    @top_referrers = PageView.top_referrers(since: @days.first.day)
+    @site_visits = PageView.site.summary
+    @game_visits = PageView.games.summary
 
     @total_articles = Article.count
     @published_count = Article.published.count

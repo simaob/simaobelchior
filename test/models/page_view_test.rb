@@ -3,8 +3,33 @@ require "test_helper"
 class PageViewTest < ActiveSupport::TestCase
   CHROME = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
 
-  def record(ip: "203.0.113.7", user_agent: CHROME, path: "/", referrer: nil)
-    PageView.record(path: path, referrer: referrer, host: "simaobelchior.com", ip: ip, user_agent: user_agent)
+  def record(ip: "203.0.113.7", user_agent: CHROME, path: "/", referrer: nil, host: "simaobelchior.com")
+    PageView.record(path: path, referrer: referrer, host: host, ip: ip, user_agent: user_agent)
+  end
+
+  test "stores the host without www, and keeps the games apart from this site" do
+    site = record(host: "www.simaobelchior.com", path: "/about")
+    game = record(host: PageView::GAMES_HOST, path: "/palminho/")
+
+    assert_equal "simaobelchior.com", site.host
+    assert_equal [ site ], PageView.site.to_a
+    assert_equal [ game ], PageView.games.to_a
+  end
+
+  test "a game's referrer from this site is external to the games" do
+    assert_equal "simaobelchior.com", record(host: PageView::GAMES_HOST, referrer: "https://simaobelchior.com/").referrer_host
+    assert_nil record(host: PageView::GAMES_HOST, referrer: "https://games.simaobelchior.com/behaving-in-public/").referrer_host
+  end
+
+  test "summarises one site's visits, pages and referrers" do
+    record(path: "/about", referrer: "https://github.com/")
+    record(host: PageView::GAMES_HOST, path: "/palminho/", referrer: "https://simaobelchior.com/")
+
+    summary = PageView.games.summary(days: 7)
+    assert_equal 7, summary.days.size
+    assert_equal 1, summary.days.last.visits
+    assert_equal({ "/palminho/" => 1 }, summary.top_pages)
+    assert_equal({ "simaobelchior.com" => 1 }, summary.top_referrers)
   end
 
   test "stores the page and day but not the IP address or user agent" do

@@ -5,7 +5,8 @@
         <h1 class="fw-semibold">Admin Dashboard</h1>
       </div>
 
-      <%= render "visits" %>
+      <%= render "visits", visits: @site_visits, title: "Visits", id: "site-visits", link_base: "" %>
+      <%= render "visits", visits: @game_visits, title: "Game visits", id: "game-visits", link_base: "https://#{PageView::GAMES_HOST}" %>
 
       <h2 class="h5 fw-semibold mb-3">Articles</h2>
       <div class="row mb-4">
