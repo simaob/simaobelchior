@@ -1,0 +1,23 @@
+<%# A glimpse of visits for the dashboard, with a link to all the stats.
+    Locals: days (from PageView.by_day), title, id, and path to the full stats %>
+<section class="card border-0 shadow-sm h-100" id="<%= id %>" aria-labelledby="<%= id %>-title">
+  <div class="card-body">
+    <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-3">
+      <h2 class="h5 fw-semibold mb-0" id="<%= id %>-title"><%= title %></h2>
+      <%= link_to path, class: "small fw-semibold text-decoration-none" do %>
+        See full metrics<span class="visually-hidden"> for <%= title.downcase %></span> <span aria-hidden="true">→</span>
+      <% end %>
+    </div>
+
+    <dl class="visits-glimpse">
+      <% visit_totals(days).each do |label, value| %>
+        <div>
+          <dt><%= label %></dt>
+          <dd><%= number_with_delimiter(value) %></dd>
+        </div>
+      <% end %>
+    </dl>
+
+    <%= render "admin/visits/chart", days: days, title: title, small: true %>
+  </div>
+</section>

@@ -5,8 +5,7 @@
         <span class="admin-bar__label">Admin</span>
         <%= nav_link "Dashboard", admin_root_path, active: current_page?(admin_root_path) %>
         <%= nav_link "Articles", admin_articles_path, active: current_page?(admin_articles_path) %>
-        <%= nav_link "New article", new_admin_article_path, active: current_page?(new_admin_article_path) %>
-      </div>
+        <%= nav_link "New article", new_admin_article_path, active: current_page?(new_admin_article_path) %>      </div>
       <%= button_to "Log out", logout_path, method: :delete, class: "btn-site btn-site--outline btn-site--sm" %>
     </div>
   </nav>

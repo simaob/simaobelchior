@@ -13,4 +13,14 @@ module VisitsHelper
   def bar_height(value, ceiling)
     "#{(100.0 * value / ceiling).round(2)}%"
   end
+
+  # Visits today, this week and this month, from PageView.by_day. A visit is one
+  # person on one day, so visits over several days are the sum of each day's
+  def visit_totals(days)
+    {
+      "Today" => days.last.visits,
+      "Last 7 days" => days.last(7).sum(&:visits),
+      "Last 30 days" => days.sum(&:visits)
+    }
+  end
 end

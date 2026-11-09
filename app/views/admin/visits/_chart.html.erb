@@ -1,0 +1,26 @@
+<%# Visits per day as bars, from PageView.by_day. Locals: days, title, and
+    small: true for the shorter chart on the dashboard %>
+<% ceiling = chart_ceiling(days.map(&:visits).max) %>
+
+<%= tag.div class: class_names("visits-chart", "visits-chart--small": local_assigns[:small]) do %>
+  <div class="visits-chart__axis" aria-hidden="true">
+    <span><%= number_with_delimiter(ceiling) %></span>
+    <span>0</span>
+  </div>
+  <ol class="visits-chart__plot" aria-label="<%= title %> per day, last <%= days.size %> days">
+    <% days.each do |day| %>
+      <li class="visits-chart__day" tabindex="0" aria-label="<%= day.day.strftime("%-d %b") %>: <%= pluralize(day.visits, "visit") %>">
+        <span class="visits-chart__bar" style="height: <%= bar_height(day.visits, ceiling) %>">
+          <span class="visits-chart__tip" aria-hidden="true">
+            <strong><%= pluralize(number_with_delimiter(day.visits), "visit") %></strong>
+            <%= day.day.strftime("%a %-d %b") %>
+          </span>
+        </span>
+      </li>
+    <% end %>
+  </ol>
+  <div class="visits-chart__dates" aria-hidden="true">
+    <span><%= days.first.day.strftime("%-d %b") %></span>
+    <span>Today</span>
+  </div>
+<% end %>

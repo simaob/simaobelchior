@@ -11,6 +11,15 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select "meta[name=description][content=?]", "Software engineer from Porto who builds tools that help people do their work. Now AI Lead at Mindera and founder of Kronflow."
   end
 
+  test "links to the admin only when logged in" do
+    get root_path
+    assert_select ".site-nav a[href=?]", admin_root_path, count: 0
+
+    post login_path, params: { email: "user1@example.com", password: "password" }
+    get root_path
+    assert_select ".site-nav a[href=?]", admin_root_path, text: "Admin"
+  end
+
   test "home should link to past companies, with Switch pointing at Teya" do
     get root_path
     assert_select ".org-list a[href=?]", "https://mindera.com", text: "Mindera"

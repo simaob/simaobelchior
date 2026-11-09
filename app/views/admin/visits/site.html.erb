@@ -1,0 +1,10 @@
+<% content_for :title, "Visits" %>
+
+<section class="site-wrap my-4" id="site-visits" aria-labelledby="site-visits-title">
+  <div class="mb-4">
+    <%= link_to "← Back to dashboard", admin_root_path, class: "text-decoration-none text-muted" %>
+  </div>
+  <h1 class="fw-semibold mb-4" id="site-visits-title">Visits</h1>
+
+  <%= render "stats", summary: @summary, title: "Visits", link_base: "" %>
+</section>

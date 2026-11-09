@@ -5,8 +5,14 @@
         <h1 class="fw-semibold">Admin Dashboard</h1>
       </div>
 
-      <%= render "visits", visits: @site_visits, title: "Visits", id: "site-visits", link_base: "" %>
-      <%= render "visits", visits: @game_visits, title: "Game visits", id: "game-visits", link_base: "https://#{PageView::GAMES_HOST}" %>
+      <div class="row mb-4">
+        <div class="col-lg-6 mb-3">
+          <%= render "visits_glimpse", days: @site_days, title: "Visits", id: "site-visits", path: admin_site_visits_path %>
+        </div>
+        <div class="col-lg-6 mb-3">
+          <%= render "visits_glimpse", days: @game_days, title: "Game visits", id: "game-visits", path: admin_game_visits_path %>
+        </div>
+      </div>
 
       <h2 class="h5 fw-semibold mb-3">Articles</h2>
       <div class="row mb-4">

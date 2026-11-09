@@ -2,8 +2,8 @@ class Admin::DashboardController < ApplicationController
   before_action :require_authentication
 
   def index
-    @site_visits = PageView.site.summary
-    @game_visits = PageView.games.summary
+    @site_days = PageView.site.by_day
+    @game_days = PageView.games.by_day
 
     @total_articles = Article.count
     @published_count = Article.published.count

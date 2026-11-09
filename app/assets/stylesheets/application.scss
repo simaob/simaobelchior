@@ -1450,6 +1450,36 @@ a {
   margin-top: 8px;
 }
 
+// The dashboard shows a glimpse of visits: three totals over a shorter chart
+
+.visits-chart--small {
+  --chart-height: 72px;
+}
+
+.visits-glimpse {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+
+  dt {
+    margin-bottom: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--site-muted);
+  }
+
+  dd {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
 .visits-table td.text-end,
 .visits-table th.text-end {
   font-variant-numeric: tabular-nums;
