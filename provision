@@ -116,11 +116,16 @@ visudo -c -f /etc/sudoers.d/#{user_name};
 usermod -aG docker #{user_name}
 EOF
 
-# Disable root
+# Turn off root login and password login over SSH. Ubuntu's sshd_config only
+# has these as comments, so they go in a drop-in file instead. sshd keeps the
+# first value it reads for each setting and reads sshd_config.d in alphabetical
+# order, so 01- puts these ahead of files the server image adds, such as a
+# 50-cloud-init.conf that turns password login on. SSH only restarts if the
+# config is valid, so a mistake can't lock you out.
 disable_root = <<~EOF
-sed -i 's@PasswordAuthentication yes@PasswordAuthentication no@g' /etc/ssh/sshd_config;
-sed -i 's@PermitRootLogin yes@PermitRootLogin no@g' /etc/ssh/sshd_config;
-systemctl restart ssh
+printf 'PermitRootLogin no\nPasswordAuthentication no\n' > /etc/ssh/sshd_config.d/01-harden.conf;
+chmod 600 /etc/ssh/sshd_config.d/01-harden.conf;
+sshd -t && systemctl restart ssh
 EOF
 
 # Configure unattended upgrades
