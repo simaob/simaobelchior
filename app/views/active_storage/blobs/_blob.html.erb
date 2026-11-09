@@ -1,6 +1,13 @@
 <figure class="attachment attachment--<%= blob.representable? ? "preview" : "file" %> attachment--<%= blob.filename.extension %>">
   <% if blob.representable? %>
-    <%= image_tag blob.representation(resize_to_limit: local_assigns[:in_gallery] ? [ 800, 600 ] : [ 1024, 768 ]) %>
+    <% preview = image_tag blob.representation(resize_to_limit: local_assigns[:in_gallery] ? [ 800, 600 ] : [ 1024, 768 ]) %>
+    <% if blob.image? %>
+      <%# Links to a larger copy, which image_zoom_controller.js opens over the page.
+          Action Text strips data and aria attributes from the body, so the class marks it. %>
+      <%= link_to preview, polymorphic_url(blob.variant(resize_to_limit: [ 2400, 2400 ])), class: "attachment__zoom", title: "Enlarge image" %>
+    <% else %>
+      <%= preview %>
+    <% end %>
   <% end %>
 
   <% if caption = blob.try(:caption) %>

@@ -168,6 +168,26 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should link article images to a larger copy" do
+    blob = ActiveStorage::Blob.create_and_upload!(
+      io: Rails.root.join("public/images/simao_avatar.jpg").open, filename: "photo.jpg", content_type: "image/jpeg"
+    )
+    article = Article.create!(
+      title: "With a Photo",
+      body: %(<action-text-attachment sgid="#{blob.attachable_sgid}" caption="Porto"></action-text-attachment>),
+      published_at: 1.day.ago
+    )
+
+    get article_path(article.slug)
+    assert_response :success
+    assert_select ".lexxy-content[data-controller~=image-zoom][data-action='click->image-zoom#open']"
+    assert_select "figure.attachment--preview a.attachment__zoom[title='Enlarge image']" do |links|
+      assert_match %r{/rails/active_storage/representations/}, links.first["href"]
+      assert_select "img[src*='/rails/active_storage/representations/']"
+    end
+    assert_select "figcaption", "Porto"
+  end
+
   test "should generate RSS feed" do
     get blog_feed_path(format: :rss)
     assert_response :success
