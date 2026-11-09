@@ -61,21 +61,30 @@ export default class extends Controller {
 
     const image = dialog.querySelector("img")
     const zoomed = dialog.classList.contains("is-zoomed")
-    dialog.classList.toggle("is-zoomable", zoomed || image.naturalWidth > image.clientWidth)
+    const zoomable = zoomed || image.naturalWidth > image.clientWidth
+    dialog.classList.toggle("is-zoomable", zoomable)
+
+    // A toggle button for keyboards, where the arrow keys then move around the zoomed image
+    if (zoomable) {
+      image.tabIndex = 0
+      image.setAttribute("role", "button")
+      image.setAttribute("aria-label", "Full size")
+      image.setAttribute("aria-pressed", zoomed)
+    } else {
+      for (const name of [ "tabindex", "role", "aria-label", "aria-pressed" ]) image.removeAttribute(name)
+    }
   }
 
-  zoom(event) {
+  // Switches between fitting the screen and full size, keeping the given point where it is
+  zoom(clientX, clientY) {
     const dialog = this.dialog
-    if (!dialog.classList.contains("is-zoomable")) return this.close()
-
-    // Keep the point that was clicked under the pointer
-    const image = event.target
+    const image = dialog.querySelector("img")
     const box = image.getBoundingClientRect()
-    const x = (event.clientX - box.left) / box.width
-    const y = (event.clientY - box.top) / box.height
+    const x = (clientX - box.left) / box.width
+    const y = (clientY - box.top) / box.height
     if (dialog.classList.toggle("is-zoomed")) {
-      dialog.scrollLeft = x * image.clientWidth - event.clientX
-      dialog.scrollTop = y * image.clientHeight - event.clientY
+      dialog.scrollLeft = x * image.clientWidth - clientX
+      dialog.scrollTop = y * image.clientHeight - clientY
     }
     this.update()
   }
@@ -123,10 +132,18 @@ export default class extends Controller {
     dialog.addEventListener("click", (event) => {
       if (this.dragged) {
         this.dragged = false
-      } else if (event.target.matches(".image-zoom__image")) {
-        this.zoom(event)
+      } else if (event.target.matches(".image-zoom__image") && dialog.classList.contains("is-zoomable")) {
+        this.zoom(event.clientX, event.clientY)
       } else {
         this.close()
+      }
+    })
+    dialog.addEventListener("keydown", (event) => {
+      if ((event.key === "Enter" || event.key === " ") && event.target.matches(".image-zoom__image[role=button]")) {
+        event.preventDefault()
+        // Zoom in on the middle of the image
+        const box = event.target.getBoundingClientRect()
+        this.zoom(box.left + box.width / 2, box.top + box.height / 2)
       }
     })
     dialog.addEventListener("close", () => {

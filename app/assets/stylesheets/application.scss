@@ -1382,6 +1382,11 @@ html:has(.image-zoom[open]) {
   user-select: none;
   -webkit-user-drag: none;
 
+  &:focus-visible {
+    outline: 3px solid var(--site-accent);
+    outline-offset: 4px;
+  }
+
   // The copy from the page, stretched to the screen until the larger one loads
   .is-loading & {
     width: 100%;
@@ -1400,6 +1405,11 @@ html:has(.image-zoom[open]) {
     border-radius: 0;
     box-shadow: none;
     cursor: zoom-out;
+
+    // Fills the screen, so the focus ring goes inside its edges
+    &:focus-visible {
+      outline-offset: -3px;
+    }
   }
 
   .is-dragging & {
