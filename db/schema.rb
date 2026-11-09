@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_17_134745) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_09_120000) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -70,6 +70,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_134745) do
     t.index ["slug"], name: "index_articles_on_slug", unique: true
   end
 
+  create_table "page_views", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "path", null: false
+    t.string "referrer_host"
+    t.date "visited_on", null: false
+    t.string "visitor_hash", null: false
+    t.index ["visited_on", "visitor_hash"], name: "index_page_views_on_visited_on_and_visitor_hash"
+  end
+
   create_table "tags", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
@@ -83,6 +92,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_134745) do
     t.string "password_digest", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+  end
+
+  create_table "visitor_salts", force: :cascade do |t|
+    t.date "day", null: false
+    t.string "value", null: false
+    t.index ["day"], name: "index_visitor_salts_on_day", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

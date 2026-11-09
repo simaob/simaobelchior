@@ -32,6 +32,13 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select ".site-footer--cta", count: 0
   end
 
+  test "both footers say how visits are counted" do
+    [ root_path, about_path ].each do |path|
+      get path
+      assert_select ".site-footer .site-footer__note", "I count visits without cookies and don't store IP addresses."
+    end
+  end
+
   test "should get about" do
     get about_path
     assert_response :success
