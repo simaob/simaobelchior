@@ -1,4 +1,4 @@
-source "https://rubygems.org"#, cooldown: 14
+source "https://rubygems.org", cooldown: 14
 
 ruby "4.0.9"
 
