@@ -39,6 +39,8 @@ env:
     RAILS_LOG_TO_STDOUT: true
     RAILS_SERVE_STATIC_FILES: true
     RAILS_MAX_THREADS: 5
+    # Run Solid Queue inside Puma, for background jobs and config/recurring.yml
+    SOLID_QUEUE_IN_PUMA: true
   secret:
     - RAILS_MASTER_KEY
 
