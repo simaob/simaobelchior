@@ -155,6 +155,10 @@ a {
   text-align: center;
 }
 
+.site-footer__note {
+  margin: 6px 0 0;
+}
+
 .site-footer--cta {
   border-top: 0;
   background: var(--site-block);
@@ -1331,4 +1335,122 @@ a {
       border-radius: 8px;
     }
   }
+}
+
+// Admin: visits per day on the dashboard. One column per day, with a tooltip
+// above the bar on hover or keyboard focus, and a table version underneath.
+
+.visits-chart {
+  --chart-height: 160px;
+
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--site-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.visits-chart__axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: var(--chart-height);
+  text-align: right;
+
+  // Centre each label on its gridline
+  span:first-child { margin-top: -6px; }
+  span:last-child { margin-bottom: -6px; }
+}
+
+.visits-chart__plot {
+  display: flex;
+  gap: 2px;
+  height: var(--chart-height);
+  margin: 0;
+  padding: 0;
+  border-block: 1px solid var(--site-rule);
+  list-style: none;
+}
+
+// The whole column is the hover target, not just the bar
+.visits-chart__day {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  justify-content: center;
+  align-items: flex-end;
+  min-width: 0;
+  border-radius: 4px;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--site-panel);
+    outline: none;
+
+    .visits-chart__tip {
+      display: block;
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--site-accent);
+  }
+}
+
+.visits-chart__bar {
+  position: relative;
+  width: 100%;
+  max-width: 24px;
+  border-radius: 4px 4px 0 0;
+  background: var(--site-accent);
+}
+
+.visits-chart__tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 2;
+  display: none;
+  padding: 8px 10px;
+  border: 1px solid var(--site-rule);
+  border-radius: 8px;
+  background: var(--site-bg);
+  box-shadow: 0 6px 16px rgba(15, 31, 28, 0.1);
+  font-size: 13px;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+
+  strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 15px;
+    color: var(--site-text);
+  }
+
+  // Keep tooltips at either end inside the card
+  .visits-chart__day:nth-child(-n + 4) & {
+    left: 0;
+    transform: none;
+  }
+
+  .visits-chart__day:nth-last-child(-n + 4) & {
+    right: 0;
+    left: auto;
+    transform: none;
+  }
+}
+
+.visits-chart__dates {
+  display: flex;
+  grid-column: 2;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.visits-table td.text-end,
+.visits-table th.text-end {
+  font-variant-numeric: tabular-nums;
 }

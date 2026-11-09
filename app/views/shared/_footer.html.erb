@@ -8,12 +8,18 @@
       <%= link_to "Get in touch", root_path(anchor: "contact"), class: "btn-site btn-site--light" %>
     </div>
     <div class="site-wrap site-footer__bottom">
-      <span>&copy; <%= Date.current.year %> Simão Belchior · Porto</span>
+      <div>
+        <span>&copy; <%= Date.current.year %> Simão Belchior · Porto</span>
+        <%= render "shared/privacy_note" %>
+      </div>
       <%= render "shared/social_links", class_name: "site-footer__links" %>
     </div>
   </footer>
 <% else %>
   <footer class="site-footer">
-    <div class="site-wrap site-footer__plain">&copy; <%= Date.current.year %> Simão Belchior · Porto</div>
+    <div class="site-wrap site-footer__plain">
+      &copy; <%= Date.current.year %> Simão Belchior · Porto
+      <%= render "shared/privacy_note" %>
+    </div>
   </footer>
 <% end %>

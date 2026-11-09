@@ -1,4 +1,6 @@
 class ArticlesController < ApplicationController
+  include CountsPageViews
+
   READING_LIST_TAG = "reading-list"
 
   before_action :set_sidebar, only: %i[index show]
