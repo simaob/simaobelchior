@@ -3,7 +3,7 @@
 # same person on another day.
 #
 # Salts from earlier days are deleted when the first visit of a new day creates
-# its salt, and by DeleteOldVisitorSaltsJob every hour, for days nobody visits.
+# its salt, and by DeleteOldVisitorSaltsJob every 3 hours, for days nobody visits.
 class VisitorSalt < ApplicationRecord
   def self.for(day)
     find_by(day: day)&.value || rotate(day)
