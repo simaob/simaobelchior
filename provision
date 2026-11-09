@@ -32,15 +32,18 @@ chmod 700 /storage;
 chown 1000:1000 /storage
 EOF
 
-# Add swap space
+# Add swap space. A deploy briefly runs two copies of the app, which is more
+# than a small server's memory holds without swap.
+# The fstab and sysctl lines are plain echoes because bash's echo writes "\n"
+# literally, which used to leave lines that don't work after a reboot.
 add_swap = <<~EOF
 fallocate -l 2GB /swapfile;
 chmod 600 /swapfile;
 mkswap /swapfile;
 swapon /swapfile;
-echo "\\n/swapfile swap swap defaults 0 0\\n" >> /etc/fstab;
+echo '/swapfile none swap sw 0 0' >> /etc/fstab;
 sysctl vm.swappiness=20;
-echo "\\nvm.swappiness=20\\n" >> /etc/sysctl.conf
+echo 'vm.swappiness=20' > /etc/sysctl.d/99-swappiness.conf
 EOF
 
 # Install fail2ban
