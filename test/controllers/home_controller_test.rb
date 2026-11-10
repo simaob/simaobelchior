@@ -64,6 +64,19 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select ".site-footer--cta a[href=?]", root_path(anchor: "contact")
   end
 
+  test "links to GitHub Sponsors from the games page and the footer, not the homepage" do
+    sponsor_url = "https://github.com/sponsors/simaob?frequency=one-time"
+
+    get root_path
+    assert_select "a[href=?]", sponsor_url, count: 0
+
+    get about_path
+    assert_select ".site-footer--cta a[href=?]", sponsor_url, text: "Buy me a coffee"
+
+    get games_path
+    assert_select ".games-note a[href=?]", sponsor_url, text: "buy me a coffee"
+  end
+
   test "should get games" do
     get games_path
     assert_response :success

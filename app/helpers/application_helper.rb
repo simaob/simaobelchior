@@ -1,4 +1,9 @@
 module ApplicationHelper
+  # GitHub Sponsors, opened on a one-time payment rather than a monthly one
+  def sponsor_url
+    "https://github.com/sponsors/simaob?frequency=one-time"
+  end
+
   def nav_link(name, path, active: false)
     link_to name, path, class: "site-nav__link", aria: { current: ("page" if active) }
   end

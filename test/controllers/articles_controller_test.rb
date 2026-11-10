@@ -38,6 +38,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", "Test Article"
     assert_select ".author-card img.author-card__avatar[src=?]", "/images/simao_avatar.jpg"
+    assert_select ".author-card a[href=?]", "https://github.com/sponsors/simaob?frequency=one-time", text: "Buy me a coffee"
   end
 
   test "should not show unpublished article" do

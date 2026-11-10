@@ -2,4 +2,7 @@
   <li><a href="https://github.com/simaob" rel="me">GitHub</a></li>
   <li><a href="https://linkedin.com/in/simaobelchior" rel="me">LinkedIn</a></li>
   <li><%= link_to "RSS", blog_feed_path(format: :rss) %></li>
+  <% if local_assigns[:sponsor] %>
+    <li><%= link_to "Buy me a coffee", sponsor_url %></li>
+  <% end %>
 </ul>
