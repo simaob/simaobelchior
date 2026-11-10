@@ -74,7 +74,9 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_select ".site-footer--cta a[href=?]", sponsor_url, text: "Buy me a coffee"
 
     get games_path
-    assert_select ".games-note a[href=?]", sponsor_url, text: "buy me a coffee"
+    assert_select ".games-note a[href=?]", sponsor_url, text: "buy me a coffee" do
+      assert_select "svg.sponsor-heart[aria-hidden=true]"
+    end
   end
 
   test "should get games" do

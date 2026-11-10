@@ -20,6 +20,9 @@ $font-family-sans-serif: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto
   --site-block-sub: #D2E3DF;
   --site-block-rule: #2A544D;
   --site-logos: #5F706C;
+  // GitHub's Sponsors pink, with its lighter dark-mode shade for dark backgrounds
+  --site-sponsor: #BF3989;
+  --site-sponsor-on-dark: #DB61A2;
   --site-gutter: 32px;
   --site-section: 96px;
 
@@ -724,6 +727,18 @@ a {
 
 .thread {
   padding-top: 104px;
+}
+
+.sponsor-heart {
+  width: 1em;
+  height: 1em;
+  margin-left: 0.35em;
+  vertical-align: -0.15em;
+  fill: var(--site-sponsor);
+}
+
+.site-footer--cta .sponsor-heart {
+  fill: var(--site-sponsor-on-dark);
 }
 
 .games-note {
