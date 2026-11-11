@@ -22,6 +22,13 @@ class PageViewCountingTest < ActionDispatch::IntegrationTest
     assert_equal [ "/blog", "/blog/#{article.slug}" ], PageView.order(:id).pluck(:path)
   end
 
+  test "counts the blogroll page but not its OPML download" do
+    get blogroll_path, headers: BROWSER
+    get blogroll_path(format: :opml), headers: BROWSER
+
+    assert_equal [ "/blogroll" ], PageView.pluck(:path)
+  end
+
   test "doesn't count bots, prefetches, HEAD requests or the RSS feed" do
     assert_no_difference -> { PageView.count } do
       get root_path, headers: { "User-Agent" => "Mozilla/5.0 (compatible; Googlebot/2.1)" }

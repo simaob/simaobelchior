@@ -1,0 +1,16 @@
+# Sites on the blogroll, see Link
+
+ana:
+  name: Ana's Notes
+  url: https://www.ana.example/
+  feed_url: https://www.ana.example/feed.xml
+  description: Short posts about running small teams.
+
+bea:
+  name: bea writes
+  url: https://bea.example/
+  feed_url: https://bea.example/atom.xml
+
+zed:
+  name: Zed
+  url: https://zed.example/

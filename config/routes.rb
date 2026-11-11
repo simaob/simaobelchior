@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   get "blog/feed" => "articles#feed", as: :blog_feed, defaults: { format: :rss }
   get "blog/:slug" => "articles#show", as: :article
 
+  # Other people's sites, also as OPML for feed readers
+  get "blogroll(.:format)" => "links#index", as: :blogroll, constraints: { format: /html|opml/ }
+
   # Admin namespace (to be used for blog management)
   namespace :admin do
     root to: "dashboard#index"
@@ -21,6 +24,7 @@ Rails.application.routes.draw do
     resources :articles do
       post :toggle_publish, on: :member
     end
+    resources :links, except: :show
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

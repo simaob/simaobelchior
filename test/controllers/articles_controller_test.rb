@@ -102,6 +102,15 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".side-card a", text: "October Stars"
   end
 
+  test "should point to the blogroll once it has links" do
+    get blog_path
+    assert_select ".blog-layout__aside .side-card a[href=?]", blogroll_path, text: "See the blogroll →"
+
+    Link.delete_all
+    get blog_path
+    assert_select ".blog-layout__aside", count: 0
+  end
+
   test "should show articles in full on the index, with players for YouTube links" do
     Article.create!(title: "Music", body: %(<div><a href="https://youtu.be/kNbgap22Jr8">https://youtu.be/kNbgap22Jr8</a></div>), published_at: 1.day.ago)
     Article.create!(title: "Note", body: "<ol><li>First</li><li>Second</li></ol>", published_at: 2.days.ago)

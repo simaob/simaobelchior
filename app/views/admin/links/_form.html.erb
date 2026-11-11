@@ -1,0 +1,39 @@
+<%= form_with(model: [:admin, link]) do |f| %>
+  <% if link.errors.any? %>
+    <div class="alert alert-danger">
+      <h4 class="alert-heading">Please fix the following errors:</h4>
+      <ul class="mb-0">
+        <% link.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :name, class: "form-label" %>
+    <%= f.text_field :name, class: "form-control", placeholder: "The person's or site's name", required: true, autofocus: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :url, "Address", class: "form-label" %>
+    <%= f.text_field :url, class: "form-control", placeholder: "https://example.com", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :feed_url, "Feed address", class: "form-label" %>
+    <%= f.text_field :feed_url, class: "form-control", placeholder: "https://example.com/feed.xml" %>
+    <div class="form-text">Optional. Sites with a feed get an RSS link and go in the OPML download.</div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :description, "Why it's worth reading", class: "form-label" %>
+    <%= f.text_area :description, class: "form-control", rows: 3 %>
+    <div class="form-text">Optional. One or two sentences shown under the name.</div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <%= f.submit link.persisted? ? "Update Link" : "Add Link", class: "btn btn-primary" %>
+    <%= link_to "Cancel", admin_links_path, class: "btn btn-outline-secondary" %>
+  </div>
+<% end %>

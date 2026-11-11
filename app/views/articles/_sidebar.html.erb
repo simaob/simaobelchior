@@ -1,4 +1,4 @@
-<% if @latest_reading_list || @featured %>
+<% if @latest_reading_list || @featured || @blogroll %>
   <aside class="blog-layout__aside">
     <% if @latest_reading_list %>
       <section class="side-card side-card--tinted">
@@ -13,6 +13,14 @@
         <p class="side-card__eyebrow side-card__eyebrow--muted">Start here</p>
         <h2 class="side-card__title side-card__title--sm"><%= link_to @featured.title, article_path(@featured.slug) %></h2>
         <p class="side-card__text"><%= @featured.excerpt(length: 140) %></p>
+      </section>
+    <% end %>
+    <% if @blogroll %>
+      <section class="side-card">
+        <p class="side-card__eyebrow side-card__eyebrow--muted">Blogroll</p>
+        <h2 class="side-card__title side-card__title--sm">Sites I read</h2>
+        <p class="side-card__text">People and sites I keep going back to.</p>
+        <%= link_to "See the blogroll →", blogroll_path, class: "text-link" %>
       </section>
     <% end %>
   </aside>

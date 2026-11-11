@@ -747,6 +747,66 @@ a {
   color: var(--site-muted);
 }
 
+// Blogroll
+
+.blogroll {
+  padding-top: 24px;
+}
+
+.link-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr));
+  column-gap: 64px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link-list__item {
+  padding-block: 32px;
+  border-bottom: 1px solid var(--site-rule);
+}
+
+.link-list__name {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+
+  a {
+    color: var(--site-text);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--site-accent);
+    }
+  }
+}
+
+.link-list__meta {
+  margin: 6px 0 0;
+  font-size: 15px;
+  color: var(--site-muted);
+}
+
+.link-list__feed {
+  font-weight: 600;
+}
+
+.link-list__text {
+  margin: 12px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--site-muted);
+}
+
+.blogroll-note {
+  margin: 32px 0 0;
+  font-size: 18px;
+  color: var(--site-muted);
+}
+
 .thread__intro {
   margin: 8px 0 40px;
   font-size: 18px;

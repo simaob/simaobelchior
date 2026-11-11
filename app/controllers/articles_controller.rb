@@ -44,5 +44,6 @@ class ArticlesController < ApplicationController
   def set_sidebar
     @featured = Article.published.featured.first
     @latest_reading_list = Article.published.joins(:tags).find_by(tags: { name: READING_LIST_TAG })
+    @blogroll = Link.exists?
   end
 end

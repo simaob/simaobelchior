@@ -1,0 +1,57 @@
+<% content_for :title, "Blogroll" %>
+<div class="site-wrap my-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <h1 class="fw-semibold">Blogroll</h1>
+    <div class="d-flex gap-2">
+      <%= link_to "View page", blogroll_path, class: "btn btn-outline-secondary" %>
+      <%= link_to "New Link", new_admin_link_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+
+  <% if @links.any? %>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Feed</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @links.each do |link| %>
+            <tr>
+              <td>
+                <strong><%= link_to link.name, edit_admin_link_path(link), class: "text-decoration-none" %></strong>
+                <% if link.description %>
+                  <div class="small text-muted"><%= link.description.truncate(100, separator: " ") %></div>
+                <% end %>
+              </td>
+              <td><%= link_to link.domain, link.url, class: "text-decoration-none" %></td>
+              <td>
+                <% if link.feed_url %>
+                  <span class="badge bg-success">RSS</span>
+                <% else %>
+                  <small class="text-muted">—</small>
+                <% end %>
+              </td>
+              <td class="text-end">
+                <div class="btn-group" role="group">
+                  <%= link_to "Edit", edit_admin_link_path(link), class: "btn btn-sm btn-outline-primary" %>
+                  <%= button_to "Delete", admin_link_path(link), method: :delete,
+                      data: { turbo_confirm: "Remove #{link.name} from the blogroll?" },
+                      class: "btn btn-sm btn-outline-danger" %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      The blogroll is empty. <%= link_to "Add the first link", new_admin_link_path, class: "alert-link" %>.
+    </div>
+  <% end %>
+</div>

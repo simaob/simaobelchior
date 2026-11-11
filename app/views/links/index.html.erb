@@ -1,0 +1,47 @@
+<% content_for :title, "Blogroll" %>
+<% content_for :description, "Blogs and sites Simão Belchior reads, with a line on why each one is worth following." %>
+<% if @links.any?(&:feed_url) %>
+  <% content_for :head, tag.link(rel: "blogroll", type: "text/xml", href: blogroll_path(format: :opml), title: "Simão Belchior's blogroll") %>
+<% end %>
+
+<section class="page-hero">
+  <div class="site-wrap page-hero__split">
+    <div class="page-hero__text">
+      <p class="eyebrow">Blogroll</p>
+      <h1 class="page-title">Sites I read.</h1>
+      <p class="lede">People and sites I keep going back to, because they share things I find interesting or useful.</p>
+    </div>
+    <% if @links.any?(&:feed_url) %>
+      <%= link_to blogroll_path(format: :opml), class: "btn-site btn-site--outline" do %>
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
+        Download as OPML
+      <% end %>
+    <% end %>
+  </div>
+</section>
+
+<section class="site-wrap blogroll" aria-label="Blogroll">
+  <% if @links.any? %>
+    <ul class="link-list">
+      <% @links.each do |link| %>
+        <li class="link-list__item">
+          <h2 class="link-list__name"><%= link_to link.name, link.url %></h2>
+          <p class="link-list__meta">
+            <%= link.domain %>
+            <% if link.feed_url %>
+              · <%= link_to "RSS", link.feed_url, class: "link-list__feed" %>
+            <% end %>
+          </p>
+          <% if link.description %>
+            <p class="link-list__text"><%= link.description %></p>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+    <% if @links.any?(&:feed_url) %>
+      <p class="blogroll-note">The OPML file has every site with a feed, so you can add them all to your feed reader at once.</p>
+    <% end %>
+  <% else %>
+    <p class="empty-state">Nothing here yet.</p>
+  <% end %>
+</section>
