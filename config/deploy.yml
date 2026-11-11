@@ -20,6 +20,8 @@ proxy:
   hosts:
     - simaobelchior.com
     - www.simaobelchior.com
+    - simaobelchior.net
+    - www.simaobelchior.net
 
 # Use a local registry instead of a remote one. Kamal runs a registry container
 # on this machine, pushes the image to it, and the servers pull it over an SSH tunnel.
