@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   constraints(host: /(\A|\.)simaobelchior\.net\z/) do
     get "(*path)", to: redirect { |_params, request| "https://simaobelchior.com#{request.fullpath}" }
   end
