@@ -170,4 +170,51 @@ class VisitStatsTest < ActiveSupport::TestCase
       assert_equal 1, visit_stats.buckets.last.visits
     end
   end
+
+  test "lists the most visited articles, leaving out other pages and deleted articles" do
+    article = Article.create!(title: "Why I write", body: "Content", published_at: 1.month.ago)
+
+    travel_to NOW do
+      view(path: "/blog/#{article.slug}")
+      view(path: "/blog/gone", ip: "203.0.113.2")
+      view(path: "/blog/gone", ip: "203.0.113.3")
+      view(path: "/blog", ip: "203.0.113.4")
+      view(path: "/blog/#{article.slug}", host: GAMES, ip: "203.0.113.5")
+
+      assert_equal [ [ "Why I write", 1 ] ], stats.articles.map { |page| [ page.title, page.visits ] }
+    end
+  end
+
+  test "lists the sites that sent visits for the first time in the period, and where they landed" do
+    travel_to NOW - 10.days do
+      view(referrer: "https://github.com/")
+    end
+    travel_to NOW do
+      view(ip: "203.0.113.1", referrer: "https://github.com/")
+      view(ip: "203.0.113.2", path: "/about", referrer: "https://news.ycombinator.com/")
+      view(ip: "203.0.113.3", path: "/about", referrer: "https://news.ycombinator.com/")
+      view(ip: "203.0.113.4", path: "/", referrer: "https://news.ycombinator.com/")
+
+      week = stats(period: "7d")
+      assert_equal [ VisitStats::Referrer.new(host: "news.ycombinator.com", visits: 3) ], week.new_referrers
+      assert_equal "/about", week.landing_page("news.ycombinator.com").path
+      assert_equal 2, stats(period: "30d").new_referrers.size
+    end
+  end
+
+  test "works out an average whole day, leaving out today and the days before counting" do
+    travel_to NOW do
+      view
+      assert_nil stats.average_day_visits
+    end
+    travel_to NOW - 3.days do
+      3.times { |i| view(ip: "203.0.113.#{i}") }
+    end
+    travel_to NOW - 1.day do
+      view
+    end
+    travel_to NOW do
+      assert_equal 4 / 3.0, stats.average_day_visits
+    end
+  end
 end

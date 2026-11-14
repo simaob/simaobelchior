@@ -1652,34 +1652,10 @@ html:has(.image-zoom[open]) {
   margin-top: 8px;
 }
 
-// The dashboard shows a glimpse of visits: three totals over a shorter chart
+// The dashboard has a shorter chart
 
 .visits-chart--small {
   --chart-height: 72px;
-}
-
-.visits-glimpse {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-
-  dt {
-    margin-bottom: 4px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--site-muted);
-  }
-
-  dd {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 600;
-    line-height: 1.1;
-    font-variant-numeric: tabular-nums;
-  }
 }
 
 .visits-table td.text-end,
@@ -1861,4 +1837,82 @@ html:has(.image-zoom[open]) {
 
 .visits-rank__direct .visits-rank__label {
   color: var(--site-muted);
+}
+
+// Admin: the dashboard. Today's visits in big type, then short lists with a
+// count on the right.
+
+.dashboard-today {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px 32px;
+  margin-bottom: 24px;
+}
+
+.dashboard-today__total {
+  margin: 0;
+  font-size: 18px;
+  color: var(--site-muted);
+
+  strong {
+    margin-right: 4px;
+    font-size: 56px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--site-text);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.dashboard-today__context {
+  padding-bottom: 6px;
+  font-size: 14px;
+  color: var(--site-muted);
+}
+
+.dash-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding-block: 10px;
+    border-top: 1px solid var(--site-rule);
+  }
+}
+
+.dash-list__main {
+  min-width: 0;
+}
+
+.dash-list__title {
+  display: block;
+  color: var(--site-text);
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+
+  &:hover {
+    color: var(--site-accent);
+    text-decoration: underline;
+  }
+}
+
+.dash-list__meta {
+  display: block;
+  font-size: 13px;
+  color: var(--site-muted);
+}
+
+.dash-list__count {
+  flex: none;
+  font-size: 14px;
+  color: var(--site-muted);
+  font-variant-numeric: tabular-nums;
 }

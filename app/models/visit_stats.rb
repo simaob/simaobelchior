@@ -100,15 +100,18 @@ class VisitStats
   end
 
   def pages(limit: 10)
-    rows = views.group(:host, :path)
-      .order(Arel.sql("COUNT(DISTINCT visitor_hash) DESC, COUNT(*) DESC"), :path)
-      .limit(limit)
-      .pluck(:host, :path, Arel.sql("COUNT(DISTINCT visitor_hash)"), Arel.sql("COUNT(*)"))
-    titles = article_titles(rows)
+    ranked_pages(views, limit)
+  end
 
-    rows.map do |host, path, visits, page_views|
-      Page.new(host: host, path: path, title: titles[[ host, path ]], visits: visits, views: page_views)
-    end
+  # The most visited articles. Pages under /blog/ for articles since deleted are left out.
+  def articles(limit: 5)
+    on_blog = views.where.not(host: PageView::GAMES_HOST).where("page_views.path LIKE ?", "/blog/_%")
+    ranked_pages(on_blog, limit * 2).select(&:title).first(limit)
+  end
+
+  # The page the most visits from this site started on
+  def landing_page(referrer_host)
+    ranked_pages(views.where(referrer_host: referrer_host), 1).first
   end
 
   def referrers(limit: 10)
@@ -119,6 +122,29 @@ class VisitStats
       .distinct
       .count(:visitor_hash)
       .map { |host, visits| Referrer.new(host: host, visits: visits) }
+  end
+
+  # Sites that sent visits in this period and never before it
+  def new_referrers(limit: 5)
+    seen_before = on_site.where(visited_on: ...days.begin).where.not(referrer_host: nil).select(:referrer_host)
+    views.where.not(referrer_host: nil)
+      .where.not(referrer_host: seen_before)
+      .group(:referrer_host)
+      .order(Arel.sql("COUNT(DISTINCT visitor_hash) DESC"), :referrer_host)
+      .limit(limit)
+      .distinct
+      .count(:visitor_hash)
+      .map { |host, visits| Referrer.new(host: host, visits: visits) }
+  end
+
+  # Visits on an average whole day of this period, leaving out today, which isn't
+  # over yet, and the days before counting started. Nil until there's a whole day.
+  def average_day_visits
+    counting_started = on_site.minimum(:visited_on) or return
+    whole_days = [ days.begin, counting_started ].max...today
+    return if whole_days.none?
+
+    views.where(visited_on: whole_days).group(:visited_on).distinct.count(:visitor_hash).values.sum.fdiv(whole_days.count)
   end
 
   # Visits with no other site sending them: typed in, from a bookmark or an app,
@@ -153,6 +179,18 @@ class VisitStats
     scope = scope.where(visitor_hash: scope.where(path: page).select(:visitor_hash)) if page
     scope = scope.where(visitor_hash: scope.where(referrer_host: from).select(:visitor_hash)) if from
     scope
+  end
+
+  def ranked_pages(scope, limit)
+    rows = scope.group(:host, :path)
+      .order(Arel.sql("COUNT(DISTINCT visitor_hash) DESC, COUNT(*) DESC"), :path)
+      .limit(limit)
+      .pluck(:host, :path, Arel.sql("COUNT(DISTINCT visitor_hash)"), Arel.sql("COUNT(*)"))
+    titles = article_titles(rows)
+
+    rows.map do |host, path, visits, page_views|
+      Page.new(host: host, path: path, title: titles[[ host, path ]], visits: visits, views: page_views)
+    end
   end
 
   def totals_for(scope)

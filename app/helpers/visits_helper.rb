@@ -14,16 +14,6 @@ module VisitsHelper
     "#{(100.0 * value / ceiling).round(2)}%"
   end
 
-  # Visits today, this week and this month, from 30 daily VisitStats buckets. A
-  # visit is one person on one day, so visits over several days are the sum of each day's
-  def visit_totals(days)
-    {
-      "Today" => days.last.visits,
-      "Last 7 days" => days.last(7).sum(&:visits),
-      "Last 30 days" => days.sum(&:visits)
-    }
-  end
-
   # The Visits page with some filters changed. A nil drops that filter.
   def visits_path_for(stats, **changes)
     params = stats.to_params.merge(changes)
