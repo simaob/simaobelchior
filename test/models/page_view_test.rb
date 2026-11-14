@@ -21,17 +21,6 @@ class PageViewTest < ActiveSupport::TestCase
     assert_nil record(host: PageView::GAMES_HOST, referrer: "https://games.simaobelchior.com/behaving-in-public/").referrer_host
   end
 
-  test "summarises one site's visits, pages and referrers" do
-    record(path: "/about", referrer: "https://github.com/")
-    record(host: PageView::GAMES_HOST, path: "/palminho/", referrer: "https://simaobelchior.com/")
-
-    summary = PageView.games.summary(days: 7)
-    assert_equal 7, summary.days.size
-    assert_equal 1, summary.days.last.visits
-    assert_equal({ "/palminho/" => 1 }, summary.top_pages)
-    assert_equal({ "simaobelchior.com" => 1 }, summary.top_referrers)
-  end
-
   test "stores the page and day but not the IP address or user agent" do
     view = record(ip: "203.0.113.7", path: "/about")
 
@@ -81,22 +70,6 @@ class PageViewTest < ActiveSupport::TestCase
     assert_not PageView.bot?(CHROME)
   end
 
-  test "counts visits and page views per day, with empty days filled in" do
-    travel_to Time.zone.local(2026, 11, 9, 12) do
-      record(path: "/")
-      record(path: "/about")
-      record(ip: "203.0.113.8")
-
-      travel 1.day
-      record
-
-      days = PageView.by_day(days: 3)
-      assert_equal [ Date.new(2026, 11, 8), Date.new(2026, 11, 9), Date.new(2026, 11, 10) ], days.map(&:day)
-      assert_equal [ 0, 2, 1 ], days.map(&:visits)
-      assert_equal [ 0, 3, 1 ], days.map(&:views)
-    end
-  end
-
   test "counts visits to each page over all time, one per person per day" do
     travel_to Time.zone.local(2026, 11, 9, 12) do
       record(path: "/blog/first")
@@ -110,15 +83,5 @@ class PageViewTest < ActiveSupport::TestCase
 
       assert_equal({ "/blog/first" => 3, "/blog/second" => 1 }, PageView.visits_by_path([ "/blog/first", "/blog/second", "/blog/none" ]))
     end
-  end
-
-  test "ranks pages by views and referrers by visits" do
-    record(path: "/about")
-    record(path: "/about", ip: "203.0.113.8", referrer: "https://www.linkedin.com/")
-    record(path: "/", referrer: "https://www.linkedin.com/")
-    record(path: "/", ip: "203.0.113.9", referrer: "https://github.com/")
-
-    assert_equal({ "/" => 2, "/about" => 2 }, PageView.top_pages(since: Date.current))
-    assert_equal({ "linkedin.com" => 2, "github.com" => 1 }, PageView.top_referrers(since: Date.current))
   end
 end

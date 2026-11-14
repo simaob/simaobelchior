@@ -23,12 +23,12 @@ class Admin::DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_select "#site-visits h2", "Visits"
     assert_select "#site-visits .visits-glimpse dd", text: "3", count: 3
     assert_select "#site-visits .visits-chart--small .visits-chart__day", 30
-    assert_select "#site-visits .visits-chart__day:last-child[aria-label$=?]", "3 visits"
-    assert_select "#site-visits a[href=?]", admin_site_visits_path
+    assert_select "#site-visits .visits-chart__day:last-child[aria-label$=?]", "3 visits, 3 page views"
+    assert_select "#site-visits a[href=?]", admin_visits_path(site: "site")
 
     assert_select "#game-visits h2", "Game visits"
-    assert_select "#game-visits .visits-chart__day:last-child[aria-label$=?]", "2 visits"
-    assert_select "#game-visits a[href=?]", admin_game_visits_path
+    assert_select "#game-visits .visits-chart__day:last-child[aria-label$=?]", "2 visits, 2 page views"
+    assert_select "#game-visits a[href=?]", admin_visits_path(site: "games")
 
     # The top pages and referrers are only on the full pages
     assert_select ".visits-table", count: 0

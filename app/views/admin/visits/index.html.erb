@@ -1,0 +1,196 @@
+<% content_for :title, "Visits" %>
+<% totals = @stats.totals %>
+<% previous = @stats.previous_totals %>
+<% against = comparison_label(@stats) %>
+<% direct = @stats.direct_visits unless @stats.from %>
+<% top_page = @pages.map(&:visits).max || 0 %>
+<% top_referrer = [ *@referrers.map(&:visits), direct || 0 ].max %>
+
+<section class="site-wrap my-4" id="visits" aria-labelledby="visits-title">
+  <h1 class="fw-semibold mb-4" id="visits-title">Visits</h1>
+
+  <div class="visits-controls">
+    <nav aria-label="Period">
+      <ul class="segmented">
+        <% VisitStats::PERIODS.each do |key, label| %>
+          <li><%= link_to label, visits_path_for(@stats, period: key), aria: { current: ("true" if @stats.period == key) } %></li>
+        <% end %>
+      </ul>
+    </nav>
+    <nav aria-label="Site">
+      <ul class="segmented">
+        <% VisitStats::SITES.each do |key, label| %>
+          <%# A page belongs to one site, so changing site lets go of it %>
+          <li><%= link_to label, visits_path_for(@stats, site: key, page: (@stats.page if @stats.site == key)), aria: { current: ("true" if @stats.site == key) } %></li>
+        <% end %>
+      </ul>
+    </nav>
+  </div>
+
+  <% if @stats.filtered? %>
+    <ul class="visits-filters" aria-label="Filters">
+      <% if @stats.page %>
+        <li class="visits-filter">
+          <span>Visits that included <strong><%= @stats.page_title || @stats.page %></strong></span>
+          <%= link_to "×", visits_path_for(@stats, page: nil), class: "visits-filter__remove", aria: { label: "Show visits to every page" } %>
+        </li>
+      <% end %>
+      <% if @stats.from %>
+        <li class="visits-filter">
+          <span>Visits from <strong><%= @stats.from %></strong></span>
+          <%= link_to "×", visits_path_for(@stats, from: nil), class: "visits-filter__remove", aria: { label: "Show visits from everywhere" } %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div class="row">
+    <% [
+      [ "Visits", number_with_delimiter(totals.visits), totals.visits, previous&.visits ],
+      [ "Page views", number_with_delimiter(totals.views), totals.views, previous&.views ],
+      [ "Pages per visit", format_views_per_visit(totals.views_per_visit), totals.views_per_visit, previous&.views_per_visit ]
+    ].each do |label, shown, current, before| %>
+      <div class="col-md-4 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <p class="text-muted text-uppercase small fw-semibold mb-2"><%= label %></p>
+            <p class="h2 mb-1 visits-total"><%= shown %></p>
+            <%= change_from(current, before, against) %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+      <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-1">
+        <h2 class="h6 fw-semibold mb-0"><%= chart_title(@stats.unit) %></h2>
+        <ul class="visits-legend" aria-hidden="true">
+          <li class="visits-legend__visits">Visits</li>
+          <li class="visits-legend__views">Page views</li>
+        </ul>
+      </div>
+      <p class="small text-muted mb-4">A visit is one person on one day, not counting bots or you while logged in.</p>
+
+      <%= render "chart", buckets: @stats.buckets, title: chart_title(@stats.unit) %>
+
+      <details class="mt-4">
+        <summary class="small">Show as a table</summary>
+        <table class="table table-sm small mt-2 mb-0 visits-table">
+          <thead>
+            <tr>
+              <th scope="col"><%= @stats.unit.to_s.capitalize %></th>
+              <th scope="col" class="text-end">Visits</th>
+              <th scope="col" class="text-end">Page views</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @stats.buckets.reverse_each do |bucket| %>
+              <tr>
+                <td><%= bucket_label(bucket) %></td>
+                <td class="text-end"><%= number_with_delimiter(bucket.visits) %></td>
+                <td class="text-end"><%= number_with_delimiter(bucket.views) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </details>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-6 mb-3">
+      <div class="card border-0 shadow-sm h-100" id="visits-pages">
+        <div class="card-body">
+          <h2 class="h6 fw-semibold mb-3">Pages</h2>
+          <% if @pages.any? %>
+            <table class="table table-sm small mb-0 visits-table visits-rank">
+              <thead>
+                <tr>
+                  <th scope="col">Page</th>
+                  <th scope="col" class="text-end">Visits</th>
+                  <th scope="col" class="text-end">Views</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @pages.each do |page| %>
+                  <tr>
+                    <td>
+                      <span class="visits-rank__bar" style="width: <%= rank_bar_width(page.visits, top_page) %>"></span>
+                      <span class="visits-rank__label">
+                        <% if page.games? && @stats.site == "all" %><span class="visits-rank__tag">Games</span><% end %>
+                        <%= link_to page.title || page.path, visits_path_for(@stats, site: visited_page_site(page), page: page.path),
+                            class: "visits-rank__link", title: (page.path if page.title) %>
+                        <%= link_to "↗", visited_page_url(page), class: "visits-rank__open", target: "_blank", rel: "noopener",
+                            aria: { label: "Open #{page.title || page.path}" } %>
+                      </span>
+                    </td>
+                    <td class="text-end"><%= number_with_delimiter(page.visits) %></td>
+                    <td class="text-end"><%= number_with_delimiter(page.views) %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+            <% if @more_pages %>
+              <%= link_to "Show all pages", visits_path_for(@stats, show: "pages", anchor: "visits-pages"), class: "small fw-semibold d-inline-block mt-3" %>
+            <% elsif showing_all?(:pages) %>
+              <%= link_to "Show the top 10", visits_path_for(@stats, anchor: "visits-pages"), class: "small fw-semibold d-inline-block mt-3" %>
+            <% end %>
+          <% else %>
+            <p class="text-muted small mb-0">No page views in this period.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6 mb-3">
+      <div class="card border-0 shadow-sm h-100" id="visits-referrers">
+        <div class="card-body">
+          <h2 class="h6 fw-semibold mb-3">Where visits came from</h2>
+          <% if totals.visits.positive? %>
+            <table class="table table-sm small mb-0 visits-table visits-rank">
+              <thead>
+                <tr>
+                  <th scope="col">Site</th>
+                  <th scope="col" class="text-end">Visits</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @referrers.each do |referrer| %>
+                  <tr>
+                    <td>
+                      <span class="visits-rank__bar" style="width: <%= rank_bar_width(referrer.visits, top_referrer) %>"></span>
+                      <span class="visits-rank__label">
+                        <%= link_to referrer.host, visits_path_for(@stats, from: referrer.host), class: "visits-rank__link" %>
+                        <%= link_to "↗", "https://#{referrer.host}", class: "visits-rank__open", target: "_blank", rel: "noopener noreferrer",
+                            aria: { label: "Open #{referrer.host}" } %>
+                      </span>
+                    </td>
+                    <td class="text-end"><%= number_with_delimiter(referrer.visits) %></td>
+                  </tr>
+                <% end %>
+                <% if direct %>
+                  <tr class="visits-rank__direct">
+                    <td>
+                      <span class="visits-rank__bar" style="width: <%= rank_bar_width(direct, top_referrer) %>"></span>
+                      <span class="visits-rank__label">Direct or unknown</span>
+                    </td>
+                    <td class="text-end"><%= number_with_delimiter(direct) %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+            <% if @more_referrers %>
+              <%= link_to "Show all sites", visits_path_for(@stats, show: "referrers", anchor: "visits-referrers"), class: "small fw-semibold d-inline-block mt-3" %>
+            <% elsif showing_all?(:referrers) %>
+              <%= link_to "Show the top 10", visits_path_for(@stats, anchor: "visits-referrers"), class: "small fw-semibold d-inline-block mt-3" %>
+            <% end %>
+          <% else %>
+            <p class="text-muted small mb-0">No visits in this period.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

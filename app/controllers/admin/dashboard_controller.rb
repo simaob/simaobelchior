@@ -2,8 +2,8 @@ class Admin::DashboardController < ApplicationController
   before_action :require_authentication
 
   def index
-    @site_days = PageView.site.by_day
-    @game_days = PageView.games.by_day
+    @site_days = VisitStats.new(period: "30d", site: "site").buckets
+    @game_days = VisitStats.new(period: "30d", site: "games").buckets
 
     @total_articles = Article.count
     @published_count = Article.published.count

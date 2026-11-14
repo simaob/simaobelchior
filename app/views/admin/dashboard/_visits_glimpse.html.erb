@@ -1,5 +1,5 @@
 <%# A glimpse of visits for the dashboard, with a link to all the stats.
-    Locals: days (from PageView.by_day), title, id, and path to the full stats %>
+    Locals: days (30 daily VisitStats buckets), title, id, and path to the full stats %>
 <section class="card border-0 shadow-sm h-100" id="<%= id %>" aria-labelledby="<%= id %>-title">
   <div class="card-body">
     <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-3">
@@ -18,6 +18,6 @@
       <% end %>
     </dl>
 
-    <%= render "admin/visits/chart", days: days, title: title, small: true %>
+    <%= render "admin/visits/chart", buckets: days, title: title, small: true %>
   </div>
 </section>
