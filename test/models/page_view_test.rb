@@ -97,6 +97,21 @@ class PageViewTest < ActiveSupport::TestCase
     end
   end
 
+  test "counts visits to each page over all time, one per person per day" do
+    travel_to Time.zone.local(2026, 11, 9, 12) do
+      record(path: "/blog/first")
+      record(path: "/blog/first")
+      record(path: "/blog/first", ip: "203.0.113.8")
+      record(path: "/blog/second")
+      record(path: "/about")
+
+      travel 1.day
+      record(path: "/blog/first")
+
+      assert_equal({ "/blog/first" => 3, "/blog/second" => 1 }, PageView.visits_by_path([ "/blog/first", "/blog/second", "/blog/none" ]))
+    end
+  end
+
   test "ranks pages by views and referrers by visits" do
     record(path: "/about")
     record(path: "/about", ip: "203.0.113.8", referrer: "https://www.linkedin.com/")
