@@ -34,6 +34,21 @@ class Admin::DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_select ".visits-table", count: 0
   end
 
+  test "shows visits to each recent article" do
+    read = Article.create!(title: "Read", body: "Content", published_at: 1.day.ago)
+    Article.create!(title: "Unread", body: "Content", published_at: 1.day.ago)
+    3.times { |i| PageView.record(path: "/blog/#{read.slug}", referrer: nil, host: "simaobelchior.com", ip: "203.0.113.#{i}", user_agent: "Chrome") }
+    post login_path, params: { email: "user1@example.com", password: "password" }
+
+    get admin_root_url
+    assert_select ".list-group-item", text: /Read/ do
+      assert_select ".article-visits", "3 visits"
+    end
+    assert_select ".list-group-item", text: /Unread/ do
+      assert_select ".article-visits", "0 visits"
+    end
+  end
+
   test "shows empty visit stats" do
     post login_path, params: { email: "user1@example.com", password: "password" }
 

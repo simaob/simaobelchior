@@ -19,16 +19,20 @@ class Admin::ArticlesController < ApplicationController
     end
 
     # Sort
+    by_published_at = Arel.sql("published_at IS NULL ASC, published_at DESC") # nulls last
     case params[:sort]
     when "title"
       @articles = @articles.order(:title)
     when "created_at"
       @articles = @articles.order(created_at: :desc)
-    else # Default to published_at (nulls last)
-      @articles = @articles.order(Arel.sql("published_at IS NULL ASC, published_at DESC"))
+    when "visits"
+      @articles = @articles.order(Arel.sql("(#{visits_to_each_article.to_sql}) DESC"), by_published_at)
+    else
+      @articles = @articles.order(by_published_at)
     end
 
     @articles = @articles.page(params[:page]).per(25)
+    @visits = PageView.site.visits_by_path(@articles.map { |article| article_path(article.slug) })
   end
 
   def new
@@ -77,6 +81,13 @@ class Admin::ArticlesController < ApplicationController
 
   def set_article
     @article = Article.find(params[:id])
+  end
+
+  # The visits to an article's page as a subquery, counted the same way as PageView.visits_by_path
+  def visits_to_each_article
+    PageView.site
+      .where("page_views.path = ? || articles.slug", "#{blog_path}/")
+      .select("COUNT(DISTINCT page_views.visitor_hash)")
   end
 
   def article_params

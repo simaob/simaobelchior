@@ -15,7 +15,7 @@
         </div>
         <div class="col-md-3">
           <%= f.select :sort,
-              options_for_select([["Published Date", ""], ["Title", "title"], ["Created Date", "created_at"]], params[:sort]),
+              options_for_select([["Published Date", ""], ["Title", "title"], ["Created Date", "created_at"], ["Visits", "visits"]], params[:sort]),
               {},
               class: "form-select" %>
         </div>
@@ -37,6 +37,7 @@
             <th>Title</th>
             <th>Status</th>
             <th>Published</th>
+            <th class="text-end">Visits</th>
             <th>Tags</th>
             <th class="text-end">Actions</th>
           </tr>
@@ -61,6 +62,7 @@
                   <small class="text-muted">—</small>
                 <% end %>
               </td>
+              <td class="text-end article-visits"><%= number_with_delimiter(@visits.fetch(article_path(article.slug), 0)) %></td>
               <td>
                 <% if article.tags.any? %>
                   <% article.tags.each do |tag| %>

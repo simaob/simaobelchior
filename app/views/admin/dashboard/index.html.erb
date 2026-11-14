@@ -58,6 +58,7 @@
                       <%= link_to article.title, edit_admin_article_path(article), class: "fw-semibold text-decoration-none" %>
                       <div class="small text-muted">
                         Created <%= article.created_at.strftime("%B %-d, %Y") %>
+                        · <span class="article-visits"><%= pluralize(number_with_delimiter(@visits.fetch(article_path(article.slug), 0)), "visit") %></span>
                       </div>
                     </div>
                     <% if article.published? %>

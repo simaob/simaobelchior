@@ -21,6 +21,37 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "shows visits to each article" do
+    draft = Article.create!(title: "Draft Article", body: "Draft content")
+    2.times { |i| PageView.record(path: "/blog/#{@article.slug}", referrer: nil, host: "simaobelchior.com", ip: "203.0.113.#{i}", user_agent: "Chrome") }
+    PageView.record(path: "/blog/#{@article.slug}", referrer: nil, host: PageView::GAMES_HOST, ip: "203.0.113.9", user_agent: "Chrome")
+
+    get admin_articles_path
+    assert_select "tr", text: /#{@article.title}/ do
+      assert_select ".article-visits", "2"
+    end
+    assert_select "tr", text: /#{draft.title}/ do
+      assert_select ".article-visits", "0"
+    end
+  end
+
+  test "sorts articles by visits, most visited first" do
+    popular = Article.create!(title: "Popular", body: "Content", published_at: 3.days.ago, tag_list: "ruby")
+    quiet = Article.create!(title: "Quiet", body: "Content", published_at: 2.days.ago, tag_list: "ruby")
+    unread = Article.create!(title: "Unread", body: "Content", published_at: 1.hour.ago, tag_list: "ruby")
+    visit = ->(article, ip, host: "simaobelchior.com") { PageView.record(path: "/blog/#{article.slug}", referrer: nil, host: host, ip: ip, user_agent: "Chrome") }
+    3.times { |i| visit.(popular, "203.0.113.#{i}") }
+    visit.(quiet, "203.0.113.1")
+    5.times { |i| visit.(unread, "203.0.113.#{i}", host: PageView::GAMES_HOST) } # Not this site's
+
+    get admin_articles_path(sort: "visits")
+    assert_equal [ "Popular", "Quiet", "Unread", "Test Article" ], css_select("tbody tr td:first-child a").map(&:text)
+    assert_select "select[name=sort] option[selected][value=visits]"
+
+    get admin_articles_path(sort: "visits", tag: "ruby")
+    assert_equal [ "Popular", "Quiet", "Unread" ], css_select("tbody tr td:first-child a").map(&:text)
+  end
+
   test "should filter articles by status" do
     Article.create!(title: "Draft Article", body: "Draft content")
     get admin_articles_path(status: "published")

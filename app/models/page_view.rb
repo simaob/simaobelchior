@@ -70,6 +70,13 @@ class PageView < ApplicationRecord
     range.map { |day| Day.new(day: day, visits: visits.fetch(day, 0), views: views.fetch(day, 0)) }
   end
 
+  # Visits to each of these pages since counting began. Pages with none are left out.
+  # The visitor hash changes every day, so counting distinct hashes counts each
+  # person once a day, like the daily totals.
+  def self.visits_by_path(paths)
+    where(path: paths).group(:path).distinct.count(:visitor_hash)
+  end
+
   def self.top_pages(since:, limit: 10)
     where(visited_on: since..)
       .group(:path)

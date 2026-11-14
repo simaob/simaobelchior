@@ -9,5 +9,6 @@ class Admin::DashboardController < ApplicationController
     @published_count = Article.published.count
     @draft_count = Article.drafts.count
     @recent_articles = Article.order(created_at: :desc).limit(10)
+    @visits = PageView.site.visits_by_path(@recent_articles.map { |article| article_path(article.slug) })
   end
 end
