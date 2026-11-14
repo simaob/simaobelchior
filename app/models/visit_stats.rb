@@ -67,7 +67,7 @@ class VisitStats
     when "7d" then (today - 6)..today
     when "30d" then (today - 29)..today
     when "90d" then (today - 89)..today
-    when "12m" then (today.beginning_of_week - 51.weeks)..today
+    when "12m" then (today.prev_year + 1)..today
     else (on_site.minimum(:visited_on) || today)..today
     end
   end
@@ -119,10 +119,10 @@ class VisitStats
     ranked_pages(views, limit)
   end
 
-  # The most visited articles. Pages under /blog/ for articles since deleted are left out.
+  # The most visited articles, leaving out the pages of articles since deleted
   def articles(limit: 5)
-    on_blog = views.where.not(host: PageView::GAMES_HOST).where("page_views.path LIKE ?", "/blog/_%")
-    ranked_pages(on_blog, limit * 2).select(&:title).first(limit)
+    article_paths = Article.select(Arel.sql("'/blog/' || slug"))
+    ranked_pages(views.where.not(host: PageView::GAMES_HOST).where(path: article_paths), limit)
   end
 
   # The page the most visits from this site started on

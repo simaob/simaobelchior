@@ -2,7 +2,6 @@
 # See VisitStats. The dashboard only shows a glimpse.
 class Admin::VisitsController < ApplicationController
   TOP = 10
-  ALL = 500
 
   before_action :require_authentication
 
@@ -19,7 +18,7 @@ class Admin::VisitsController < ApplicationController
   # The top pages or referrers, and whether there are more than shown.
   # ?show=pages or ?show=referrers lists them all.
   def top(list)
-    return [ @stats.public_send(list, limit: ALL), false ] if showing_all?(list)
+    return [ @stats.public_send(list, limit: nil), false ] if showing_all?(list)
 
     rows = @stats.public_send(list, limit: TOP + 1)
     [ rows.first(TOP), rows.size > TOP ]

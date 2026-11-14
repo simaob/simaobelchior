@@ -95,8 +95,9 @@ class VisitStatsTest < ActiveSupport::TestCase
       assert_equal [ :day, 90 ], [ stats(period: "90d").unit, stats(period: "90d").buckets.size ]
 
       year = stats(period: "12m")
+      assert_equal Date.new(2025, 11, 15)..Date.new(2026, 11, 14), year.days
       assert_equal :week, year.unit
-      assert_equal 52, year.buckets.size
+      assert_equal 53, year.buckets.size
       assert year.buckets.all? { |bucket| bucket.starts.monday? }
       assert_equal 1, year.buckets.last.visits
 
@@ -105,6 +106,17 @@ class VisitStatsTest < ActiveSupport::TestCase
       assert_equal Date.new(2023, 11, 1), all_time.buckets.first.starts
       assert_equal [ 1, 1 ], [ all_time.buckets.first.visits, all_time.buckets.last.visits ]
       assert_equal 2, all_time.buckets.sum(&:visits)
+    end
+  end
+
+  test "shows all time by the day while there's only a few months of visits" do
+    travel_to NOW - 20.days do
+      view
+    end
+    travel_to NOW do
+      all_time = stats(period: "all")
+      assert_equal :day, all_time.unit
+      assert_equal 21, all_time.buckets.size
     end
   end
 
@@ -176,12 +188,12 @@ class VisitStatsTest < ActiveSupport::TestCase
 
     travel_to NOW do
       view(path: "/blog/#{article.slug}")
-      view(path: "/blog/gone", ip: "203.0.113.2")
-      view(path: "/blog/gone", ip: "203.0.113.3")
+      3.times { |i| view(path: "/blog/gone-#{i}", ip: "203.0.113.2") }
+      view(path: "/blog/gone-0", ip: "203.0.113.3")
       view(path: "/blog", ip: "203.0.113.4")
       view(path: "/blog/#{article.slug}", host: GAMES, ip: "203.0.113.5")
 
-      assert_equal [ [ "Why I write", 1 ] ], stats.articles.map { |page| [ page.title, page.visits ] }
+      assert_equal [ [ "Why I write", 1 ] ], stats.articles(limit: 1).map { |page| [ page.title, page.visits ] }
     end
   end
 
