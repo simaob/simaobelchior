@@ -10,6 +10,8 @@ class Article < ApplicationRecord
 
   scope :published, -> { where("published_at <= ?", Time.current).order(published_at: :desc) }
   scope :drafts, -> { where(published_at: nil).order(created_at: :desc) }
+  # Drafts and articles set to be published later
+  scope :unpublished, -> { where(published_at: nil).or(where("published_at > ?", Time.current)) }
   scope :recent, -> { order(published_at: :desc) }
   scope :featured, -> { where(featured: true) }
 

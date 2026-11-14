@@ -1,90 +1,158 @@
-<section class="site-wrap my-5">
+<% content_for :title, "Dashboard" %>
+<% average_day = @month.average_day_visits %>
+
+<section class="site-wrap my-4" aria-labelledby="dashboard-title">
+  <div class="mb-4">
+    <h1 class="fw-semibold mb-1" id="dashboard-title">Dashboard</h1>
+    <p class="text-muted mb-0"><%= Date.current.strftime("%A %-d %B") %></p>
+  </div>
+
   <div class="row">
-    <div class="col-12">
-      <div class="mb-4">
-        <h1 class="fw-semibold">Admin Dashboard</h1>
-      </div>
-
-      <div class="row mb-4">
-        <div class="col-lg-6 mb-3">
-          <%= render "visits_glimpse", days: @site_days, title: "Visits", id: "site-visits", path: admin_visits_path(site: "site") %>
-        </div>
-        <div class="col-lg-6 mb-3">
-          <%= render "visits_glimpse", days: @game_days, title: "Game visits", id: "game-visits", path: admin_visits_path(site: "games") %>
-        </div>
-      </div>
-
-      <h2 class="h5 fw-semibold mb-3">Articles</h2>
-      <div class="row mb-4">
-        <div class="col-md-4 mb-3">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body">
-              <h6 class="text-muted text-uppercase small">Total Articles</h6>
-              <h2 class="mb-0"><%= @total_articles %></h2>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 mb-3">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body">
-              <h6 class="text-muted text-uppercase small">Published</h6>
-              <h2 class="mb-0 text-success"><%= @published_count %></h2>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 mb-3">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body">
-              <h6 class="text-muted text-uppercase small">Drafts</h6>
-              <h2 class="mb-0 text-secondary"><%= @draft_count %></h2>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card border-0 shadow-sm mb-4">
+    <div class="col-lg-8 mb-3">
+      <section class="card border-0 shadow-sm h-100" id="today" aria-labelledby="today-title">
         <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="card-title mb-0">Recent Articles</h5>
-            <%= link_to "View All", admin_articles_path, class: "btn btn-sm btn-outline-primary" %>
+          <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-2">
+            <h2 class="h6 fw-semibold mb-0" id="today-title">Today so far</h2>
+            <%= link_to admin_visits_path, class: "small fw-semibold text-decoration-none" do %>
+              See all visits <span aria-hidden="true">→</span>
+            <% end %>
           </div>
 
-          <% if @recent_articles.any? %>
-            <div class="list-group list-group-flush">
-              <% @recent_articles.each do |article| %>
-                <div class="list-group-item px-0">
-                  <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                      <%= link_to article.title, edit_admin_article_path(article), class: "fw-semibold text-decoration-none" %>
-                      <div class="small text-muted">
-                        Created <%= article.created_at.strftime("%B %-d, %Y") %>
-                        · <span class="article-visits"><%= pluralize(number_with_delimiter(@visits.fetch(article_path(article.slug), 0)), "visit") %></span>
-                      </div>
-                    </div>
-                    <% if article.published? %>
-                      <span class="badge bg-success">Published</span>
-                    <% else %>
-                      <span class="badge bg-secondary">Draft</span>
+          <div class="dashboard-today">
+            <p class="dashboard-today__total">
+              <strong><%= number_with_delimiter(@today.totals.visits) %></strong>
+              <%= @today.totals.visits == 1 ? "visit" : "visits" %>
+            </p>
+            <div class="dashboard-today__context">
+              <% if average_day %>
+                <p class="mb-1">About <%= number_with_delimiter(average_day.round) %> on an average day in the last 30 days</p>
+              <% end %>
+              <p class="mb-0">
+                <%= link_to "#{number_with_delimiter(@today_by_site["site"])} on the website", admin_visits_path(period: "today", site: "site") %>,
+                <%= link_to "#{number_with_delimiter(@today_by_site["games"])} on the games", admin_visits_path(period: "today", site: "games") %>
+              </p>
+            </div>
+          </div>
+
+          <%= render "admin/visits/chart", buckets: @month.buckets, title: "Visits in the last 30 days", small: true %>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-lg-4 mb-3">
+      <section class="card border-0 shadow-sm h-100" id="new-referrers" aria-labelledby="new-referrers-title">
+        <div class="card-body">
+          <h2 class="h6 fw-semibold mb-1" id="new-referrers-title">New sites sending visitors</h2>
+          <p class="small text-muted mb-3">Linking here for the first time this week</p>
+
+          <% if @new_referrers.any? %>
+            <ul class="dash-list">
+              <% @new_referrers.each do |referrer, landing| %>
+                <li>
+                  <div class="dash-list__main">
+                    <%= link_to referrer.host, admin_visits_path(period: "7d", from: referrer.host), class: "dash-list__title" %>
+                    <% if landing %>
+                      <span class="dash-list__meta">to <%= landing.title || landing.path %></span>
                     <% end %>
                   </div>
-                </div>
+                  <span class="dash-list__count"><%= pluralize(number_with_delimiter(referrer.visits), "visit") %></span>
+                </li>
               <% end %>
-            </div>
+            </ul>
           <% else %>
-            <p class="text-muted mb-0">No articles yet. <%= link_to "Create your first article", new_admin_article_path, class: "text-decoration-none" %>.</p>
+            <p class="small text-muted mb-0">No new sites this week.</p>
           <% end %>
         </div>
-      </div>
-
-      <div class="card border-0 shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title mb-3">Quick Actions</h5>
-          <div class="d-flex gap-2">
-            <%= link_to "New Article", new_admin_article_path, class: "btn btn-primary" %>
-            <%= link_to "Manage Articles", admin_articles_path, class: "btn btn-outline-primary" %>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-lg-4 mb-3">
+      <section class="card border-0 shadow-sm h-100" id="popular" aria-labelledby="popular-title">
+        <div class="card-body">
+          <h2 class="h6 fw-semibold mb-1" id="popular-title">Read this week</h2>
+          <p class="small text-muted mb-3">Articles with the most visits in the last 7 days</p>
+
+          <% if @popular.any? %>
+            <ol class="dash-list">
+              <% @popular.each do |page| %>
+                <li>
+                  <div class="dash-list__main">
+                    <%= link_to page.title, admin_visits_path(period: "7d", site: "site", page: page.path), class: "dash-list__title" %>
+                  </div>
+                  <span class="dash-list__count"><%= pluralize(number_with_delimiter(page.visits), "visit") %></span>
+                </li>
+              <% end %>
+            </ol>
+          <% else %>
+            <p class="small text-muted mb-0">No article has been read this week.</p>
+          <% end %>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-lg-4 mb-3">
+      <section class="card border-0 shadow-sm h-100" id="recently-published" aria-labelledby="recently-published-title">
+        <div class="card-body">
+          <h2 class="h6 fw-semibold mb-1" id="recently-published-title">Published</h2>
+          <% if @recently_published.any? %>
+            <p class="small text-muted mb-3">The last one <%= time_ago_in_words(@recently_published.first.published_at) %> ago</p>
+            <ul class="dash-list">
+              <% @recently_published.each do |article| %>
+                <li>
+                  <div class="dash-list__main">
+                    <%= link_to article.title, edit_admin_article_path(article), class: "dash-list__title" %>
+                    <span class="dash-list__meta"><%= article.published_at.strftime("%-d %B %Y") %></span>
+                  </div>
+                  <span class="dash-list__count article-visits"><%= pluralize(number_with_delimiter(@visits.fetch(article_path(article.slug), 0)), "visit") %></span>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="small text-muted mb-0">Nothing published yet.</p>
+          <% end %>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-lg-4 mb-3">
+      <section class="card border-0 shadow-sm h-100" id="drafts" aria-labelledby="drafts-title">
+        <div class="card-body">
+          <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-1">
+            <h2 class="h6 fw-semibold mb-0" id="drafts-title">In progress</h2>
+            <%= link_to "New article", new_admin_article_path, class: "small fw-semibold text-decoration-none" %>
+          </div>
+          <p class="small text-muted mb-3">Drafts and articles waiting to go out</p>
+
+          <% if @drafts.any? %>
+            <ul class="dash-list">
+              <% @drafts.each do |article| %>
+                <li>
+                  <div class="dash-list__main">
+                    <%= link_to article.title, edit_admin_article_path(article), class: "dash-list__title" %>
+                    <span class="dash-list__meta">
+                      <%= pluralize(number_with_delimiter(article.word_count), "word") %> ·
+                      <% if article.published_at %>
+                        out on <%= article.published_at.strftime("%-d %B") %>
+                      <% else %>
+                        edited <%= time_ago_in_words(article.updated_at) %> ago
+                      <% end %>
+                    </span>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="small text-muted mb-0">No drafts. <%= link_to "Start one", new_admin_article_path %>.</p>
+          <% end %>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <p class="small text-muted mt-2">
+    <%= pluralize(@article_counts[:total], "article") %>, <%= @article_counts[:published] %> published and <%= @article_counts[:unpublished] %> in progress.
+    <%= link_to "Manage articles", admin_articles_path %>
+  </p>
 </section>
