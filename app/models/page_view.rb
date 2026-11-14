@@ -11,9 +11,6 @@
 class PageView < ApplicationRecord
   GAMES_HOST = "games.simaobelchior.com"
 
-  Day = Data.define(:day, :visits, :views)
-  Summary = Data.define(:days, :top_pages, :top_referrers)
-
   scope :games, -> { where(host: GAMES_HOST) }
   scope :site, -> { where.not(host: GAMES_HOST) }
 
@@ -51,47 +48,10 @@ class PageView < ApplicationRecord
     host.to_s.downcase.delete_prefix("www.").presence
   end
 
-  # Visits per day, top pages and top referrers, for the last few days
-  def self.summary(days: 30)
-    per_day = by_day(days: days)
-    since = per_day.first.day
-
-    Summary.new(days: per_day, top_pages: top_pages(since: since), top_referrers: top_referrers(since: since))
-  end
-
-  # Visits and page views for each of the last few days, oldest first,
-  # including days with none
-  def self.by_day(days: 30)
-    range = (Date.current - (days - 1))..Date.current
-    scope = where(visited_on: range).group(:visited_on)
-    visits = scope.distinct.count(:visitor_hash)
-    views = scope.count
-
-    range.map { |day| Day.new(day: day, visits: visits.fetch(day, 0), views: views.fetch(day, 0)) }
-  end
-
   # Visits to each of these pages since counting began. Pages with none are left out.
   # The visitor hash changes every day, so counting distinct hashes counts each
   # person once a day, like the daily totals.
   def self.visits_by_path(paths)
     where(path: paths).group(:path).distinct.count(:visitor_hash)
-  end
-
-  def self.top_pages(since:, limit: 10)
-    where(visited_on: since..)
-      .group(:path)
-      .order(Arel.sql("COUNT(*) DESC"), :path)
-      .limit(limit)
-      .count
-  end
-
-  def self.top_referrers(since:, limit: 10)
-    where(visited_on: since..)
-      .where.not(referrer_host: nil)
-      .group(:referrer_host)
-      .order(Arel.sql("COUNT(DISTINCT visitor_hash) DESC"), :referrer_host)
-      .limit(limit)
-      .distinct
-      .count(:visitor_hash)
   end
 end

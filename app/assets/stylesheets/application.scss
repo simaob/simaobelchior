@@ -13,6 +13,8 @@ $font-family-sans-serif: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto
   --site-panel: #ECF5F2;
   --site-accent: #0A6A5C;
   --site-accent-hover: #08574B;
+  // Page views behind visits on the admin's charts
+  --site-accent-soft: #A7D1C8;
   --site-on-accent: #FFFFFF;
   --site-block: #0E3A34;
   --site-block-text: #FFFFFF;
@@ -1524,8 +1526,9 @@ html:has(.image-zoom[open]) {
   }
 }
 
-// Admin: visits per day on the dashboard. One column per day, with a tooltip
-// above the bar on hover or keyboard focus, and a table version underneath.
+// Admin: visits over time. One column per hour, day, week or month, with
+// visits in front of page views, a tooltip above the bars on hover or keyboard
+// focus, and a table version underneath.
 
 .visits-chart {
   --chart-height: 160px;
@@ -1554,6 +1557,11 @@ html:has(.image-zoom[open]) {
 .visits-chart__plot {
   display: flex;
   gap: 2px;
+
+  .visits-chart--dense & {
+    gap: 1px;
+  }
+
   height: var(--chart-height);
   margin: 0;
   padding: 0;
@@ -1586,10 +1594,17 @@ html:has(.image-zoom[open]) {
   }
 }
 
-.visits-chart__bar {
+.visits-chart__views {
   position: relative;
   width: 100%;
   max-width: 24px;
+  border-radius: 4px 4px 0 0;
+  background: var(--site-accent-soft);
+}
+
+.visits-chart__bar {
+  position: absolute;
+  inset: auto 0 0;
   border-radius: 4px 4px 0 0;
   background: var(--site-accent);
 }
@@ -1670,4 +1685,180 @@ html:has(.image-zoom[open]) {
 .visits-table td.text-end,
 .visits-table th.text-end {
   font-variant-numeric: tabular-nums;
+}
+
+// Admin: the Visits page. Pickers for the period and site, the filters from
+// clicking a page or a site, and tables with each row's share of visits behind it.
+
+.visits-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-bottom: 20px;
+}
+
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin: 0;
+  padding: 3px;
+  border: 1px solid var(--site-rule);
+  border-radius: 12px;
+  background: var(--site-bg);
+  list-style: none;
+
+  a {
+    display: block;
+    padding: 6px 12px;
+    border-radius: 9px;
+    color: var(--site-muted);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      background: var(--site-panel);
+      color: var(--site-text);
+    }
+
+    &[aria-current] {
+      background: var(--site-accent);
+      color: var(--site-on-accent);
+    }
+  }
+}
+
+.visits-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.visits-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 4px 4px 14px;
+  border-radius: 999px;
+  background: var(--site-panel);
+  font-size: 14px;
+}
+
+.visits-filter__remove {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--site-muted);
+  font-size: 18px;
+  line-height: 1;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--site-bg);
+    color: var(--site-text);
+  }
+}
+
+.visits-total {
+  font-variant-numeric: tabular-nums;
+}
+
+.visits-change {
+  font-size: 13px;
+  color: var(--site-muted);
+}
+
+.visits-change--up {
+  color: var(--site-accent);
+  font-weight: 600;
+}
+
+.visits-legend {
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  color: var(--site-muted);
+  list-style: none;
+
+  li::before {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+    border-radius: 2px;
+    vertical-align: -1px;
+  }
+}
+
+.visits-legend__visits::before { background: var(--site-accent); }
+.visits-legend__views::before { background: var(--site-accent-soft); }
+
+.visits-rank td:first-child {
+  position: relative;
+  width: 100%;
+}
+
+.visits-rank__bar {
+  position: absolute;
+  inset: 3px auto 3px 0;
+  border-radius: 4px;
+  background: var(--site-panel);
+}
+
+.visits-rank__label {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding-left: 6px;
+  overflow-wrap: anywhere;
+}
+
+.visits-rank__link {
+  color: var(--site-text);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--site-accent);
+    text-decoration: underline;
+  }
+}
+
+.visits-rank__open {
+  color: var(--site-muted);
+  text-decoration: none;
+  opacity: 0;
+
+  tr:hover &,
+  &:focus-visible {
+    opacity: 1;
+  }
+
+  @media (hover: none) {
+    opacity: 1;
+  }
+}
+
+.visits-rank__tag {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--site-bg);
+  color: var(--site-muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.visits-rank__direct .visits-rank__label {
+  color: var(--site-muted);
 }

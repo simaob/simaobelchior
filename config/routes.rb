@@ -19,8 +19,9 @@ Rails.application.routes.draw do
   # Admin namespace (to be used for blog management)
   namespace :admin do
     root to: "dashboard#index"
-    get "visits" => "visits#site", as: :site_visits
-    get "visits/games" => "visits#games", as: :game_visits
+    get "visits" => "visits#index", as: :visits
+    # Game visits had a page of their own before they joined the Visits page
+    get "visits/games", to: redirect("/admin/visits?site=games")
     resources :articles do
       post :toggle_publish, on: :member
     end

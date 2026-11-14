@@ -7,10 +7,10 @@
 
       <div class="row mb-4">
         <div class="col-lg-6 mb-3">
-          <%= render "visits_glimpse", days: @site_days, title: "Visits", id: "site-visits", path: admin_site_visits_path %>
+          <%= render "visits_glimpse", days: @site_days, title: "Visits", id: "site-visits", path: admin_visits_path(site: "site") %>
         </div>
         <div class="col-lg-6 mb-3">
-          <%= render "visits_glimpse", days: @game_days, title: "Game visits", id: "game-visits", path: admin_game_visits_path %>
+          <%= render "visits_glimpse", days: @game_days, title: "Game visits", id: "game-visits", path: admin_visits_path(site: "games") %>
         </div>
       </div>
 
