@@ -1652,12 +1652,6 @@ html:has(.image-zoom[open]) {
   margin-top: 8px;
 }
 
-// The dashboard has a shorter chart
-
-.visits-chart--small {
-  --chart-height: 72px;
-}
-
 .visits-table td.text-end,
 .visits-table th.text-end {
   font-variant-numeric: tabular-nums;
@@ -1914,5 +1908,12 @@ html:has(.image-zoom[open]) {
   flex: none;
   font-size: 14px;
   color: var(--site-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-feed__total strong {
+  margin-right: 4px;
+  font-size: 28px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
 }

@@ -28,7 +28,7 @@ class Admin::DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_select "#today p", "About 2 on an average day in the last 30 days"
     assert_select "#today a[href=?]", admin_visits_path(period: "today", site: "site"), "3 on the website"
     assert_select "#today a[href=?]", admin_visits_path(period: "today", site: "games"), "2 on the games"
-    assert_select "#today .visits-chart--small .visits-chart__day", 30
+    assert_select "#today .visits-chart .visits-chart__day", 30
     assert_select "#today a[href=?]", admin_visits_path
   end
 
@@ -82,6 +82,21 @@ class Admin::DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_select "p", /3 articles, 1 published and 2 in progress/
   end
 
+  test "shows feed subscribers yesterday and by reader" do
+    travel_to 1.day.ago do
+      FeedFetch.record(ip: "198.51.100.1", user_agent: "Feedly/1.0 (37 subscribers)")
+      FeedFetch.record(ip: "198.51.100.2", user_agent: "Mozilla/5.0 (compatible; Inoreader/1.0; 12 subscribers; )")
+      FeedFetch.record(ip: "203.0.113.1", user_agent: "NetNewsWire (RSS Reader; https://netnewswire.com/)")
+    end
+    log_in
+
+    get admin_root_url
+    assert_select "#feed strong", "About 50"
+    assert_select "#feed p", "Feedly 37, Inoreader 12 and NetNewsWire 1"
+    assert_select "#feed .visits-change", count: 0
+    assert_select "#feed a[href=?]", admin_visits_path(anchor: "feed")
+  end
+
   test "shows an empty dashboard" do
     log_in
 
@@ -92,5 +107,6 @@ class Admin::DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_select "#new-referrers p", "No new sites this week."
     assert_select "#popular p", "No article has been read this week."
     assert_select "#recently-published p", "Nothing published yet."
+    assert_select "#feed p", "No feed readers yet."
   end
 end

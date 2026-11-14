@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_14_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_14_180000) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -68,6 +68,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_120000) do
     t.datetime "updated_at", null: false
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["slug"], name: "index_articles_on_slug", unique: true
+  end
+
+  create_table "feed_fetches", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "fetched_on", null: false
+    t.string "fetcher_hash", null: false
+    t.integer "fetches", default: 1, null: false
+    t.string "reader", null: false
+    t.integer "subscribers"
+    t.datetime "updated_at", null: false
+    t.index ["fetched_on", "fetcher_hash"], name: "index_feed_fetches_on_fetched_on_and_fetcher_hash", unique: true
   end
 
   create_table "links", force: :cascade do |t|

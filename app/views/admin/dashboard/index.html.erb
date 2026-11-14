@@ -34,13 +34,34 @@
             </div>
           </div>
 
-          <%= render "admin/visits/chart", buckets: @month.buckets, title: "Visits in the last 30 days", small: true %>
+          <%= render "admin/visits/chart", buckets: @month.buckets, title: "Visits in the last 30 days" %>
         </div>
       </section>
     </div>
 
-    <div class="col-lg-4 mb-3">
-      <section class="card border-0 shadow-sm h-100" id="new-referrers" aria-labelledby="new-referrers-title">
+    <div class="col-lg-4 mb-3 d-flex flex-column gap-3">
+      <section class="card border-0 shadow-sm" id="feed" aria-labelledby="feed-title">
+        <div class="card-body">
+          <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-2">
+            <h2 class="h6 fw-semibold mb-0" id="feed-title">Feed subscribers</h2>
+            <%= link_to admin_visits_path(anchor: "feed"), class: "small fw-semibold text-decoration-none" do %>
+              Details <span aria-hidden="true">→</span>
+            <% end %>
+          </div>
+          <% if @feed %>
+            <p class="dashboard-feed__total mb-1">
+              <strong>About <%= number_with_delimiter(@feed.subscribers) %></strong>
+              <span class="text-muted small"><%= feed_day_label(@feed).downcase %></span>
+            </p>
+            <p class="mb-1"><%= feed_change(@feed) %></p>
+            <p class="small text-muted mb-0"><%= feed_readers_summary(@feed.readers) %></p>
+          <% else %>
+            <p class="small text-muted mb-0">No feed readers yet.</p>
+          <% end %>
+        </div>
+      </section>
+
+      <section class="card border-0 shadow-sm flex-grow-1" id="new-referrers" aria-labelledby="new-referrers-title">
         <div class="card-body">
           <h2 class="h6 fw-semibold mb-1" id="new-referrers-title">New sites sending visitors</h2>
           <p class="small text-muted mb-3">Linking here for the first time this week</p>

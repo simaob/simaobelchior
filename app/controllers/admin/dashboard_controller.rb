@@ -7,6 +7,7 @@ class Admin::DashboardController < ApplicationController
     @today = VisitStats.new(period: "today")
     @today_by_site = VisitStats::SITES.keys.excluding("all").index_with { |site| VisitStats.new(period: "today", site: site).totals.visits }
     @month = VisitStats.new(period: "30d")
+    @feed = FeedFetch.summary
 
     week = VisitStats.new(period: "7d")
     @popular = week.articles(limit: 5)

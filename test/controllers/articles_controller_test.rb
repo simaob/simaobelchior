@@ -205,6 +205,19 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "application/rss+xml", @response.media_type
   end
 
+  test "counts feed readers fetching the feed, but not browsers or the site owner" do
+    get blog_feed_path, headers: { "User-Agent" => "Feedly/1.0 (+http://www.feedly.com/fetcher.html; 37 subscribers; like FeedFetcher-Google)" }
+    get blog_feed_path, headers: { "User-Agent" => "NetNewsWire (RSS Reader; https://netnewswire.com/)" }
+    get blog_feed_path, headers: { "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36" }
+    assert_response :success
+    assert_equal({ "Feedly" => 37, "NetNewsWire" => 1 }, FeedFetch.readers_on(Date.current))
+    assert_equal 0, PageView.count
+
+    post login_path, params: { email: "user1@example.com", password: "password" }
+    get blog_feed_path, headers: { "User-Agent" => "Reeder/5050.01.00 CFNetwork/1568.100.1 Darwin/24.0.0" }
+    assert_equal 2, FeedFetch.count
+  end
+
   test "RSS feed should include published articles" do
     published = Article.create!(title: "Published Article", body: "Content for RSS", published_at: 1.day.ago)
     draft = Article.create!(title: "Draft Article", body: "Content", published_at: nil)
