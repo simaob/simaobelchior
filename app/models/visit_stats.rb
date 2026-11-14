@@ -99,6 +99,22 @@ class VisitStats
     @buckets ||= unit == :hour ? hourly_buckets : daily_buckets
   end
 
+  # Estimated feed subscribers each day, or on an average day of each week or month,
+  # up to the last whole day (see FeedFetch). Nil for today, which has no whole day.
+  def feed_buckets
+    return if unit == :hour
+
+    last_day = FeedFetch.last_whole_day or return []
+    by_day = FeedFetch.subscribers_by_day(days.begin..last_day)
+
+    bucket_ranges.filter_map do |starts, in_bucket|
+      counted = by_day.values_at(*in_bucket.select { |day| day <= last_day }).compact
+      next if starts > last_day
+
+      Bucket.new(starts: starts, unit: unit, visits: counted.empty? ? 0 : counted.sum.fdiv(counted.size).round, views: nil)
+    end
+  end
+
   def pages(limit: 10)
     ranked_pages(views, limit)
   end
@@ -202,16 +218,23 @@ class VisitStats
     by_day = views.group(:visited_on)
     visits_by_day = by_day.distinct.count(:visitor_hash)
     views_by_day = by_day.count
-    step = { day: 1.day, week: 1.week, month: 1.month }.fetch(unit)
 
-    bucket_starts(step).map do |starts|
-      in_bucket = [ starts, days.begin ].max..[ starts + step - 1.day, days.end ].min
+    bucket_ranges.map do |starts, in_bucket|
       Bucket.new(
         starts: starts,
         unit: unit,
         visits: in_bucket.sum { |day| visits_by_day.fetch(day, 0) },
         views: in_bucket.sum { |day| views_by_day.fetch(day, 0) }
       )
+    end
+  end
+
+  # The day, week or month each bar starts on, and the days of the period in it
+  def bucket_ranges
+    step = { day: 1.day, week: 1.week, month: 1.month }.fetch(unit)
+
+    bucket_starts(step).map do |starts|
+      [ starts, [ starts, days.begin ].max..[ starts + step - 1.day, days.end ].min ]
     end
   end
 

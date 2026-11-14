@@ -217,4 +217,29 @@ class VisitStatsTest < ActiveSupport::TestCase
       assert_equal 4 / 3.0, stats.average_day_visits
     end
   end
+
+  test "shows feed subscribers each day, or on an average day each week, up to yesterday" do
+    feedly = ->(count) { FeedFetch.record(ip: "198.51.100.1", user_agent: "Feedly/1.0 (#{count} subscribers)") }
+    travel_to NOW - 9.days do
+      feedly.(10)
+    end
+    travel_to NOW - 2.days do
+      feedly.(20)
+    end
+    travel_to NOW - 1.day do
+      feedly.(30)
+    end
+    travel_to NOW do
+      feedly.(99)
+
+      week = stats(period: "7d").feed_buckets
+      assert_equal 6, week.size
+      assert_equal Date.yesterday, week.last.starts
+      assert_equal [ 0, 0, 0, 0, 20, 30 ], week.map(&:visits)
+
+      year = stats(period: "12m").feed_buckets
+      assert_equal [ 10, 25 ], year.last(2).map(&:visits)
+      assert_nil stats(period: "today").feed_buckets
+    end
+  end
 end

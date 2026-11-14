@@ -10,6 +10,8 @@ class Admin::VisitsController < ApplicationController
     @stats = VisitStats.new(**params.permit(:period, :site, :page, :from).to_h.symbolize_keys)
     @pages, @more_pages = top(:pages)
     @referrers, @more_referrers = top(:referrers)
+    # The feed is the website's, and doesn't narrow to a page or a referrer
+    @feed = FeedFetch.summary unless @stats.site == "games" || @stats.filtered?
   end
 
   private

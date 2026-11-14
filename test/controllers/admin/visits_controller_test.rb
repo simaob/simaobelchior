@@ -100,6 +100,35 @@ class Admin::VisitsControllerTest < ActionDispatch::IntegrationTest
     assert_select "#visits-pages a", "Show the top 10"
   end
 
+  test "shows feed subscribers on the website, not the games or a filtered view" do
+    travel_to 8.days.ago do
+      FeedFetch.record(ip: "198.51.100.1", user_agent: "Feedly/1.0 (30 subscribers)")
+    end
+    travel_to 1.day.ago do
+      FeedFetch.record(ip: "198.51.100.1", user_agent: "Feedly/1.0 (37 subscribers)")
+      FeedFetch.record(ip: "203.0.113.1", user_agent: "NetNewsWire (RSS Reader; https://netnewswire.com/)")
+    end
+    log_in
+
+    get admin_visits_path
+    assert_select "#feed .visits-total", "38"
+    assert_select "#feed p", "Yesterday"
+    assert_select "#feed .visits-change", "8 more than a week before"
+    assert_select "#feed h3", "Subscribers each day"
+    assert_select "#feed .visits-chart__day", 29
+    assert_select "#feed .visits-chart__day:last-child[aria-label$=?]", "38 subscribers"
+    assert_select "#feed td", "Feedly"
+
+    get admin_visits_path(period: "today")
+    assert_select "#feed .visits-total", "38"
+    assert_select "#feed .visits-chart", count: 0
+
+    get admin_visits_path(site: "games")
+    assert_select "#feed", count: 0
+    get admin_visits_path(from: "github.com")
+    assert_select "#feed", count: 0
+  end
+
   test "sends the old game visits page to the games on the Visits page" do
     get "/admin/visits/games"
     assert_redirected_to "/admin/visits?site=games"

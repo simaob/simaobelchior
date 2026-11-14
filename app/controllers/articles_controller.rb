@@ -4,6 +4,7 @@ class ArticlesController < ApplicationController
   READING_LIST_TAG = "reading-list"
 
   before_action :set_sidebar, only: %i[index show]
+  after_action :count_feed_fetch, only: :feed
 
   def index
     @articles = Article.published.with_rich_text_body_and_embeds.includes(:tags)
@@ -40,6 +41,14 @@ class ArticlesController < ApplicationController
   end
 
   private
+
+  # Feed readers fetching the feed, to estimate subscribers. See FeedFetch.
+  def count_feed_fetch
+    FeedFetch.record(ip: request.remote_ip, user_agent: request.user_agent) unless logged_in?
+  rescue ActiveRecord::ActiveRecordError => error
+    # A missed count shouldn't break the feed
+    Rails.logger.warn("Feed fetch not counted: #{error.message}")
+  end
 
   def set_sidebar
     @featured = Article.published.featured.first

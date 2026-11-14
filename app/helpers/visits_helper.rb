@@ -24,6 +24,35 @@ module VisitsHelper
     "Visits per #{unit}"
   end
 
+  def feed_chart_title(unit)
+    unit == :day ? "Subscribers each day" : "Subscribers on an average day each #{unit}"
+  end
+
+  # "Yesterday" or "Today so far", for a FeedFetch::Summary
+  def feed_day_label(summary)
+    summary.day == Date.current ? "Today so far" : "Yesterday"
+  end
+
+  # "3 more than a week before", or nothing when counting started less than a week before
+  def feed_change(summary)
+    return if summary.week_before.nil?
+
+    difference = summary.subscribers - summary.week_before
+    text = if difference.positive? then "#{number_with_delimiter(difference)} more than a week before"
+    elsif difference.negative? then "#{number_with_delimiter(difference.abs)} fewer than a week before"
+    else "The same as a week before"
+    end
+    tag.span(text, class: class_names("visits-change", "visits-change--up": difference.positive?))
+  end
+
+  # "Feedly 38, Inoreader 12 and 9 more", from FeedFetch.readers_on
+  def feed_readers_summary(readers, shown: 3)
+    named = readers.first(shown).map { |name, count| "#{name} #{number_with_delimiter(count)}" }
+    rest = readers.values.drop(shown).sum
+    named << "#{number_with_delimiter(rest)} more" if rest.positive?
+    named.to_sentence(last_word_connector: " and ")
+  end
+
   # What one bar covers, in its tooltip and the table under the chart
   def bucket_label(bucket)
     case bucket.unit
@@ -36,11 +65,13 @@ module VisitsHelper
 
   # Under the first and last bars
   def bucket_axis_label(bucket, last: false)
+    today = Date.current
+
     case bucket.unit
     when :hour then bucket.starts.strftime("%H:00")
-    when :day then last ? "Today" : bucket.starts.strftime("%-d %b")
-    when :week then last ? "This week" : bucket.starts.strftime("%-d %b %Y")
-    when :month then last ? "This month" : bucket.starts.strftime("%b %Y")
+    when :day then last && bucket.starts == today ? "Today" : bucket.starts.strftime("%-d %b")
+    when :week then last && bucket.starts == today.beginning_of_week ? "This week" : bucket.starts.strftime("%-d %b %Y")
+    when :month then last && bucket.starts == today.beginning_of_month ? "This month" : bucket.starts.strftime("%b %Y")
     end
   end
 

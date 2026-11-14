@@ -1,21 +1,24 @@
 <%# Visits as bars, with page views in a lighter shade behind them. Locals: buckets
-    (from VisitStats#buckets), title, and small: true for the shorter chart on the dashboard %>
-<% ceiling = chart_ceiling(buckets.map(&:views).max) %>
+    (from VisitStats#buckets), title, and noun to count something other than visits,
+    in buckets without page views, like VisitStats#feed_buckets %>
+<% noun = local_assigns.fetch(:noun, "visit") %>
+<% views = buckets.first.views %>
+<% ceiling = chart_ceiling(buckets.map { |bucket| bucket.views || bucket.visits }.max) %>
 
-<%= tag.div class: class_names("visits-chart", "visits-chart--small": local_assigns[:small], "visits-chart--dense": buckets.size > 60) do %>
+<%= tag.div class: class_names("visits-chart", "visits-chart--dense": buckets.size > 60) do %>
   <div class="visits-chart__axis" aria-hidden="true">
     <span><%= number_with_delimiter(ceiling) %></span>
     <span>0</span>
   </div>
   <ol class="visits-chart__plot" aria-label="<%= title %>, <%= pluralize(buckets.size, buckets.first.unit.to_s) %>">
     <% buckets.each do |bucket| %>
-      <li class="visits-chart__day" tabindex="0" aria-label="<%= bucket_label(bucket) %>: <%= pluralize(bucket.visits, "visit") %>, <%= pluralize(bucket.views, "page view") %>">
+      <li class="visits-chart__day" tabindex="0" aria-label="<%= bucket_label(bucket) %>: <%= pluralize(bucket.visits, noun) %><%= ", #{pluralize(bucket.views, "page view")}" if views %>">
         <%# Every visit has at least one page view, so the visits bar fits inside the page views one %>
-        <span class="visits-chart__views" style="height: <%= bar_height(bucket.views, ceiling) %>">
-          <span class="visits-chart__bar" style="height: <%= bar_height(bucket.visits, [ bucket.views, 1 ].max) %>"></span>
+        <span class="visits-chart__views" style="height: <%= bar_height(bucket.views || bucket.visits, ceiling) %>">
+          <span class="visits-chart__bar" style="height: <%= bucket.views ? bar_height(bucket.visits, [ bucket.views, 1 ].max) : "100%" %>"></span>
           <span class="visits-chart__tip" aria-hidden="true">
-            <strong><%= pluralize(number_with_delimiter(bucket.visits), "visit") %></strong>
-            <%= pluralize(number_with_delimiter(bucket.views), "page view") %><br>
+            <strong><%= pluralize(number_with_delimiter(bucket.visits), noun) %></strong>
+            <% if views %><%= pluralize(number_with_delimiter(bucket.views), "page view") %><br><% end %>
             <%= bucket_label(bucket) %>
           </span>
         </span>
