@@ -18,17 +18,17 @@ class Admin::ArticlesController < ApplicationController
       @articles = @articles.joins(:tags).where(tags: { name: params[:tag].downcase })
     end
 
-    # Sort
+    # Sort. The status scopes come with an order of their own, so this replaces it.
     by_published_at = Arel.sql("published_at IS NULL ASC, published_at DESC") # nulls last
     case params[:sort]
     when "title"
-      @articles = @articles.order(:title)
+      @articles = @articles.reorder(:title)
     when "created_at"
-      @articles = @articles.order(created_at: :desc)
+      @articles = @articles.reorder(created_at: :desc)
     when "visits"
-      @articles = @articles.order(Arel.sql("(#{visits_to_each_article.to_sql}) DESC"), by_published_at)
+      @articles = @articles.reorder(Arel.sql("(#{visits_to_each_article.to_sql}) DESC"), by_published_at)
     else
-      @articles = @articles.order(by_published_at)
+      @articles = @articles.reorder(by_published_at)
     end
 
     @articles = @articles.page(params[:page]).per(25)

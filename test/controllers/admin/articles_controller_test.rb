@@ -50,6 +50,17 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
 
     get admin_articles_path(sort: "visits", tag: "ruby")
     assert_equal [ "Popular", "Quiet", "Unread" ], css_select("tbody tr td:first-child a").map(&:text)
+
+    # The published scope sorts by date first, which the visits sort replaces
+    get admin_articles_path(sort: "visits", status: "published")
+    assert_equal [ "Popular", "Quiet", "Unread", "Test Article" ], css_select("tbody tr td:first-child a").map(&:text)
+  end
+
+  test "sorts filtered articles by title" do
+    Article.create!(title: "Another Article", body: "Content", published_at: 2.days.ago)
+
+    get admin_articles_path(sort: "title", status: "published")
+    assert_equal [ "Another Article", "Test Article" ], css_select("tbody tr td:first-child a").map(&:text)
   end
 
   test "should filter articles by status" do
