@@ -6,6 +6,8 @@
 # The games decide what they send. These numbers read the "started", "finished" and
 # "left" events, and "moves", "par", "stars" and "hints" in their details. A "left"
 # event with "after_finish" set is someone leaving a level they'd already finished.
+# Words in "started" details are choices, like the kid played as in Palminho, and
+# each game shows how often each one was picked.
 class GameStats
   Level = Data.define(:name, :players, :finishers, :gave_up, :finishes, :median_moves, :par, :three_stars, :hints) do
     def finish_rate
@@ -17,13 +19,24 @@ class GameStats
     end
 
     def hints_per_finish
-      finishes.zero? ? nil : hints.fdiv(finishes)
+      finishes.zero? || hints.nil? ? nil : hints.fdiv(finishes)
     end
   end
 
-  Game = Data.define(:slug, :players, :finishes, :levels) do
+  # choices: { "kid" => [ [ "tiago", 0.5 ], [ "ines", 0.3 ], ... ] }, as a share of
+  # level starts, most picked first
+  Game = Data.define(:slug, :players, :finishes, :levels, :choices) do
     def title
       slug.tr("-", " ").titleize
+    end
+
+    # Not every game counts moves or gives hints
+    def moves?
+      levels.any? { |level| level.median_moves || level.par }
+    end
+
+    def hints?
+      levels.any?(&:hints)
     end
   end
 
@@ -63,8 +76,16 @@ class GameStats
       slug: slug,
       players: game_rows.map(&:visitor).uniq.size,
       finishes: game_rows.count { |row| row.name == "finished" },
-      levels: levels.sort_by { |level| natural_order(level.name) }
+      levels: levels.sort_by { |level| natural_order(level.name) },
+      choices: choices_for(game_rows.select { |row| row.name == "started" })
     )
+  end
+
+  def choices_for(starts)
+    picks = starts.flat_map { |row| row.data.select { |_, value| value.is_a?(String) }.to_a }
+    picks.group_by(&:first).transform_values do |pairs|
+      pairs.map(&:last).tally.sort_by { |value, count| [ -count, value ] }.map { |value, count| [ value, count.fdiv(pairs.size) ] }
+    end
   end
 
   def level_for(name, level_rows)
@@ -81,7 +102,7 @@ class GameStats
       median_moves: median(numbers(finished, "moves")),
       par: numbers(level_rows, "par").max,
       three_stars: finished.count { |row| row.data["stars"] == 3 },
-      hints: numbers(finished, "hints").sum
+      hints: numbers(finished, "hints").presence&.sum
     )
   end
 

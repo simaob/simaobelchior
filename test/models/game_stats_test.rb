@@ -43,6 +43,26 @@ class GameStatsTest < ActiveSupport::TestCase
     assert_equal %w[1-2 1-9 1-10 2-1], games.first.levels.map(&:name)
   end
 
+  test "words in started events are choices, as a share of level starts" do
+    event("started", game: "palminho", level: "judo", kid: "tiago", lang: "pt")
+    event("started", game: "palminho", level: "danca", kid: "tiago", lang: "pt")
+    event("started", game: "palminho", level: "judo", ip: "203.0.113.2", kid: "ines", lang: "pt")
+    event("finished", game: "palminho", level: "judo", kid: "clara", stars: 3)
+
+    game = GameStats.new.games.sole
+    assert_equal({ "kid" => [ [ "tiago", 2 / 3.0 ], [ "ines", 1 / 3.0 ] ], "lang" => [ [ "pt", 1.0 ] ] }, game.choices)
+  end
+
+  test "games without moves or hints don't get those columns" do
+    event("started", game: "palminho", level: "judo")
+    event("finished", game: "palminho", level: "judo", stars: 2)
+
+    game = GameStats.new.games.sole
+    assert_not game.moves?
+    assert_not game.hints?
+    assert_nil game.levels.sole.hints_per_finish
+  end
+
   test "only counts the period asked for" do
     event("started")
     GameEvent.update_all(occurred_on: 40.days.ago.to_date)

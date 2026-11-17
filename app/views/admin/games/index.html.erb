@@ -31,6 +31,12 @@
         <p class="text-muted small mb-3">
           <%= pluralize(number_with_delimiter(game.players), "player") %> · <%= pluralize(number_with_delimiter(game.finishes), "level") %> finished
         </p>
+        <% game.choices.each do |key, picks| %>
+          <p class="small mb-2 game-choice">
+            <span class="text-muted"><%= key.humanize %>:</span>
+            <%= safe_join(picks.map { |value, share| "#{value} #{game_share(share)}" }, " · ") %>
+          </p>
+        <% end %>
         <% if game.levels.any? %>
           <div class="table-responsive">
             <table class="table table-sm small mb-0 visits-table visits-rank">
@@ -40,9 +46,9 @@
                   <th scope="col" class="text-end">Players</th>
                   <th scope="col" class="text-end">Finished</th>
                   <th scope="col" class="text-end">Gave up</th>
-                  <th scope="col" class="text-end">Moves / par</th>
+                  <% if game.moves? %><th scope="col" class="text-end">Moves / par</th><% end %>
                   <th scope="col" class="text-end">★★★</th>
-                  <th scope="col" class="text-end">Hints per finish</th>
+                  <% if game.hints? %><th scope="col" class="text-end">Hints per finish</th><% end %>
                 </tr>
               </thead>
               <tbody>
@@ -55,9 +61,9 @@
                     <td class="text-end"><%= number_with_delimiter(level.players) %></td>
                     <td class="text-end"><%= number_with_delimiter(level.finishers) %> <span class="text-muted"><%= game_share(level.finish_rate) %></span></td>
                     <td class="text-end"><%= number_with_delimiter(level.gave_up) %></td>
-                    <td class="text-end"><%= [ format_moves(level.median_moves), level.par ].map { |value| value || "–" }.join(" / ") %></td>
+                    <% if game.moves? %><td class="text-end"><%= [ format_moves(level.median_moves), level.par ].map { |value| value || "–" }.join(" / ") %></td><% end %>
                     <td class="text-end"><%= game_share(level.three_star_rate) || "–" %></td>
-                    <td class="text-end"><%= level.hints_per_finish ? number_with_precision(level.hints_per_finish, precision: 1) : "–" %></td>
+                    <% if game.hints? %><td class="text-end"><%= level.hints_per_finish ? number_with_precision(level.hints_per_finish, precision: 1) : "–" %></td><% end %>
                   </tr>
                 <% end %>
               </tbody>

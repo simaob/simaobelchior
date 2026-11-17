@@ -24,6 +24,19 @@ class Admin::GamesControllerTest < ActionDispatch::IntegrationTest
     assert_select "nav.admin-bar a[aria-current=page]", "Games"
   end
 
+  test "shows which choices people make, and only the columns a game has" do
+    GameEvent.record(game: "palminho", level: "judo", name: "started", data: { "kid" => "tiago" }, ip: "203.0.113.1", user_agent: "Chrome")
+    GameEvent.record(game: "palminho", level: "judo", name: "finished", data: { "kid" => "tiago", "stars" => 3 }, ip: "203.0.113.1", user_agent: "Chrome")
+    log_in
+
+    get admin_games_path
+    assert_response :success
+    assert_select "#game-palminho .game-choice", /Kid:\s+tiago 100%/
+    assert_select "#game-palminho th", text: "Moves / par", count: 0
+    assert_select "#game-palminho th", text: "Hints per finish", count: 0
+    assert_select "#game-palminho th", text: "★★★"
+  end
+
   test "says when there's nothing yet" do
     log_in
 
