@@ -89,7 +89,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_120000) do
     t.string "visitor_hash", null: false
     t.date "occurred_on", null: false
     t.datetime "created_at", null: false
-    t.index ["game", "occurred_on"], name: "index_game_events_on_game_and_occurred_on"
+    t.index ["occurred_on"], name: "index_game_events_on_occurred_on"
   end
 
   create_table "links", force: :cascade do |t|

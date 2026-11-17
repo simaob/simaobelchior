@@ -35,9 +35,14 @@ class GameStats
     @period = VisitStats::PERIODS.key?(period) ? period : VisitStats::DEFAULTS[:period]
   end
 
-  # Same periods as the Visits page
+  # Same periods as the Visits page. All time starts at the first event, not the first
+  # page view, so events from before any visit was counted aren't left out.
   def days
-    @days ||= VisitStats.new(period: period, site: "games").days
+    @days ||= if period == "all"
+      (GameEvent.minimum(:occurred_on) || Date.current)..Date.current
+    else
+      VisitStats.new(period: period, site: "games").days
+    end
   end
 
   def games

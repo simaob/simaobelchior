@@ -50,4 +50,14 @@ class GameStatsTest < ActiveSupport::TestCase
     assert_empty GameStats.new(period: "30d").games
     assert_equal 1, GameStats.new(period: "90d").games.size
   end
+
+  test "all time starts at the first event, even with no page views" do
+    event("started")
+    GameEvent.update_all(occurred_on: 3.years.ago.to_date)
+    PageView.delete_all
+
+    stats = GameStats.new(period: "all")
+    assert_equal 3.years.ago.to_date, stats.days.first
+    assert_equal 1, stats.games.size
+  end
 end
