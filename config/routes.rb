@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     get "visits" => "visits#index", as: :visits
     # Game visits had a page of their own before they joined the Visits page
     get "visits/games", to: redirect("/admin/visits?site=games")
+    get "games" => "games#index", as: :games
     resources :articles do
       post :toggle_publish, on: :member
     end
@@ -42,6 +43,7 @@ Rails.application.routes.draw do
   get "games" => "home#games"
   # The games' static pages call this to count a visit, see GameVisitsController
   post "games/opened" => "game_visits#create", as: :game_visits
+  post "games/events" => "game_events#create", as: :game_events
 
   # Defines the root path route ("/")
   root "home#index"

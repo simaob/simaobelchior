@@ -27,9 +27,14 @@ class PageView < ApplicationRecord
       host: bare_host(host),
       path: path,
       referrer_host: external_host(referrer, host),
-      visitor_hash: OpenSSL::HMAC.hexdigest("SHA256", VisitorSalt.for(day), "#{ip}|#{user_agent}"),
+      visitor_hash: visitor_hash(day, ip, user_agent),
       visited_on: day
     )
+  end
+
+  # The same person gets the same hash all day, and a new one the next. GameEvent uses it too.
+  def self.visitor_hash(day, ip, user_agent)
+    OpenSSL::HMAC.hexdigest("SHA256", VisitorSalt.for(day), "#{ip}|#{user_agent}")
   end
 
   def self.bot?(user_agent)

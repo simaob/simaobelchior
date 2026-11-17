@@ -2,12 +2,9 @@
 # files, so each game page sends a beacon here when it opens. The visit is stored like
 # a page view on this site, with no cookies and no IP address kept. See PageView.
 class GameVisitsController < ApplicationController
-  GAMES_ORIGIN = "https://#{PageView::GAMES_HOST}".freeze
-  GAME_PATH = %r{\A/[\w\-./]{0,200}\z}
+  include GameBeacon
 
-  # The beacon comes from the games' subdomain, so it can't carry this site's CSRF
-  # token. The worst a forged request can do is add a count.
-  skip_forgery_protection
+  GAME_PATH = %r{\A/[\w\-./]{0,200}\z}
 
   def create
     count_visit if countable?
@@ -29,10 +26,8 @@ class GameVisitsController < ApplicationController
     Rails.logger.warn("Game visit not counted: #{error.message}")
   end
 
-  # Skips requests from anywhere but the games, paths that aren't plain paths, bots,
-  # and the site owner while logged in
+  # Skips paths that aren't plain paths, on top of what GameBeacon skips
   def countable?
-    request.origin == GAMES_ORIGIN && params[:path].is_a?(String) && params[:path].match?(GAME_PATH) &&
-      !logged_in? && !PageView.bot?(request.user_agent)
+    from_a_player? && params[:path].is_a?(String) && params[:path].match?(GAME_PATH)
   end
 end

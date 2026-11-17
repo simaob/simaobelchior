@@ -1,0 +1,70 @@
+<% content_for :title, "Games" %>
+
+<section class="site-wrap my-4" id="games" aria-labelledby="games-title">
+  <h1 class="fw-semibold mb-4" id="games-title">Games</h1>
+
+  <div class="visits-controls">
+    <nav aria-label="Period">
+      <ul class="segmented">
+        <% VisitStats::PERIODS.each do |key, label| %>
+          <li><%= link_to label, admin_games_path(period: (key unless key == VisitStats::DEFAULTS[:period])), aria: { current: ("true" if @stats.period == key) } %></li>
+        <% end %>
+      </ul>
+    </nav>
+  </div>
+
+  <p class="text-muted small mb-4">
+    How far people get in each level. Players are counted once a day, like visits. Gave up means
+    they left the level without finishing it that day. The bar behind each level is how many finished.
+  </p>
+
+  <% if @games.empty? %>
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-muted">No level events in this period. Games send them from games.simaobelchior.com to /games/events.</div>
+    </div>
+  <% end %>
+
+  <% @games.each do |game| %>
+    <div class="card border-0 shadow-sm mb-3" id="game-<%= game.slug %>">
+      <div class="card-body">
+        <h2 class="h6 fw-semibold mb-1"><%= game.title %></h2>
+        <p class="text-muted small mb-3">
+          <%= pluralize(number_with_delimiter(game.players), "player") %> · <%= pluralize(number_with_delimiter(game.finishes), "level") %> finished
+        </p>
+        <% if game.levels.any? %>
+          <div class="table-responsive">
+            <table class="table table-sm small mb-0 visits-table visits-rank">
+              <thead>
+                <tr>
+                  <th scope="col">Level</th>
+                  <th scope="col" class="text-end">Players</th>
+                  <th scope="col" class="text-end">Finished</th>
+                  <th scope="col" class="text-end">Gave up</th>
+                  <th scope="col" class="text-end">Moves / par</th>
+                  <th scope="col" class="text-end">★★★</th>
+                  <th scope="col" class="text-end">Hints per finish</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% game.levels.each do |level| %>
+                  <tr>
+                    <td>
+                      <span class="visits-rank__bar" style="width: <%= rank_bar_width(level.finishers, level.players) %>"></span>
+                      <span class="visits-rank__label"><%= level.name %></span>
+                    </td>
+                    <td class="text-end"><%= number_with_delimiter(level.players) %></td>
+                    <td class="text-end"><%= number_with_delimiter(level.finishers) %> <span class="text-muted"><%= game_share(level.finish_rate) %></span></td>
+                    <td class="text-end"><%= number_with_delimiter(level.gave_up) %></td>
+                    <td class="text-end"><%= [ format_moves(level.median_moves), level.par ].map { |value| value || "–" }.join(" / ") %></td>
+                    <td class="text-end"><%= game_share(level.three_star_rate) || "–" %></td>
+                    <td class="text-end"><%= level.hints_per_finish ? number_with_precision(level.hints_per_finish, precision: 1) : "–" %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</section>
