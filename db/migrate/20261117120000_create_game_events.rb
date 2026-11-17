@@ -9,6 +9,6 @@ class CreateGameEvents < ActiveRecord::Migration[8.1]
       t.date :occurred_on, null: false
       t.datetime :created_at, null: false
     end
-    add_index :game_events, [ :game, :occurred_on ]
+    add_index :game_events, :occurred_on
   end
 end
