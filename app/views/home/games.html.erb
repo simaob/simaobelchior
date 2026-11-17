@@ -1,5 +1,5 @@
 <% content_for :title, "Games" %>
-<% content_for :description, "Small browser games Simão Belchior has been building with AI, including a 3D platformer for young children and a urinal etiquette test. Free to play." %>
+<% content_for :description, "Small browser games Simão Belchior has been building with AI, including a 3D platformer for young children, a building puzzle and a urinal etiquette test. Free to play." %>
 <%
   games = [
     {
@@ -19,6 +19,13 @@
       inspiration: "Buffer Zone is a throwback to a Flash urinal game that made the rounds online years ago. Flash is mostly gone, but the problem isn't, so I built a new version with the help of Claude. It's a joke, but the advice is real and useful anywhere you share space with strangers.",
       url: "https://games.simaobelchior.com/behaving-in-public/",
       cta: "Visit Behaving in Public ↗"
+    },
+    {
+      title: "Building Blobs",
+      text: "A building puzzle. Rebuild each blueprint by dropping materials into columns, in the right order and in as few moves as you can. Fire bakes clay into brick, water washes sand away, lava bakes whatever it touches, and ice melts on its own. 34 levels in seven worlds.",
+      inspiration: "It began as a pattern-matching game that turned out too easy, so I rebuilt it around materials that react to each other. A solver checks every level, so par really is the fewest moves.",
+      url: "https://games.simaobelchior.com/building-blobs/",
+      cta: "Play Building Blobs ↗"
     }
   ]
 %>
