@@ -84,9 +84,10 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", "Games I've made."
     assert_select "title", /Games/
-    assert_select ".topic-card", 2
+    assert_select ".topic-card", 3
     assert_select ".topic-card a[href=?]", "https://games.simaobelchior.com/palminho/"
     assert_select ".topic-card a[href=?]", "https://games.simaobelchior.com/behaving-in-public/"
+    assert_select ".topic-card a[href=?]", "https://games.simaobelchior.com/building-blobs/", text: "Play Building Blobs ↗"
     assert_select ".topic-card a[href=?]", "https://palmoemeio.com.pt/", text: "Colégio Palmo e Meio"
     assert_select ".topic-card", text: /throwback to a Flash urinal game/
     assert_select ".site-nav a[aria-current=page]", text: "Games"
