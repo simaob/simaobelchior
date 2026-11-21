@@ -15,9 +15,10 @@ class Article < ApplicationRecord
   scope :unpublished, -> { where(published_at: nil).or(where("published_at > ?", Time.current)) }
   scope :recent, -> { order(published_at: :desc) }
   scope :featured, -> { where(featured: true) }
-  # Articles with every word of the query in the title or text
+  # Articles with every word of the query in the title or text. The blog limits queries to
+  # 100 characters, which keeps the number of words small.
   scope :search, ->(query) {
-    normalize_for_search(query).split.first(SEARCH_TERMS).reduce(all) do |articles, term|
+    normalize_for_search(query).split.uniq.reduce(all) do |articles, term|
       articles.where(arel_table[:search_text].matches("%#{sanitize_sql_like(term)}%", "\\"))
     end
   }
@@ -25,8 +26,6 @@ class Article < ApplicationRecord
   EXCERPT_LENGTH = 2_000
   WORDS_PER_MINUTE = 200
   PREVIEW_WORDS = 200
-  # Words of a search query that are looked for, so a pasted paragraph doesn't make a huge query
-  SEARCH_TERMS = 10
 
   # Lowercase without accents, so "nao" finds "Não" and "cafe" finds "café"
   def self.normalize_for_search(text)

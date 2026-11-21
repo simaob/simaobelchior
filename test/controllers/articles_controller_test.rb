@@ -42,6 +42,14 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".site-footer--cta a[href=?]", "https://github.com/sponsors/simaob?frequency=one-time", text: "Buy me a coffee"
   end
 
+  test "should show article titles with quotes and ampersands as written" do
+    article = Article.create!(title: %(What I'm reading: "Q&A"), body: "Content", published_at: 1.day.ago)
+
+    get article_path(article.slug)
+    assert_select "title", %(What I'm reading: "Q&A" - Simão Belchior)
+    assert_select "meta[name='twitter:title'][content=?]", %(What I'm reading: "Q&A" - Simão Belchior)
+  end
+
   test "should not show unpublished article" do
     article = Article.create!(title: "Unpublished Draft Post", body: "Content", published_at: nil)
 
@@ -90,6 +98,8 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_select "h2 a", text: "Hotwire Draft", count: 0
     assert_select "input[name=q][value=?]", "hotwire"
     assert_select "meta[name=robots][content=noindex]"
+    assert_select "title", 'Writing matching "hotwire" - Simão Belchior'
+    assert_select "meta[property='og:title'][content=?]", 'Writing matching "hotwire" - Simão Belchior'
     assert_select ".tag-filter a[aria-current]", count: 0
   end
 

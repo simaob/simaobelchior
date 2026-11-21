@@ -228,6 +228,12 @@ class ArticleTest < ActiveSupport::TestCase
     assert_equal [ both ], Article.search("hotwire rails").to_a
   end
 
+  test "should need every word of a long search to match" do
+    Article.create!(title: "Counting", body: "one two three four five six seven eight nine ten")
+
+    assert_empty Article.search("one two three four five six seven eight nine ten missing")
+  end
+
   test "should search ignoring accents and case" do
     article = Article.create!(title: "Não sei", body: "Um café com açúcar")
 
