@@ -1,10 +1,15 @@
-<% content_for :title, @tag ? "Writing tagged #{@tag.name}" : "Writing" %>
+<% content_for :title, @query ? %(Writing matching "#{@query}") : @tag ? "Writing tagged #{@tag.name}" : "Writing" %>
+<%# Keeps search engines off result pages, which would only repeat the articles %>
+<% content_for :head, tag.meta(name: "robots", content: "noindex") if @query %>
 
 <section class="page-hero">
   <div class="site-wrap page-hero__split">
     <div class="page-hero__text">
       <p class="eyebrow">Writing</p>
-      <% if @tag %>
+      <% if @query %>
+        <h1 class="page-title">Articles matching "<%= @query %>"</h1>
+        <p class="lede"><%= link_to "← All writing", blog_path %></p>
+      <% elsif @tag %>
         <h1 class="page-title">Articles tagged with "<%= @tag.name %>"</h1>
         <p class="lede"><%= link_to "← All writing", blog_path %></p>
       <% else %>
@@ -19,16 +24,24 @@
   </div>
 </section>
 
-<% if @topic_tags.any? %>
-  <nav class="site-wrap tag-filter" aria-label="Filter by topic">
-    <ul class="chip-list">
-      <li><%= link_to "All", blog_path, class: "chip", aria: { current: ("page" unless @tag) } %></li>
-      <% (@topic_tags.to_a | [ @tag ].compact).each do |topic| %>
-        <li><%= link_to topic.name, blog_path(tag: topic.name), class: "chip", aria: { current: ("page" if topic == @tag) } %></li>
-      <% end %>
-    </ul>
-  </nav>
-<% end %>
+<div class="site-wrap blog-filters">
+  <% if @topic_tags.any? %>
+    <nav class="tag-filter" aria-label="Filter by topic">
+      <ul class="chip-list">
+        <li><%= link_to "All", blog_path, class: "chip", aria: { current: ("page" unless @tag || @query) } %></li>
+        <% (@topic_tags.to_a | [ @tag ].compact).each do |topic| %>
+          <li><%= link_to topic.name, blog_path(tag: topic.name), class: "chip", aria: { current: ("page" if topic == @tag && !@query) } %></li>
+        <% end %>
+      </ul>
+    </nav>
+  <% end %>
+  <%= form_with url: blog_path, method: :get, class: "blog-search", role: "search", data: { controller: "blog-search" } do |form| %>
+    <%= form.label :q, "Search writing", class: "visually-hidden" %>
+    <svg class="blog-search__icon" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <%= form.search_field :q, value: @query, placeholder: "Search", class: "blog-search__input", enterkeyhint: "search",
+          data: { blog_search_target: "input", action: "input->blog-search#submitIfCleared" } %>
+  <% end %>
+</div>
 
 <div class="site-wrap blog-layout">
   <div class="blog-layout__main">
@@ -62,7 +75,7 @@
     <% else %>
       <div class="empty-state">
         <p>No articles found.</p>
-        <% if @tag %>
+        <% if @tag || @query %>
           <%= link_to "← All writing", blog_path, class: "btn-site btn-site--outline" %>
         <% end %>
       </div>

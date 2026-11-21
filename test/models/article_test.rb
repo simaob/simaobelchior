@@ -212,4 +212,49 @@ class ArticleTest < ActiveSupport::TestCase
     article.destroy
     assert_equal article_tag_count - 2, ArticleTag.count
   end
+
+  test "should find articles by words in the title or text" do
+    title_match = Article.create!(title: "Notes on Hotwire", body: "Content")
+    body_match = Article.create!(title: "Another Post", body: "<p>Trying <strong>Hotwire</strong> again</p>")
+    Article.create!(title: "Unrelated", body: "Nothing here")
+
+    assert_equal [ body_match, title_match ].sort_by(&:id), Article.search("hotwire").sort_by(&:id)
+  end
+
+  test "should need every word of the search to match" do
+    both = Article.create!(title: "Rails and Hotwire", body: "Content")
+    Article.create!(title: "Just Rails", body: "Content")
+
+    assert_equal [ both ], Article.search("hotwire rails").to_a
+  end
+
+  test "should search ignoring accents and case" do
+    article = Article.create!(title: "Não sei", body: "Um café com açúcar")
+
+    assert_equal [ article ], Article.search("NAO").to_a
+    assert_equal [ article ], Article.search("acucar café").to_a
+  end
+
+  test "should not match the article's markup" do
+    Article.create!(title: "Bold Claims", body: %(<p><strong>Big</strong> <a href="https://example.com">link</a></p>))
+
+    assert_empty Article.search("strong")
+    assert_empty Article.search("example.com")
+  end
+
+  test "should treat wildcards in the search as plain characters" do
+    Article.create!(title: "Plain Post", body: "Content")
+    percent = Article.create!(title: "Up 50% Today", body: "Content")
+
+    assert_equal [ percent ], Article.search("%").to_a
+    assert_empty Article.search("_")
+  end
+
+  test "should update the search text when the body changes" do
+    article = Article.create!(title: "Changing Post", body: "Before")
+    article.update!(body: "After")
+
+    assert_equal [ article ], Article.search("after").to_a
+    assert_empty Article.search("before")
+  end
 end

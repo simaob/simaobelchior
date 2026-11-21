@@ -7,6 +7,7 @@ class Article < ApplicationRecord
   validates :slug, presence: true, uniqueness: true
 
   before_validation :generate_slug, if: -> { slug.blank? }
+  before_save { self.search_text = searchable_text }
 
   scope :published, -> { where("published_at <= ?", Time.current).order(published_at: :desc) }
   scope :drafts, -> { where(published_at: nil).order(created_at: :desc) }
@@ -14,10 +15,23 @@ class Article < ApplicationRecord
   scope :unpublished, -> { where(published_at: nil).or(where("published_at > ?", Time.current)) }
   scope :recent, -> { order(published_at: :desc) }
   scope :featured, -> { where(featured: true) }
+  # Articles with every word of the query in the title or text
+  scope :search, ->(query) {
+    normalize_for_search(query).split.first(SEARCH_TERMS).reduce(all) do |articles, term|
+      articles.where(arel_table[:search_text].matches("%#{sanitize_sql_like(term)}%", "\\"))
+    end
+  }
 
   EXCERPT_LENGTH = 2_000
   WORDS_PER_MINUTE = 200
   PREVIEW_WORDS = 200
+  # Words of a search query that are looked for, so a pasted paragraph doesn't make a huge query
+  SEARCH_TERMS = 10
+
+  # Lowercase without accents, so "nao" finds "Não" and "cafe" finds "café"
+  def self.normalize_for_search(text)
+    text.to_s.unicode_normalize(:nfkd).gsub(/\p{Mn}/, "").downcase.tr("‘’“”", %q(''""))
+  end
 
   def published?
     published_at.present? && published_at <= Time.current
@@ -69,6 +83,11 @@ class Article < ApplicationRecord
 
   def newer
     Article.published.where("published_at > ?", published_at).reorder(published_at: :asc).first
+  end
+
+  # Title and text as plain words, stored in search_text for the blog search
+  def searchable_text
+    self.class.normalize_for_search([ title, rich_text_body&.to_plain_text ].compact.join("\n"))
   end
 
   # Get tag names as comma-separated string

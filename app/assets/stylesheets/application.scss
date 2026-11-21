@@ -921,8 +921,62 @@ a {
 
 // Writing
 
-.tag-filter {
+// Topic chips with the search box to their right, or below on narrow screens
+.blog-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px 24px;
   padding-top: 32px;
+}
+
+.tag-filter {
+  flex: 1 1 480px;
+}
+
+.blog-search {
+  position: relative;
+  flex: 0 1 240px;
+
+  @media (max-width: 600px) {
+    flex-basis: 100%;
+  }
+}
+
+.blog-search__icon {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  color: var(--site-muted);
+  pointer-events: none;
+}
+
+.blog-search__input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 16px 0 42px;
+  border: 1px solid var(--site-rule);
+  border-radius: 999px;
+  background: var(--site-bg);
+  color: var(--site-text);
+  // 16px stops iOS zooming in on focus
+  font-size: 16px;
+
+  &::placeholder {
+    color: var(--site-muted);
+  }
+
+  &:hover {
+    border-color: var(--site-accent);
+  }
+
+  &:focus-visible {
+    border-color: var(--site-accent);
+    outline: 2px solid var(--site-accent);
+    outline-offset: 2px;
+  }
 }
 
 .blog-layout {
