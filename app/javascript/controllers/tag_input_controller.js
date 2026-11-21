@@ -21,7 +21,8 @@ export default class extends Controller {
 
   // Typing in the field
   update() {
-    const query = normalize(this.currentToken().text)
+    this.token = this.currentToken()
+    const query = normalize(this.token.text)
     this.matches = query ? this.search(query) : []
     this.highlighted = this.matches.length ? 0 : -1
     this.render()
@@ -29,7 +30,8 @@ export default class extends Controller {
   }
 
   navigate(event) {
-    if (!this.matches.length) return
+    // Keys typed while composing a character with an input method are for the input method
+    if (event.isComposing || !this.matches.length) return
 
     switch (event.key) {
       case "ArrowDown":
@@ -52,26 +54,36 @@ export default class extends Controller {
     }
   }
 
-  leave() {
-    this.close()
-    this.refresh()
+  // The suggestions were for the tag the caret was in, so they go when it moves to another
+  moveCaret() {
+    if (this.matches.length && this.currentToken().start !== this.token.start) this.close()
   }
 
-  // A suggestion is picked on mousedown, so the field keeps its focus
-  pick({ params: { name } }) {
-    this.accept(String(name))
+  leave() {
+    this.close()
+  }
+
+  // Clicking a suggestion leaves the focus in the field
+  holdFocus(event) {
+    event.preventDefault()
+  }
+
+  // Tag names are read from data attributes rather than Stimulus action params, which would
+  // turn a tag like "1.0" into a number
+  pick({ currentTarget }) {
+    this.accept(currentTarget.dataset.name)
   }
 
   // A most used tag's button
-  toggle({ params }) {
-    const name = String(params.name) // Stimulus reads a tag like "2024" as a number
+  toggle({ currentTarget }) {
+    const name = currentTarget.dataset.name
     const names = this.names
     this.names = names.includes(name) ? names.filter(other => other !== name) : [...names, name]
   }
 
   // The "did you mean" button on a warning
-  replace({ params: { from, to } }) {
-    this.names = this.names.map(name => name === String(from) ? String(to) : name)
+  replace({ currentTarget: { dataset: { from, to } } }) {
+    this.names = this.names.map(name => name === from ? to : name)
   }
 
   get names() {
@@ -123,25 +135,27 @@ export default class extends Controller {
   }
 
   // Marks the most used tags already in the field and warns about new tags that look like
-  // an existing one. The tag being typed is left alone until the caret moves on.
+  // an existing one. A tag that's the start of an existing one is left alone while the caret
+  // is in it, as it's most likely still being typed.
   refresh() {
     const names = this.names
     const inField = new Set(names)
 
     for (const chip of this.chipTargets) {
-      const active = inField.has(chip.dataset.tagInputNameParam)
+      const active = inField.has(chip.dataset.name)
       chip.classList.toggle("active", active)
       chip.setAttribute("aria-pressed", active)
     }
 
-    const typing = document.activeElement === this.inputTarget ? normalize(this.currentToken().text) : null
+    const current = normalize(this.currentToken().text)
     const known = new Set(this.tagsValue.map(tag => tag.name))
+    const typing = name => name === current && this.tagsValue.some(tag => tag.name.startsWith(name))
     const warnings = names
-      .filter(name => name !== typing && !known.has(name))
-      .map(name => [ name, this.lookalike(name, inField) ])
+      .filter(name => !known.has(name) && !typing(name))
+      .map(name => [ name, this.lookalike(name) ])
       .filter(([, tag]) => tag)
 
-    // Rebuilding them on blur would swallow a click on one of their buttons
+    // Rebuilding them when nothing changed would swallow a click on one of their buttons
     const key = JSON.stringify(warnings.map(([ name, tag ]) => [ name, tag.name ]))
     if (key === this.warningsKey) return
     this.warningsKey = key
@@ -151,8 +165,8 @@ export default class extends Controller {
   }
 
   // The most used existing tag that a new tag could be a variant of
-  lookalike(name, inField) {
-    return this.tagsValue.find(tag => !inField.has(tag.name) && similar(tag.name, name))
+  lookalike(name) {
+    return this.tagsValue.find(tag => similar(tag.name, name))
   }
 
   render() {
@@ -190,11 +204,16 @@ function normalize(name) {
   return name.trim().toLowerCase()
 }
 
-// Letters and digits only, without a plural "s", so "action text", "action-text" and
-// "actiontext" all come out the same
+// Letters and digits, plus the + and # that tell c++ and c# apart
+function letters(name) {
+  return name.toLowerCase().replace(/[^\p{L}\p{N}+#]/gu, "")
+}
+
+// Without a plural "s" too, so "action text", "action-text" and "actiontext" all come out
+// the same
 function squash(name) {
-  const letters = name.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "")
-  return letters.length > 3 ? letters.replace(/s$/, "") : letters
+  const squashed = letters(name)
+  return squashed.length > 3 ? squashed.replace(/s$/, "") : squashed
 }
 
 function score(name, query) {
@@ -207,13 +226,16 @@ function score(name, query) {
   return 0
 }
 
-// Spelt differently, or with a typo or two. The same test as Tag.similar?, which the
-// tags:lookalikes task uses, so keep the two in step.
+// Spelt differently, or with a typo or two. Short names only match when they're the same
+// once squashed, as one letter apart is often a different word (tdd and bdd, node and code).
+// The same test as Tag.similar?, which the tags:lookalikes task uses, so keep the two in step.
 function similar(a, b) {
-  const [ x, y ] = [ squash(a), squash(b) ]
-  if (x === y) return true
-  if (Math.min(x.length, y.length) < 3) return false
-  return distance(x, y) <= (Math.max(x.length, y.length) >= 8 ? 2 : 1)
+  if (squash(a) === squash(b)) return true
+
+  const [ x, y ] = [ letters(a), letters(b) ]
+  const longest = Math.max(x.length, y.length)
+  const allowed = longest >= 8 ? 2 : longest >= 5 ? 1 : 0
+  return allowed > 0 && distance(x, y) <= allowed
 }
 
 // Edits to turn one into the other, where swapping two neighbouring letters is one edit
@@ -243,8 +265,8 @@ function suggestion(tag, index) {
   option.tabIndex = -1
   option.className = "dropdown-item d-flex justify-content-between"
   option.setAttribute("role", "option")
-  option.dataset.action = "mousedown->tag-input#pick:prevent"
-  option.dataset.tagInputNameParam = tag.name
+  option.dataset.action = "tag-input#pick"
+  option.dataset.name = tag.name
 
   const count = document.createElement("span")
   count.className = "opacity-75 ms-3"
@@ -262,8 +284,8 @@ function warning(name, tag) {
   button.type = "button"
   button.className = "btn btn-link btn-sm p-0 border-0 align-baseline"
   button.dataset.action = "tag-input#replace"
-  button.dataset.tagInputFromParam = name
-  button.dataset.tagInputToParam = tag.name
+  button.dataset.from = name
+  button.dataset.to = tag.name
   button.textContent = tag.name
 
   line.append(`“${name}” would be a new tag. Did you mean `, button, "?")

@@ -43,7 +43,7 @@ class AdminArticlesTest < ApplicationSystemTestCase
     assert_equal "rails, action-text", tags.value
     assert_no_selector "[data-tag-input-target=warnings]", visible: true
 
-    chip = ->(name) { find("[data-tag-input-target=chip][data-tag-input-name-param=#{name}]") }
+    chip = ->(name) { find("[data-tag-input-target=chip][data-name=#{name}]") }
     assert_equal "true", chip["rails"]["aria-pressed"]
     chip["rails"].click
     assert_equal "action-text", tags.value
@@ -52,6 +52,25 @@ class AdminArticlesTest < ApplicationSystemTestCase
     click_on "Create Article"
     assert_text "Article was successfully created."
     assert_equal [ "action-text" ], Article.find_by!(title: "Tagged").tags.map(&:name)
+  end
+
+  test "tag suggestions follow the caret, and a typo of a tag already in the field is caught" do
+    Article.create!(title: "On Rails", body: "Content", tag_list: "rails, action-text")
+
+    log_in
+    visit new_admin_article_path
+
+    tags = find_field("Tags")
+    tags.send_keys("ruby, ac")
+    assert_selector "#tag-suggestions.show", text: "action-text"
+    tags.send_keys(:home)
+    assert_no_selector "#tag-suggestions.show"
+
+    tags.send_keys(:end, :backspace, :backspace, "rails, rials, ")
+    warnings = find("[data-tag-input-target=warnings]")
+    assert_equal "“rials” would be a new tag. Did you mean rails?", warnings.text
+    warnings.click_on "rails"
+    assert_equal "ruby, rails", tags.value
   end
 
   private

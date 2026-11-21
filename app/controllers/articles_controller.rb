@@ -1,7 +1,7 @@
 class ArticlesController < ApplicationController
   include CountsPageViews
 
-  READING_LIST_TAG = "reading-list"
+  READING_LIST_TAG = Tag::READING_LIST
 
   before_action :set_sidebar, only: %i[index show]
   after_action :count_feed_fetch, only: :feed

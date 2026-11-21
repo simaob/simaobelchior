@@ -1,4 +1,7 @@
 class Tag < ApplicationRecord
+  # The blog's sidebar looks this tag up by name, so it must never be merged away
+  READING_LIST = "reading-list"
+
   has_many :article_tags, dependent: :destroy
   has_many :articles, through: :article_tags
 
@@ -27,25 +30,36 @@ class Tag < ApplicationRecord
     end
   end
 
-  # Pairs of tags in use that look like the same tag written two ways, the less used one first
+  # Pairs of tags in use that look like the same tag written two ways, the one to merge away
+  # first: the less used one, unless that's the reading list
   def self.lookalikes
-    by_usage.to_a.combination(2).select { |more, less| similar?(more.name, less.name) }.map(&:reverse)
+    by_usage.to_a.combination(2).select { |more, less| similar?(more.name, less.name) }.map do |more, less|
+      less.name == READING_LIST ? [ more, less ] : [ less, more ]
+    end
   end
 
-  # Spelt differently, or with a typo or two. The same test as the article form's tags field
-  # in tag_input_controller.js, so keep the two in step.
+  # Spelt differently, or with a typo or two. Short names only match when they're the same
+  # once squashed, as one letter apart is often a different word (tdd and bdd, node and code).
+  # The same test as the article form's tags field in tag_input_controller.js, so keep the
+  # two in step.
   def self.similar?(a, b)
-    x, y = squash(a), squash(b)
-    return true if x == y
-    return false if [ x.length, y.length ].min < 3
+    return true if squash(a) == squash(b)
 
-    distance(x, y) <= ([ x.length, y.length ].max >= 8 ? 2 : 1)
+    x, y = letters(a), letters(b)
+    longest = [ x.length, y.length ].max
+    allowed = longest >= 8 ? 2 : longest >= 5 ? 1 : 0
+    allowed > 0 && distance(x, y) <= allowed
   end
 
-  # Letters and digits only, without a plural "s", so "action text", "action-text" and
-  # "actiontext" all come out the same
+  # Letters and digits, plus the + and # that tell c++ and c# apart
+  def self.letters(name)
+    name.downcase.gsub(/[^\p{L}\p{N}+#]/, "")
+  end
+
+  # Without a plural "s" too, so "action text", "action-text" and "actiontext" all come out
+  # the same
   def self.squash(name)
-    letters = name.downcase.gsub(/[^\p{L}\p{N}]/, "")
+    letters = letters(name)
     letters.length > 3 ? letters.delete_suffix("s") : letters
   end
 
@@ -65,14 +79,17 @@ class Tag < ApplicationRecord
     end
     d[a.length][b.length]
   end
-  private_class_method :squash, :distance
+  private_class_method :letters, :squash, :distance
 
   # Moves this tag's articles to another tag, then deletes this one
   def merge_into(other)
     raise ArgumentError, "can't merge #{name} into itself" if other == self
+    raise ArgumentError, "can't merge #{name} away, as the blog's sidebar uses it" if name == READING_LIST
 
     transaction do
       article_tags.where.not(article_id: other.article_tags.select(:article_id)).update_all(tag_id: other.id)
+      # Otherwise destroying would go through any links already loaded, the moved ones included
+      article_tags.reset
       destroy! # with the links to articles that already had the other tag
     end
   end
