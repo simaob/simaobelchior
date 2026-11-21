@@ -76,6 +76,17 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_select "trix-editor", count: 0
   end
 
+  test "new article form offers the most used tags" do
+    Article.create!(title: "Tagged", body: "Content", tag_list: "ruby, rails")
+    Article.create!(title: "Also tagged", body: "Content", tag_list: "rails")
+
+    get new_admin_article_path
+    assert_select "[data-controller=tag-input]" do
+      assert_select "button[data-tag-input-name-param]", 2
+      assert_select "button[data-tag-input-name-param=rails]", text: /rails\s+2/
+    end
+  end
+
   test "should create article" do
     assert_difference("Article.count") do
       post admin_articles_path, params: {

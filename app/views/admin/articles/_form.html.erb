@@ -28,10 +28,30 @@
     <%= f.rich_text_area :body %>
   </div>
 
-  <div class="mb-3">
+  <% existing_tags = Tag.by_usage.to_a %>
+  <div class="mb-3" data-controller="tag-input" data-tag-input-tags-value="<%= existing_tags.map { |existing| { name: existing.name, count: existing.articles_count } }.to_json %>">
     <%= f.label :tag_list, "Tags", class: "form-label" %>
-    <%= f.text_field :tag_list, class: "form-control", placeholder: "ruby, rails, programming" %>
+    <div class="position-relative">
+      <%= f.text_field :tag_list, class: "form-control", placeholder: "ruby, rails, programming", autocomplete: "off",
+            role: "combobox", aria: { autocomplete: "list", expanded: "false", controls: "tag-suggestions" },
+            data: { tag_input_target: "input",
+                    action: "input->tag-input#update keydown->tag-input#navigate blur->tag-input#leave" } %>
+      <ul id="tag-suggestions" class="dropdown-menu w-100 top-100 start-0 mt-1" role="listbox" data-tag-input-target="suggestions"></ul>
+    </div>
     <div class="form-text">Separate tags with commas</div>
+    <div class="form-text text-warning-emphasis" data-tag-input-target="warnings" hidden></div>
+
+    <% if existing_tags.any? %>
+      <div class="d-flex flex-wrap align-items-center gap-1 mt-2">
+        <span class="form-text mt-0 me-1">Most used:</span>
+        <% existing_tags.first(12).each do |existing| %>
+          <button type="button" class="btn btn-sm btn-outline-primary" aria-pressed="false"
+                  data-tag-input-target="chip" data-tag-input-name-param="<%= existing.name %>" data-action="tag-input#toggle">
+            <%= existing.name %> <span class="opacity-75"><%= existing.articles_count %></span>
+          </button>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
   <div class="mb-3 form-check">
