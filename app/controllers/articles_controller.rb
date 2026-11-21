@@ -8,9 +8,12 @@ class ArticlesController < ApplicationController
 
   def index
     @articles = Article.published.with_rich_text_body_and_embeds.includes(:tags)
+    @query = params[:q].to_s.squish.first(100).presence
 
-    # Filter by tag if specified
-    if params[:tag].present?
+    # Search all articles, or filter by tag if specified
+    if @query
+      @articles = @articles.search(@query)
+    elsif params[:tag].present?
       @tag = Tag.find_by(name: params[:tag].downcase)
       @articles = @articles.joins(:tags).where(tags: { id: @tag.id }) if @tag
     end

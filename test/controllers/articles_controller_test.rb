@@ -77,6 +77,38 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".article-nav a[href=?]", article_path(newer.slug), text: /Newer Post/
   end
 
+  test "should search articles" do
+    Article.create!(title: "Hotwire Notes", body: "Content", published_at: 1.day.ago)
+    Article.create!(title: "Other Article", body: "Content", published_at: 1.day.ago)
+    Article.create!(title: "Hotwire Draft", body: "Content", published_at: nil)
+
+    get blog_path(q: "hotwire")
+    assert_response :success
+    assert_select "h1", text: /matching "hotwire"/
+    assert_select "h2 a", text: "Hotwire Notes"
+    assert_select "h2 a", text: "Other Article", count: 0
+    assert_select "h2 a", text: "Hotwire Draft", count: 0
+    assert_select "input[name=q][value=?]", "hotwire"
+    assert_select "meta[name=robots][content=noindex]"
+    assert_select ".tag-filter a[aria-current]", count: 0
+  end
+
+  test "should say when a search finds nothing" do
+    get blog_path(q: "nothing like this")
+    assert_response :success
+    assert_select ".empty-state", text: /No articles found/
+    assert_select ".empty-state a[href=?]", blog_path
+  end
+
+  test "should show everything for a blank search" do
+    Article.create!(title: "Any Article", body: "Content", published_at: 1.day.ago)
+
+    get blog_path(q: "  ")
+    assert_select "h1", "Notes, now and then."
+    assert_select "h2 a", text: "Any Article"
+    assert_select "meta[name=robots]", count: 0
+  end
+
   test "should show topic filters with the active tag marked" do
     tag = Tag.create!(name: "ruby")
     Article.create!(title: "Ruby Article", body: "Content", published_at: 1.day.ago).tags << tag
