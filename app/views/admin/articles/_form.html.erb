@@ -35,18 +35,20 @@
       <%= f.text_field :tag_list, class: "form-control", placeholder: "ruby, rails, programming", autocomplete: "off",
             role: "combobox", aria: { autocomplete: "list", expanded: "false", controls: "tag-suggestions" },
             data: { tag_input_target: "input",
-                    action: "input->tag-input#update keydown->tag-input#navigate blur->tag-input#leave" } %>
-      <ul id="tag-suggestions" class="dropdown-menu w-100 top-100 start-0 mt-1" role="listbox" data-tag-input-target="suggestions"></ul>
+                    action: "input->tag-input#update keydown->tag-input#navigate keyup->tag-input#moveCaret click->tag-input#moveCaret blur->tag-input#leave" } %>
+      <ul id="tag-suggestions" class="dropdown-menu w-100 top-100 start-0 mt-1" role="listbox" data-tag-input-target="suggestions" data-action="mousedown->tag-input#holdFocus"></ul>
     </div>
     <div class="form-text">Separate tags with commas</div>
-    <div class="form-text text-warning-emphasis" data-tag-input-target="warnings" hidden></div>
+    <div aria-live="polite">
+      <div class="form-text text-warning-emphasis" data-tag-input-target="warnings" hidden></div>
+    </div>
 
     <% if existing_tags.any? %>
       <div class="d-flex flex-wrap align-items-center gap-1 mt-2">
         <span class="form-text mt-0 me-1">Most used:</span>
         <% existing_tags.first(12).each do |existing| %>
           <button type="button" class="btn btn-sm btn-outline-primary" aria-pressed="false"
-                  data-tag-input-target="chip" data-tag-input-name-param="<%= existing.name %>" data-action="tag-input#toggle">
+                  data-tag-input-target="chip" data-name="<%= existing.name %>" data-action="tag-input#toggle">
             <%= existing.name %> <span class="opacity-75"><%= existing.articles_count %></span>
           </button>
         <% end %>

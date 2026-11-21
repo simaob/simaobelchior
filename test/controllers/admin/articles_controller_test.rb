@@ -82,8 +82,8 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
 
     get new_admin_article_path
     assert_select "[data-controller=tag-input]" do
-      assert_select "button[data-tag-input-name-param]", 2
-      assert_select "button[data-tag-input-name-param=rails]", text: /rails\s+2/
+      assert_select "button[data-name]", 2
+      assert_select "button[data-name=rails]", text: /rails\s+2/
     end
   end
 
