@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Tech Stack
 
 Rails 8.0.2 application using:
-- Ruby 3.3.2
+- Ruby 4.0.10
 - SQLite3 (database)
 - Solid Cache (database-backed caching)
 - Solid Queue (database-backed Active Job adapter)
