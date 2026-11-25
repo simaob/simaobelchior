@@ -35,9 +35,19 @@ RUN apt-get update -qq && \
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
-RUN gem install bundler --no-document -v "$(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -1 | tr -d ' ')" && \
+# Compiled gems are kept between builds, so a Gemfile.lock change only installs what changed.
+# --no-cache doesn't clear them: change the id to start over.
+ARG RUBY_VERSION
+ARG TARGETARCH
+RUN --mount=type=cache,id=simaobelchior-gems-$RUBY_VERSION-$TARGETARCH,target=/gem-cache,sharing=locked \
+    if [ -d /gem-cache/ruby ]; then cp -a /gem-cache/ruby "${BUNDLE_PATH}/"; fi && \
+    gem install bundler --no-document -v "$(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -1 | tr -d ' ')" && \
     bundle install && \
+    bundle clean && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    # Saved as a whole then swapped in, so a cancelled build can't leave half a copy
+    rm -rf /gem-cache/new && cp -a "${BUNDLE_PATH}/ruby" /gem-cache/new && \
+    rm -rf /gem-cache/ruby && mv /gem-cache/new /gem-cache/ruby && \
     bundle exec bootsnap precompile --gemfile
 
 # Copy application code
